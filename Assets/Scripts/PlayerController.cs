@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     public GameObject projectilePrefab;
     public GameObject boidPrefab;
-    private List<BoidShip> ships = new List<BoidShip>();
+    internal List<BoidShip> ships = new List<BoidShip>();
 
     //Settings:
     [Header("Movement Settings:")]
@@ -22,10 +22,13 @@ public class PlayerController : MonoBehaviour
     public float dragCoefficient;
     public float maxSpeed;
     public float rotationRate;
+    [Header("Weapons Settings:")]
+    [Min(0)] public float baseFireRate;
     [Header("Boid Settings:")]
     [Min(0)] public float maxBoidSpeed;
     [Min(0)] public float maxBoidForce;
     [Min(0)] public float boidRotRate;
+    [Min(0)] public float boidDragCoefficient;
     [Space()]
     [Min(0)] public float boidNeighborRadius;
     [Min(0)] public float boidSeparationRadius;
@@ -34,6 +37,7 @@ public class PlayerController : MonoBehaviour
     [Min(0)] public float boidAlignForce;
     [Space()]
     public float boidLeaderFollowForce;
+    [Range(0, 1)] public float boidLeaderVelocityInheritance;
     public Vector2 boidLeaderSepRadii;
     [Range(0, 1)] public float leaderAlignBlend;
     [Space()]
@@ -42,7 +46,9 @@ public class PlayerController : MonoBehaviour
     //Runtime variables:
     private Vector2 mouseDirection;
     private bool thrusting;
-    private Vector2 velocity;
+    private bool firing;
+    internal Vector2 velocity;
+    private float timeUntilShoot;
 
     //UNITY METHODS:
     private void Awake()
@@ -98,15 +104,29 @@ public class PlayerController : MonoBehaviour
         if (velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed; //Cap speed
 
         Vector2 newPos = transform.position;
-        newPos += velocity;
+        newPos += velocity * Time.deltaTime;
         transform.position = newPos;
 
+        //Move boids:
         foreach (BoidShip boid in ships)
         {
+            if (thrusting) boid.velocity += Time.deltaTime * thrustPower * mouseDirection * boidLeaderVelocityInheritance;
+            boid.velocity -= Time.deltaTime * boidDragCoefficient * boid.velocity; //Apply drag
             boid.transform.position = boid.transform.position + ((Vector3)boid.velocity * Time.deltaTime);
 
             float angleTarget = Mathf.LerpAngle(Vector2.SignedAngle(Vector2.up, boid.velocity), Vector2.SignedAngle(Vector2.up, transform.up), leaderAlignBlend);
             boid.transform.eulerAngles = Vector3.forward * Mathf.LerpAngle(boid.transform.eulerAngles.z, angleTarget, boidRotRate * Time.deltaTime);
+        }
+
+        //Fire weapons:
+        if (firing)
+        {
+            timeUntilShoot -= Time.deltaTime;
+            if (timeUntilShoot <= 0)
+            {
+                timeUntilShoot = 1 / baseFireRate; //Set time until shoot so that baseFireRate is in shots per second
+                Fire();
+            }
         }
     }
     private void FixedUpdate()
@@ -160,7 +180,7 @@ public class PlayerController : MonoBehaviour
                         separationVelocity += maxBoidForce * boidSepForce * sepStrength * separation.normalized;
                     }
                 }
-                if (separatorNeighbors > 0) separationVelocity /= separatorNeighbors;
+                //if (separatorNeighbors > 0) separationVelocity /= separatorNeighbors;
                 separationVelocity = LimitMagnitude(separationVelocity, maxBoidSpeed);
                 newBoidVel += separationVelocity;
             }
@@ -201,10 +221,10 @@ public class PlayerController : MonoBehaviour
     {
         if (ctx.performed)
         {
-            Transform newProj = Instantiate(projectilePrefab).transform;
-            newProj.position = transform.position;
-            newProj.rotation = transform.rotation;
+            firing = true;
+            timeUntilShoot = 0;
         }
+        if (ctx.canceled) firing = false;
     }
     private void OnDebugSpawn(InputAction.CallbackContext ctx)
     {
@@ -224,5 +244,15 @@ public class PlayerController : MonoBehaviour
         return baseVector;
     }
 
-    public Vector2 GetVelocity() => velocity;
+    private void Fire()
+    {
+        int fireShip = Random.Range(-1, ships.Count);
+        Transform barrel = null;
+        if (fireShip == -1) barrel = transform;
+        else barrel = ships[fireShip].transform;
+
+        Transform newProj = Instantiate(projectilePrefab).transform;
+        newProj.position = barrel.position;
+        newProj.rotation = barrel.rotation;
+    }
 }

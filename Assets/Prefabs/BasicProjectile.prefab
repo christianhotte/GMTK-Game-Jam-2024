@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6e8cdcc8715e054b8927ff72b563abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseVelocity: 0.05
+  baseVelocity: 10
   hitRadius: 0.1
   lifetime: 1
   damage: 10
