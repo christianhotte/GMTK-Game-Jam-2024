@@ -567,54 +567,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidRotRate
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidCohForce
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSepForce
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: maxBoidForce
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: maxBoidSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: drawBoidRadii
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidAlignForce
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidNeighborRadius
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidLeaderSepRadii.x
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidLeaderSepRadii.y
-      value: 3.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSeparationRadius
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidLeaderFollowForce
-      value: 0.18
-      objectReference: {fileID: 0}
     - target: {fileID: 1116704755789398351, guid: f2cd035f6175f40438344660fa591076, type: 3}
       propertyPath: m_Name
       value: PlayerPointer
