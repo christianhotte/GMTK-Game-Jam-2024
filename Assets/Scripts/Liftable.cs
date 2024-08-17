@@ -24,7 +24,7 @@ public abstract class Liftable : MonoBehaviour
     /// <summary>
     /// Called when the player is able to interact with the liftable.
     /// </summary>
-    protected void EnterInteractable()
+    public void EnterInteractable()
     {
         isInteractable = true;
         materialList.Add(outlineMat);
@@ -34,7 +34,7 @@ public abstract class Liftable : MonoBehaviour
     /// <summary>
     /// Called when the player exits the range that allows them to interact with the liftable.
     /// </summary>
-    protected void ExitInteractable()
+    public void ExitInteractable()
     {
         isInteractable = false;
         materialList.Remove(outlineMat);

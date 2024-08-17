@@ -21,12 +21,14 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 1;
     [Header("Lift Settings:")]
     public float liftDistance = 1;
+    public float liftWeight = 1;
 
     //Runtime variables:
     private float cameraPitch;
     private Vector2 moveValue;
     private bool lifting;
     [SerializeField] private float activeScale = 1;
+    private Liftable currentLiftable;
 
     //UNITY METHODS:
     private void Awake()
@@ -56,7 +58,18 @@ public class PlayerController : MonoBehaviour
         transform.Translate(new Vector3(moveValue.x, 0, moveValue.y) * Time.deltaTime * activeScale);
 
         //Check for object:
-        Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, liftDistance * activeScale, LayerMask.GetMask("Liftable"));
+        if (!lifting)
+        {
+            Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, liftDistance * activeScale, LayerMask.GetMask("Liftable"));
+            if (hit.collider != null)
+            {
+                currentLiftable = hit.collider.GetComponentInParent<Liftable>();
+                if (currentLiftable != null)
+                {
+
+                }
+            }
+        }
     }
 
     //INPUT METHODS:
@@ -79,8 +92,9 @@ public class PlayerController : MonoBehaviour
     }
     private void OnLift(InputAction.CallbackContext ctx)
     {
+        //Validity checks:
         if (lifting) return;
-
+        if (currentLiftable == null) return;
     }
 
     //UTILITY METHODS:

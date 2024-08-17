@@ -250,6 +250,9 @@ MonoBehaviour:
   maxHeadUpAngle: 90
   maxHeadDownAngle: 90
   moveSpeed: 5
+  liftDistance: 1
+  liftWeight: 1
+  activeScale: 1
 --- !u!114 &-3655274790631453820
 MonoBehaviour:
   m_ObjectHideFlags: 0
