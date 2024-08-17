@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private Camera cam;
     private PlayerInput input;
     private InputActionMap inputMap;
+    private Rigidbody rb;
 
     //Settings:
     [Header("Look Settings:")]
@@ -16,13 +17,21 @@ public class PlayerController : MonoBehaviour
     public float mouseSensitivityY = 1;
     public float maxHeadUpAngle = 90;
     public float maxHeadDownAngle = -90;
+    [Header("Movement Settings:")]
+    public float moveSpeed = 1;
+    [Header("Lift Settings:")]
+    public float liftDistance = 1;
 
     //Runtime variables:
     private float cameraPitch;
+    private Vector2 moveValue;
+    private bool lifting;
+    [SerializeField] private float activeScale = 1;
 
     //UNITY METHODS:
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         cam = GetComponentInChildren<Camera>();
         input = GetComponent<PlayerInput>();
         inputMap = input.actions.FindActionMap("ActionMap");
@@ -37,11 +46,21 @@ public class PlayerController : MonoBehaviour
         switch (ctx.action.name)
         {
             case "Mouse": OnMouse(ctx); break;
+            case "Move": OnMove(ctx); break;
+            case "Lift": OnLift(ctx); break;
+            default: break;
         }
+    }
+    private void Update()
+    {
+        transform.Translate(new Vector3(moveValue.x, 0, moveValue.y) * Time.deltaTime * activeScale);
+
+        //Check for object:
+        Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, liftDistance * activeScale, LayerMask.GetMask("Liftable"));
     }
 
     //INPUT METHODS:
-    public void OnMouse(InputAction.CallbackContext ctx)
+    private void OnMouse(InputAction.CallbackContext ctx)
     {
         Vector2 mouseValue = ctx.ReadValue<Vector2>();
         Quaternion bodyRotation = transform.rotation;
@@ -51,5 +70,23 @@ public class PlayerController : MonoBehaviour
         cameraPitch -= mouseValue.y * mouseSensitivityY;
         cameraPitch = Mathf.Clamp(cameraPitch, -maxHeadDownAngle, maxHeadUpAngle);
         cam.transform.localEulerAngles = Vector3.right * cameraPitch;
+    }
+    private void OnMove(InputAction.CallbackContext ctx)
+    {
+        moveValue = ctx.ReadValue<Vector2>();
+        moveValue = Quaternion.AngleAxis(transform.rotation.z, Vector3.up) * moveValue;
+        moveValue = moveValue.normalized * moveSpeed;
+    }
+    private void OnLift(InputAction.CallbackContext ctx)
+    {
+        if (lifting) return;
+
+    }
+
+    //UTILITY METHODS:
+    private void SetScale(float newScale)
+    {
+        transform.localScale = Vector3.one * newScale;
+        activeScale = newScale;
     }
 }
