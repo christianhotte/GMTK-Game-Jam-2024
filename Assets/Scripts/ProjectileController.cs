@@ -30,7 +30,12 @@ public class ProjectileController : MonoBehaviour
 
         //Move and check for impact:
         Vector2 newPos = (Vector2)transform.position + velocity;
-
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, hitRadius, velocity, velocity.magnitude);
+        if (hit.collider != null && !hit.collider.TryGetComponent(out BoidShip ship))
+        {
+            Destroy(gameObject);
+            return;
+        }
         transform.position = newPos;
     }
 }

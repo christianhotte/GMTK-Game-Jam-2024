@@ -53,6 +53,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugSpawn"",
+                    ""type"": ""Button"",
+                    ""id"": ""796af43b-a4df-46e0-88c2-d5db638d7f28"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -70,7 +79,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""8c8a607f-b7e0-4509-8cc2-6d290f341b1b"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -81,11 +90,22 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2fb2d1df-5484-4c6f-bc31-4330e1ec5905"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fb8c3b8b-8e82-4d50-b6c9-011ca90e1de0"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugSpawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -99,6 +119,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_ActionMap_Mouse = m_ActionMap.FindAction("Mouse", throwIfNotFound: true);
         m_ActionMap_Thrust = m_ActionMap.FindAction("Thrust", throwIfNotFound: true);
         m_ActionMap_Shoot = m_ActionMap.FindAction("Shoot", throwIfNotFound: true);
+        m_ActionMap_DebugSpawn = m_ActionMap.FindAction("DebugSpawn", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,6 +184,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_ActionMap_Mouse;
     private readonly InputAction m_ActionMap_Thrust;
     private readonly InputAction m_ActionMap_Shoot;
+    private readonly InputAction m_ActionMap_DebugSpawn;
     public struct ActionMapActions
     {
         private @PlayerControls m_Wrapper;
@@ -170,6 +192,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Mouse => m_Wrapper.m_ActionMap_Mouse;
         public InputAction @Thrust => m_Wrapper.m_ActionMap_Thrust;
         public InputAction @Shoot => m_Wrapper.m_ActionMap_Shoot;
+        public InputAction @DebugSpawn => m_Wrapper.m_ActionMap_DebugSpawn;
         public InputActionMap Get() { return m_Wrapper.m_ActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -188,6 +211,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @DebugSpawn.started += instance.OnDebugSpawn;
+            @DebugSpawn.performed += instance.OnDebugSpawn;
+            @DebugSpawn.canceled += instance.OnDebugSpawn;
         }
 
         private void UnregisterCallbacks(IActionMapActions instance)
@@ -201,6 +227,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @DebugSpawn.started -= instance.OnDebugSpawn;
+            @DebugSpawn.performed -= instance.OnDebugSpawn;
+            @DebugSpawn.canceled -= instance.OnDebugSpawn;
         }
 
         public void RemoveCallbacks(IActionMapActions instance)
@@ -223,5 +252,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMouse(InputAction.CallbackContext context);
         void OnThrust(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
+        void OnDebugSpawn(InputAction.CallbackContext context);
     }
 }
