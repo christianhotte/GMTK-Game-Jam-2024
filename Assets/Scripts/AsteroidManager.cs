@@ -5,49 +5,94 @@ using UnityEngine;
 public class AsteroidManager : MonoBehaviour
 {
     [SerializeField, Tooltip("The Asteroid prefab.")] private Asteroid asteroidPrefab;
-    [SerializeField, Tooltip("The frequency for asteroids to spawn.")] private Vector2 frequency;
-    [SerializeField, Tooltip("The distance range to spawn the asteroid away from the player.")] private Vector2 invalidRange;
-    [SerializeField, Tooltip("The distance range to spawn the asteroid away from the player.")] private Vector2 spawnRange;
-
-    private float currentFrequency;
-    private float currentTimer;
+    [SerializeField, Tooltip("The asteroid container.")] private Transform asteroidContainer;
+    [SerializeField, Tooltip("The maximum pool size for the asteroid.")] private int maxPoolSize;
+    [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float tresholdToSpawn;
+    [SerializeField, Tooltip("The distance to spawn an asteroid at.")] private float spawnDistance;
+    [SerializeField, Tooltip("The max angle to offset the asteroid spawn at.")] private float maxAngleDeviation;
 
     private PlayerController player;
 
     private List<Asteroid> asteroidPool = new List<Asteroid>();
+    private Camera mainCamera;
+
+    private Vector2 lastPosition;
+    private float currentAmountMoved;
 
     private void Start()
     {
         player = FindObjectOfType<PlayerController>();
-        currentFrequency = Random.Range(frequency.x, frequency.y);
+        mainCamera = Camera.main;
+        lastPosition = mainCamera.transform.position;
     }
 
     private void Update()
     {
-        currentTimer += Time.deltaTime;
+        float distanceMoved = Vector2.Distance(mainCamera.transform.position, lastPosition);
+        currentAmountMoved += distanceMoved;
+        lastPosition = mainCamera.transform.position;
 
-        if(currentTimer >= currentFrequency)
+        if (currentAmountMoved > tresholdToSpawn)
         {
-            Vector2 randomPos = player.transform.position;
+            Vector2 baseDirection = player.GetVelocity().normalized;
+            float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
+            Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle);
+            Vector2 spawnPosition = (Vector2)player.transform.position + rotatedDirection * spawnDistance;
 
-            if (Random.Range(0, 2) == 0)
-                randomPos.x += Random.Range(-spawnRange.x, -invalidRange.x);
+            if (asteroidPool.Count >= maxPoolSize)
+                FindLongestUnseenAsteroid().transform.position = spawnPosition;
+
             else
-                randomPos.x += Random.Range(invalidRange.x, spawnRange.x);
+                SpawnAsteroid(spawnPosition);
 
-            if (Random.Range(0, 2) == 0)
-                randomPos.y += Random.Range(-spawnRange.y, -invalidRange.y);
-            else
-                randomPos.y += Random.Range(invalidRange.y, spawnRange.y);
-
-            asteroidPool.Add(Instantiate(asteroidPrefab, randomPos, Quaternion.identity));
-            currentTimer = 0;
-            currentFrequency = Random.Range(frequency.x, frequency.y);
+            currentAmountMoved = 0;
         }
+    }
+
+    private Vector2 RotatePositionByAngle(Vector2 vector, float angle)
+    {
+        // Convert angle from degree to radians
+        float rad = angle * Mathf.Deg2Rad;
+
+        //Rotate the angle counter clockwise
+        float x = vector.x * Mathf.Cos(rad) - vector.y * Mathf.Sin(rad);
+        float y = vector.x * Mathf.Sin(rad) + vector.y * Mathf.Cos(rad);
+
+        return new Vector2(x, y);
+    }
+
+    /// <summary>
+    /// Returns the asteroid within the pool that has not been seen the longest.
+    /// </summary>
+    /// <returns></returns>
+    public Asteroid FindLongestUnseenAsteroid()
+    {
+        if (asteroidPool.Count == 0)
+            return null;
+
+        Asteroid longestUnseen = asteroidPool[0];
+
+        for (int i = 1; i < asteroidPool.Count; i++)
+        {
+            if (asteroidPool[i].GetTimeSinceLastSeen() > longestUnseen.GetTimeSinceLastSeen())
+                longestUnseen = asteroidPool[i];
+        }
+
+        return longestUnseen;
+    }
+
+    public Asteroid SpawnAsteroid(Vector2 position, bool isChild = false)
+    {
+        Asteroid newAsteroid = Instantiate(asteroidPrefab, position, Quaternion.identity, asteroidContainer);
+        if (!isChild)
+            asteroidPool.Add(newAsteroid);
+
+        return newAsteroid;
     }
 
     public void DestroyAsteroid(Asteroid currentAsteroid)
     {
+        GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode", 0.5f);
         asteroidPool.Remove(currentAsteroid);
         Destroy(currentAsteroid.gameObject);
     }

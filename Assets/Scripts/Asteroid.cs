@@ -13,7 +13,10 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("The health of the asteroid.")] private float health;
     [SerializeField, Tooltip("The size of the asteroid.")] private float size;
     [SerializeField, Tooltip("The size of the asteroid.")] private float rotationSpeed;
-    [SerializeField, Tooltip("The sprite renderer used for the flash animation.")] private SpriteRenderer spriteRenderer;
+    [SerializeField, Tooltip("The sprite renderer used for the main asteroid sprite.")] private SpriteRenderer spriteRenderer;
+    [SerializeField, Tooltip("The sprite renderer used for the flash animation.")] private SpriteRenderer flashSpriteRenderer;
+    [SerializeField, Tooltip("All possible sprites for the asteroids.")] private Sprite[] asteroidSprites;
+    [SerializeField, Tooltip("All possible sprites for the asteroid overlays.")] private Sprite[] asteroidSpriteOverlays;
     [SerializeField, Tooltip("The speed at which asteroids flicker.")] private float flickerSpeed;
     [SerializeField, Tooltip("The duration at which asteroids flicker.")] private float flickerDuration;
 
@@ -21,6 +24,7 @@ public class Asteroid : MonoBehaviour
     private Color defaultColor;
     private Vector2 velocity;
 
+    private float timeSinceLastSeen;
     private float currentHealth;
     private bool isFlickering;
     private float currentFlickerTime;
@@ -32,15 +36,20 @@ public class Asteroid : MonoBehaviour
     {
         rb2D = GetComponent<Rigidbody2D>();
         defaultColor = spriteRenderer.color;
+        flashSpriteRenderer.color = new Color(1, 1, 1, 0);
         asteroidManager = FindObjectOfType<AsteroidManager>();
         Init();
     }
 
     public void Init()
     {
+        int randomAsteroid = Random.Range(0, asteroidSprites.Length);
+        spriteRenderer.sprite = asteroidSprites[randomAsteroid];
+        flashSpriteRenderer.sprite = asteroidSpriteOverlays[randomAsteroid];
         velocity = GetRandomDirection();
         transform.localScale = Vector3.one * size;
         currentHealth = health;
+        rb2D.AddForce(velocity * speed);
     }
 
     public void Init(float speed, float health, float size, float rotationSpeed)
@@ -50,6 +59,11 @@ public class Asteroid : MonoBehaviour
         this.size = size;
         this.rotationSpeed = rotationSpeed;
         Init();
+    }
+
+    private void OnBecameVisible()
+    {
+        timeSinceLastSeen = 0f;
     }
 
     private Vector2 GetRandomDirection() => new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
@@ -65,7 +79,7 @@ public class Asteroid : MonoBehaviour
             if(size / ASTEROID_CHILDREN_RANGE.x >= ASTEROID_MINIMUM_SIZE)
             {
                 int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
-                StartSpawn(amount, explosionPower, speed * ASTEROID_INCREMENTER, amount, rotationSpeed);
+                StartSpawn(amount, explosionPower, speed * ASTEROID_INCREMENTER, size / amount, rotationSpeed);
             }
 
             asteroidManager?.DestroyAsteroid(this);
@@ -83,7 +97,7 @@ public class Asteroid : MonoBehaviour
 
         for(int i = 0; i < amount; i++)
         {
-            asteroids[i] = Instantiate(Resources.Load<Asteroid>("Asteroid"), transform.position, Quaternion.identity);
+            asteroids[i] = asteroidManager?.SpawnAsteroid(transform.position, true);
             asteroids[i].Init(speed, health / (this.size / size), size, rotationSpeed);
             asteroids[i].SetVelocity((asteroids[i].GetVelocity() + velocity) * explosionPower);
         }
@@ -103,11 +117,12 @@ public class Asteroid : MonoBehaviour
             debugDamage = false;
             Damage(1, 2);
         }
+
+        timeSinceLastSeen += Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
-        rb2D.velocity = velocity * speed * Time.deltaTime;
         rb2D.angularVelocity = rotationSpeed;
     }
 
@@ -118,7 +133,7 @@ public class Asteroid : MonoBehaviour
         if(currentFlickerDurationTime >= flickerDuration)
         {
             isFlickering = false;
-            spriteRenderer.color = defaultColor;
+            flashSpriteRenderer.color = new Color(1, 1, 1, 0);
         }
 
         else
@@ -127,7 +142,7 @@ public class Asteroid : MonoBehaviour
 
             if(currentFlickerTime >= flickerSpeed)
             {
-                spriteRenderer.color = spriteRenderer.color == Color.black ? Color.white : Color.black;
+                flashSpriteRenderer.color = flashSpriteRenderer.color.a == 0 ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0);
                 currentFlickerTime = 0f;
             }
         }
@@ -139,4 +154,6 @@ public class Asteroid : MonoBehaviour
     {
         this.velocity = velocity;
     }
+
+    public float GetTimeSinceLastSeen() => timeSinceLastSeen;
 }

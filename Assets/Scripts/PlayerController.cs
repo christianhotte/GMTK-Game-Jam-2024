@@ -206,4 +206,6 @@ public class PlayerController : MonoBehaviour
         }
         return baseVector;
     }
+
+    public Vector2 GetVelocity() => velocity;
 }
