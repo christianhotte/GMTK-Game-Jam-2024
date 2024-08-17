@@ -10,7 +10,8 @@ public class PlayerController : MonoBehaviour
     private PlayerInput input;
     private InputActionMap inputMap;
     private Rigidbody rb;
-
+    public GameObject projectilePrefab;
+    
     //Settings:
     [Header("Movement Settings:")]
     public float thrustPower;
@@ -53,9 +54,9 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles = Vector3.forward * newRot;
 
         //Move player:
-        if (thrusting) velocity += Time.deltaTime * thrustPower * mouseDirection.normalized; //Apply thrust
-        velocity -= Time.deltaTime * dragCoefficient * velocity;                             //Apply drag
-        if (velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed;        //Cap speed
+        if (thrusting) velocity += Time.deltaTime * thrustPower * mouseDirection;     //Apply thrust
+        velocity -= Time.deltaTime * dragCoefficient * velocity;                      //Apply drag
+        if (velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed; //Cap speed
 
         Vector2 newPos = transform.position;
         newPos += velocity;
@@ -66,8 +67,7 @@ public class PlayerController : MonoBehaviour
     private void OnMouse(InputAction.CallbackContext ctx)
     {
         Vector2 mouseValue = ctx.ReadValue<Vector2>();
-        mouseValue = new Vector2(Mathf.Clamp01(Mathf.InverseLerp(0, Camera.main.pixelWidth, mouseValue.x)), Mathf.Clamp01(Mathf.InverseLerp(0, Camera.main.pixelHeight, mouseValue.y)));
-        mouseDirection = mouseValue - new Vector2(0.5f, 0.5f);
+        mouseDirection = (mouseValue - (Vector2)Camera.main.WorldToScreenPoint(transform.position)).normalized;
     }
     private void OnThrust(InputAction.CallbackContext ctx)
     {
@@ -76,6 +76,11 @@ public class PlayerController : MonoBehaviour
     }
     private void OnShoot(InputAction.CallbackContext ctx)
     {
-
+        if (ctx.performed)
+        {
+            Transform newProj = Instantiate(projectilePrefab).transform;
+            newProj.position = transform.position;
+            newProj.rotation = transform.rotation;
+        }
     }
 }
