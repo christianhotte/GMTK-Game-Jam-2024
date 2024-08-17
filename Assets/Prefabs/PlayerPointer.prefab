@@ -52,6 +52,18 @@ MonoBehaviour:
   dragCoefficient: 0.6
   maxSpeed: 1
   rotationRate: 5
+  maxBoidSpeed: 2
+  maxBoidForce: 0.37
+  boidRotRate: 2
+  boidNeighborRadius: 2
+  boidSeparationRadius: 0.5
+  boidSepForce: 0.74
+  boidCohForce: 0.3
+  boidAlignForce: 0
+  boidLeaderFollowForce: 4.37
+  boidLeaderSepRadii: {x: 1.34, y: 4.65}
+  leaderAlignBlend: 1
+  drawBoidRadii: 1
 --- !u!114 &3765562567524744116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +121,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.065, z: 0}
-  m_LocalScale: {x: 0.53, y: 0.53, z: 0.53}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 515696931308888669}

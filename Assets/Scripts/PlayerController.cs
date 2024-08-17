@@ -23,18 +23,19 @@ public class PlayerController : MonoBehaviour
     public float maxSpeed;
     public float rotationRate;
     [Header("Boid Settings:")]
-    public float maxBoidSpeed;
-    public float maxBoidForce;
-    public float boidRotRate;
+    [Min(0)] public float maxBoidSpeed;
+    [Min(0)] public float maxBoidForce;
+    [Min(0)] public float boidRotRate;
     [Space()]
-    public float boidNeighborRadius;
-    public float boidSeparationRadius;
-    public float boidSepForce;
-    public float boidCohForce;
-    public float boidAlignForce;
+    [Min(0)] public float boidNeighborRadius;
+    [Min(0)] public float boidSeparationRadius;
+    [Min(0)] public float boidSepForce;
+    [Min(0)] public float boidCohForce;
+    [Min(0)] public float boidAlignForce;
     [Space()]
     public float boidLeaderFollowForce;
     public Vector2 boidLeaderSepRadii;
+    [Range(0, 1)] public float leaderAlignBlend;
     [Space()]
     public bool drawBoidRadii;
 
@@ -100,51 +101,68 @@ public class PlayerController : MonoBehaviour
         newPos += velocity;
         transform.position = newPos;
 
+        foreach (BoidShip boid in ships)
+        {
+            boid.transform.position = boid.transform.position + ((Vector3)boid.velocity * Time.deltaTime);
+
+            float angleTarget = Mathf.LerpAngle(Vector2.SignedAngle(Vector2.up, boid.velocity), Vector2.SignedAngle(Vector2.up, transform.up), leaderAlignBlend);
+            boid.transform.eulerAngles = Vector3.forward * Mathf.LerpAngle(boid.transform.eulerAngles.z, angleTarget, boidRotRate * Time.deltaTime);
+        }
+    }
+    private void FixedUpdate()
+    {
         //Flock ships:
         List<Vector2> newVelocities = new List<Vector2>();
         foreach (BoidShip boid in ships)
         {
-            List<BoidShip> neighbors = Physics2D.OverlapCircleAll(boid.transform.position, boidNeighborRadius).Select(b => b.GetComponent<BoidShip>()).ToList();
-            neighbors.Remove(boid);
+            List<BoidShip> neighbors = Physics2D.OverlapCircleAll(boid.transform.position, boidNeighborRadius).Where(b => b.TryGetComponent(out BoidShip shipCont) && shipCont != boid).Select(b => b.GetComponent<BoidShip>()).ToList();
             Vector2 newBoidVel = boid.velocity;
 
             //Neighbor velocity checks:
             if (neighbors.Count > 0)
             {
-                //Gather data:
-                Vector2 alignVelocity = Vector2.zero;
-                Vector2 cohesionVelocity = Vector2.zero;
-                Vector2 separationVelocity = Vector2.zero;
-                Vector2 totalPositions = Vector2.zero;
+
+                //Apply neighbor alignment:
+                /*Vector2 alignVelocity = Vector2.zero;
                 foreach (BoidShip neighbor in neighbors)
                 {
                     alignVelocity += neighbor.velocity;
-                    totalPositions += (Vector2)neighbor.transform.position;
                 }
-                /*
-                //Apply neighbor alignment:
                 alignVelocity /= neighbors.Count;
-                alignVelocity = (alignVelocity.normalized * maxBoidSpeed) - boid.velocity;
-                alignVelocity = LimitMagnitude(alignVelocity, maxBoidForce);
-                newBoidVel += alignVelocity * boidAlignForce;
+                alignVelocity *= maxBoidForce * boidAlignForce;
+                alignVelocity = LimitMagnitude(alignVelocity, maxBoidSpeed);
+                newBoidVel += alignVelocity;*/
 
                 //Apply neighbor cohesion:
-                totalPositions /= neighbors.Count;
-                cohesionVelocity = totalPositions - (Vector2)boid.transform.position;
-                cohesionVelocity = (cohesionVelocity.normalized * maxBoidSpeed) - boid.velocity;
-                cohesionVelocity = LimitMagnitude(cohesionVelocity, maxBoidForce);
-                newBoidVel += cohesionVelocity * boidCohForce;*/
+                Vector2 cohesionVelocity = Vector2.zero;
+                Vector2 totalPosition = Vector2.zero;
+                foreach (BoidShip neighbor in neighbors)
+                {
+                    totalPosition += (Vector2)neighbor.transform.position;
+                }
+                totalPosition /= neighbors.Count;
+                Vector2 cohesionSep = (Vector2)boid.transform.position - totalPosition;
+                cohesionVelocity = -boidCohForce * maxBoidForce * cohesionSep;
+                cohesionVelocity = LimitMagnitude(cohesionVelocity, maxBoidSpeed);
+                newBoidVel += cohesionVelocity;
 
                 //Apply neighbor separation:
-                List<BoidShip> closeNeighbors = neighbors.Where(n => Vector2.Distance(n.transform.position, boid.transform.position) <= boidSeparationRadius / 2).ToList();
-                foreach (BoidShip neighbor in closeNeighbors)
+                Vector2 separationVelocity = Vector2.zero;
+                int separatorNeighbors = 0;
+                foreach (BoidShip neighbor in neighbors)
                 {
-                    Vector2 diff = (boid.transform.position - neighbor.transform.position);
-                    separationVelocity += diff.normalized / diff.magnitude;
+                    Vector2 separation = boid.transform.position - neighbor.transform.position;
+                    float sepDist = separation.magnitude;
+                    if (sepDist < boidSeparationRadius)
+                    {
+                        separatorNeighbors++;
+                        float sepStrength = Mathf.Clamp01(Mathf.InverseLerp(0, boidSeparationRadius, sepDist));
+                        separationVelocity += maxBoidForce * boidSepForce * sepStrength * separation.normalized;
+                    }
                 }
-                separationVelocity /= closeNeighbors.Count;
-                separationVelocity = (separationVelocity.normalized * maxBoidSpeed) - boid.velocity;
-                separationVelocity = LimitMagnitude(separationVelocity, maxBoidForce);
+                if (separatorNeighbors > 0) separationVelocity /= separatorNeighbors;
+                separationVelocity = LimitMagnitude(separationVelocity, maxBoidSpeed);
+                newBoidVel += separationVelocity;
             }
 
             //Leader velocity check:
@@ -153,7 +171,8 @@ public class PlayerController : MonoBehaviour
             if (leaderSepDist > boidLeaderSepRadii.x)
             {
                 float sepStrength = Mathf.Clamp01(Mathf.InverseLerp(boidLeaderSepRadii.x, boidLeaderSepRadii.y, leaderSepDist));
-                Vector2 followVelocity = maxBoidForce * sepStrength * leaderSeparation.normalized;
+                Vector2 followVelocity = maxBoidForce * boidLeaderFollowForce * sepStrength * leaderSeparation.normalized;
+                followVelocity = LimitMagnitude(followVelocity, maxBoidSpeed);
                 newBoidVel += followVelocity;
             }
 
@@ -164,8 +183,6 @@ public class PlayerController : MonoBehaviour
         {
             BoidShip boid = ships[x];
             boid.velocity = LimitMagnitude(newVelocities[x], maxBoidSpeed);
-            boid.transform.position = boid.transform.position + ((Vector3)boid.velocity * Time.deltaTime);
-            boid.transform.eulerAngles = Vector3.forward * Mathf.LerpAngle(boid.transform.eulerAngles.z, Vector2.SignedAngle(Vector2.up, boid.velocity), boidRotRate * Time.deltaTime);
         }
     }
 
