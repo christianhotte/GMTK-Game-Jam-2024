@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer), typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Asteroid : MonoBehaviour
 {
+    private static readonly Vector2 ASTEROID_CHILDREN_RANGE = new Vector2(2, 5);
+    private static readonly float ASTEROID_MINIMUM_SIZE = 0.5f;
+    private static readonly float ASTEROID_INCREMENTER = 1.05f;
+
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
     [SerializeField, Tooltip("The health of the asteroid.")] private float health;
     [SerializeField, Tooltip("The size of the asteroid.")] private float size;
     [SerializeField, Tooltip("The size of the asteroid.")] private float rotationSpeed;
+    [SerializeField, Tooltip("The sprite renderer used for the flash animation.")] private SpriteRenderer spriteRenderer;
     [SerializeField, Tooltip("The speed at which asteroids flicker.")] private float flickerSpeed;
     [SerializeField, Tooltip("The duration at which asteroids flicker.")] private float flickerDuration;
 
-    private SpriteRenderer spriteRenderer;
     private Rigidbody2D rb2D;
     private Color defaultColor;
     private Vector2 velocity;
@@ -22,11 +26,13 @@ public class Asteroid : MonoBehaviour
     private float currentFlickerTime;
     private float currentFlickerDurationTime;
 
+    private AsteroidManager asteroidManager;
+
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
         rb2D = GetComponent<Rigidbody2D>();
         defaultColor = spriteRenderer.color;
+        asteroidManager = FindObjectOfType<AsteroidManager>();
         Init();
     }
 
@@ -56,12 +62,14 @@ public class Asteroid : MonoBehaviour
         {
             currentHealth = 0;
 
-            if(size / 2 >= 1f)
+            if(size / ASTEROID_CHILDREN_RANGE.x >= ASTEROID_MINIMUM_SIZE)
             {
-                StartSpawn(Random.Range(2, 4), explosionPower, speed * 1.05f, (Random.Range(size / 4, size / 2)), rotationSpeed);
+                int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
+                StartSpawn(amount, explosionPower, speed * ASTEROID_INCREMENTER, amount, rotationSpeed);
             }
 
-            Destroy(gameObject);
+            asteroidManager?.DestroyAsteroid(this);
+
         }
 
         currentFlickerTime = flickerSpeed;
