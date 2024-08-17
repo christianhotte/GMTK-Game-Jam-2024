@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-[RequireComponent(typeof(SphereCollider))]
 public abstract class Liftable : MonoBehaviour
 {
     [SerializeField, Tooltip("The weight of the item (in kilograms.)")] protected float itemWeight;
@@ -22,24 +21,24 @@ public abstract class Liftable : MonoBehaviour
         materialList = objectRenderer.materials.OfType<Material>().ToList();
     }
 
-    protected virtual void OnTriggerEnter(Collider other)
+    /// <summary>
+    /// Called when the player is able to interact with the liftable.
+    /// </summary>
+    protected void EnterInteractable()
     {
-        if (other.CompareTag("Player"))
-        {
-            isInteractable = true;
-            materialList.Add(outlineMat);
-            objectRenderer.materials = materialList.ToArray();
-        }    
+        isInteractable = true;
+        materialList.Add(outlineMat);
+        objectRenderer.materials = materialList.ToArray();
     }
 
-    protected virtual void OnTriggerExit(Collider other)
+    /// <summary>
+    /// Called when the player exits the range that allows them to interact with the liftable.
+    /// </summary>
+    protected void ExitInteractable()
     {
-        if (other.CompareTag("Player"))
-        {
-            isInteractable = false;
-            materialList.Remove(outlineMat);
-            objectRenderer.materials = materialList.ToArray();
-        }
+        isInteractable = false;
+        materialList.Remove(outlineMat);
+        objectRenderer.materials = materialList.ToArray();
     }
 
     /// <summary>
