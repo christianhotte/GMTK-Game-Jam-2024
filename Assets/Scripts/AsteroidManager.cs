@@ -34,7 +34,7 @@ public class AsteroidManager : MonoBehaviour
 
         if (currentAmountMoved > tresholdToSpawn)
         {
-            Vector2 baseDirection = player.GetVelocity().normalized;
+            Vector2 baseDirection = player.velocity.normalized;
             float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
             Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle);
             Vector2 spawnPosition = (Vector2)player.transform.position + rotatedDirection * spawnDistance;

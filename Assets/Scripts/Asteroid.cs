@@ -7,12 +7,16 @@ public class Asteroid : MonoBehaviour
 {
     private static readonly Vector2 ASTEROID_CHILDREN_RANGE = new Vector2(2, 5);
     private static readonly float ASTEROID_MINIMUM_SIZE = 0.5f;
-    private static readonly float ASTEROID_INCREMENTER = 1.05f;
 
+    public float BASE_SPEED = 10f;
+    public float SPEED_FACTOR = 5f;
+    public float HEALTH_FACTOR = 30f;
+    public float ROTATION_MAX = 100f;
+
+    [SerializeField, Tooltip("The size of the asteroid.")] private float size;
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
     [SerializeField, Tooltip("The health of the asteroid.")] private float health;
-    [SerializeField, Tooltip("The size of the asteroid.")] private float size;
-    [SerializeField, Tooltip("The size of the asteroid.")] private float rotationSpeed;
+    [SerializeField, Tooltip("The rotation speed of the asteroid.")] private float rotationSpeed;
     [SerializeField, Tooltip("The sprite renderer used for the main asteroid sprite.")] private SpriteRenderer spriteRenderer;
     [SerializeField, Tooltip("The sprite renderer used for the flash animation.")] private SpriteRenderer flashSpriteRenderer;
     [SerializeField, Tooltip("All possible sprites for the asteroids.")] private Sprite[] asteroidSprites;
@@ -21,7 +25,6 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("The duration at which asteroids flicker.")] private float flickerDuration;
 
     private Rigidbody2D rb2D;
-    private Color defaultColor;
     private Vector2 velocity;
 
     private float timeSinceLastSeen;
@@ -35,7 +38,6 @@ public class Asteroid : MonoBehaviour
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
-        defaultColor = spriteRenderer.color;
         flashSpriteRenderer.color = new Color(1, 1, 1, 0);
         asteroidManager = FindObjectOfType<AsteroidManager>();
         Init();
@@ -43,6 +45,10 @@ public class Asteroid : MonoBehaviour
 
     public void Init()
     {
+        speed = BASE_SPEED + SPEED_FACTOR * Mathf.Log(size + 1);
+        health = HEALTH_FACTOR * Mathf.Sqrt(size);
+        rotationSpeed = ROTATION_MAX / Mathf.Sqrt(size + 1);
+
         int randomAsteroid = Random.Range(0, asteroidSprites.Length);
         spriteRenderer.sprite = asteroidSprites[randomAsteroid];
         flashSpriteRenderer.sprite = asteroidSpriteOverlays[randomAsteroid];
@@ -52,12 +58,9 @@ public class Asteroid : MonoBehaviour
         rb2D.AddForce(velocity * speed);
     }
 
-    public void Init(float speed, float health, float size, float rotationSpeed)
+    public void Init(float size)
     {
-        this.speed = speed;
-        this.health = health;
         this.size = size;
-        this.rotationSpeed = rotationSpeed;
         Init();
     }
 
@@ -79,7 +82,7 @@ public class Asteroid : MonoBehaviour
             if(size / ASTEROID_CHILDREN_RANGE.x >= ASTEROID_MINIMUM_SIZE)
             {
                 int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
-                StartSpawn(amount, explosionPower, speed * ASTEROID_INCREMENTER, size / amount, rotationSpeed);
+                StartSpawn(amount, explosionPower, size / amount);
             }
 
             asteroidManager?.DestroyAsteroid(this);
@@ -91,14 +94,14 @@ public class Asteroid : MonoBehaviour
         isFlickering = true;
     }
 
-    protected void StartSpawn(int amount, float explosionPower, float speed, float size, float rotationSpeed)
+    protected void StartSpawn(int amount, float explosionPower, float size)
     {
         Asteroid[] asteroids = new Asteroid[amount];
 
         for(int i = 0; i < amount; i++)
         {
             asteroids[i] = asteroidManager?.SpawnAsteroid(transform.position, true);
-            asteroids[i].Init(speed, health / (this.size / size), size, rotationSpeed);
+            asteroids[i].Init(size);
             asteroids[i].SetVelocity((asteroids[i].GetVelocity() + velocity) * explosionPower);
         }
     }
