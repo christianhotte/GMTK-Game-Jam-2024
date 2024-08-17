@@ -10,15 +10,11 @@ public abstract class Liftable : MonoBehaviour
 
     private bool isInteractable;
     private bool isHeld;
-    private Renderer objectRenderer;
-
-    private List<Material> materialList;
+    private Renderer[] objectRenderers;
 
     public virtual void Awake()
     {
-        objectRenderer = GetComponent<Renderer>();
-        materialList = new List<Material>();
-        materialList = objectRenderer.materials.OfType<Material>().ToList();
+        objectRenderers = GetComponentsInChildren<Renderer>();
     }
 
     /// <summary>
@@ -26,9 +22,17 @@ public abstract class Liftable : MonoBehaviour
     /// </summary>
     public void EnterInteractable()
     {
+        if (!isInteractable)
+        {
+            foreach (Renderer r in objectRenderers)
+            {
+                List<Material> matList = new List<Material>(r.materials);
+                matList.Add(outlineMat);
+                r.materials = matList.ToArray();
+            }
+        }
+        
         isInteractable = true;
-        materialList.Add(outlineMat);
-        objectRenderer.materials = materialList.ToArray();
     }
 
     /// <summary>
@@ -36,9 +40,16 @@ public abstract class Liftable : MonoBehaviour
     /// </summary>
     public void ExitInteractable()
     {
+        if (isInteractable)
+        {
+            foreach (Renderer r in objectRenderers)
+            {
+                List<Material> matList = new List<Material>(r.materials);
+                matList.RemoveAt(1);
+                r.materials = matList.ToArray();
+            }
+        }
         isInteractable = false;
-        materialList.Remove(outlineMat);
-        objectRenderer.materials = materialList.ToArray();
     }
 
     /// <summary>

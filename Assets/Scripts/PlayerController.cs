@@ -60,14 +60,21 @@ public class PlayerController : MonoBehaviour
         //Check for object:
         if (!lifting)
         {
+            Liftable prevLiftable = currentLiftable;
+            currentLiftable = null;
             Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, liftDistance * activeScale, LayerMask.GetMask("Liftable"));
             if (hit.collider != null)
             {
                 currentLiftable = hit.collider.GetComponentInParent<Liftable>();
                 if (currentLiftable != null)
                 {
-
+                    print("oog");
+                    currentLiftable.EnterInteractable();
                 }
+            }
+            if (currentLiftable != prevLiftable && prevLiftable != null)
+            {
+                prevLiftable.ExitInteractable();
             }
         }
     }
@@ -95,6 +102,9 @@ public class PlayerController : MonoBehaviour
         //Validity checks:
         if (lifting) return;
         if (currentLiftable == null) return;
+
+        //Lift failure:
+
     }
 
     //UTILITY METHODS:
