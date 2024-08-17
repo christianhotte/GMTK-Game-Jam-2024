@@ -37,18 +37,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""486fd8fd-78ba-4578-a271-36630893ac7e"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""name"": ""Thrust"",
+                    ""type"": ""Button"",
+                    ""id"": ""0ac0b312-d7e4-462e-8c04-625c7c8b0363"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Lift"",
+                    ""name"": ""Shoot"",
                     ""type"": ""Button"",
-                    ""id"": ""d166b7e1-038c-49bd-bc6b-d6643bee9dec"",
+                    ""id"": ""42758882-2373-43c2-91f9-7936bc1dc82b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -59,7 +59,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""244217c6-260e-44e4-a4c1-84e1020e247c"",
-                    ""path"": ""<Mouse>/delta"",
+                    ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -68,68 +68,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""WASD"",
-                    ""id"": ""3078f98f-f4c1-4ce0-88f1-0a3801f41332"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""61fd19ad-cb15-4efc-8c4a-1fa4123ff56b"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""6c70abb3-7ce0-43d0-87f1-e9b09437c3a3"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""6442c5ae-b050-4028-92e5-1018bfe19d48"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""2c370bc8-aea8-40c0-9998-6e238c5c0d8a"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
-                    ""id"": ""d8658f48-9c8b-4ddb-914c-2e0c7e8f226f"",
+                    ""id"": ""8c8a607f-b7e0-4509-8cc2-6d290f341b1b"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Lift"",
+                    ""action"": ""Thrust"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2fb2d1df-5484-4c6f-bc31-4330e1ec5905"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -141,8 +97,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // ActionMap
         m_ActionMap = asset.FindActionMap("ActionMap", throwIfNotFound: true);
         m_ActionMap_Mouse = m_ActionMap.FindAction("Mouse", throwIfNotFound: true);
-        m_ActionMap_Move = m_ActionMap.FindAction("Move", throwIfNotFound: true);
-        m_ActionMap_Lift = m_ActionMap.FindAction("Lift", throwIfNotFound: true);
+        m_ActionMap_Thrust = m_ActionMap.FindAction("Thrust", throwIfNotFound: true);
+        m_ActionMap_Shoot = m_ActionMap.FindAction("Shoot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -205,15 +161,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_ActionMap;
     private List<IActionMapActions> m_ActionMapActionsCallbackInterfaces = new List<IActionMapActions>();
     private readonly InputAction m_ActionMap_Mouse;
-    private readonly InputAction m_ActionMap_Move;
-    private readonly InputAction m_ActionMap_Lift;
+    private readonly InputAction m_ActionMap_Thrust;
+    private readonly InputAction m_ActionMap_Shoot;
     public struct ActionMapActions
     {
         private @PlayerControls m_Wrapper;
         public ActionMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Mouse => m_Wrapper.m_ActionMap_Mouse;
-        public InputAction @Move => m_Wrapper.m_ActionMap_Move;
-        public InputAction @Lift => m_Wrapper.m_ActionMap_Lift;
+        public InputAction @Thrust => m_Wrapper.m_ActionMap_Thrust;
+        public InputAction @Shoot => m_Wrapper.m_ActionMap_Shoot;
         public InputActionMap Get() { return m_Wrapper.m_ActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -226,12 +182,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Mouse.started += instance.OnMouse;
             @Mouse.performed += instance.OnMouse;
             @Mouse.canceled += instance.OnMouse;
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-            @Lift.started += instance.OnLift;
-            @Lift.performed += instance.OnLift;
-            @Lift.canceled += instance.OnLift;
+            @Thrust.started += instance.OnThrust;
+            @Thrust.performed += instance.OnThrust;
+            @Thrust.canceled += instance.OnThrust;
+            @Shoot.started += instance.OnShoot;
+            @Shoot.performed += instance.OnShoot;
+            @Shoot.canceled += instance.OnShoot;
         }
 
         private void UnregisterCallbacks(IActionMapActions instance)
@@ -239,12 +195,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Mouse.started -= instance.OnMouse;
             @Mouse.performed -= instance.OnMouse;
             @Mouse.canceled -= instance.OnMouse;
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-            @Lift.started -= instance.OnLift;
-            @Lift.performed -= instance.OnLift;
-            @Lift.canceled -= instance.OnLift;
+            @Thrust.started -= instance.OnThrust;
+            @Thrust.performed -= instance.OnThrust;
+            @Thrust.canceled -= instance.OnThrust;
+            @Shoot.started -= instance.OnShoot;
+            @Shoot.performed -= instance.OnShoot;
+            @Shoot.canceled -= instance.OnShoot;
         }
 
         public void RemoveCallbacks(IActionMapActions instance)
@@ -265,7 +221,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IActionMapActions
     {
         void OnMouse(InputAction.CallbackContext context);
-        void OnMove(InputAction.CallbackContext context);
-        void OnLift(InputAction.CallbackContext context);
+        void OnThrust(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
     }
 }

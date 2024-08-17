@@ -12,29 +12,21 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
 
     //Settings:
-    [Header("Look Settings:")]
-    public float mouseSensitivityX = 1;
-    public float mouseSensitivityY = 1;
-    public float maxHeadUpAngle = 90;
-    public float maxHeadDownAngle = -90;
     [Header("Movement Settings:")]
-    public float moveSpeed = 1;
-    [Header("Lift Settings:")]
-    public float liftDistance = 1;
-    public float liftWeight = 1;
+    public float thrustPower;
+    public float dragCoefficient;
+    public float maxSpeed;
+    public float rotationRate;
 
     //Runtime variables:
-    private float cameraPitch;
-    private Vector2 moveValue;
-    private bool lifting;
-    [SerializeField] private float activeScale = 1;
-    private Liftable currentLiftable;
+    private Vector2 mouseDirection;
+    private bool thrusting;
+    private Vector2 velocity;
 
     //UNITY METHODS:
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        cam = GetComponentInChildren<Camera>();
         input = GetComponent<PlayerInput>();
         inputMap = input.actions.FindActionMap("ActionMap");
         inputMap.actionTriggered += OnPlayerInput;
@@ -48,69 +40,42 @@ public class PlayerController : MonoBehaviour
         switch (ctx.action.name)
         {
             case "Mouse": OnMouse(ctx); break;
-            case "Move": OnMove(ctx); break;
-            case "Lift": OnLift(ctx); break;
+            case "Thrust": OnThrust(ctx); break;
+            case "Shoot": OnShoot(ctx); break;
             default: break;
         }
     }
     private void Update()
     {
-        transform.Translate(new Vector3(moveValue.x, 0, moveValue.y) * Time.deltaTime * activeScale);
+        //Rotate player:
+        float targetRot = Vector3.SignedAngle(Vector3.up, mouseDirection, Vector3.forward);
+        float newRot = Mathf.LerpAngle(transform.eulerAngles.z, targetRot, rotationRate * Time.deltaTime);
+        transform.eulerAngles = Vector3.forward * newRot;
 
-        //Check for object:
-        if (!lifting)
-        {
-            Liftable prevLiftable = currentLiftable;
-            currentLiftable = null;
-            Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, liftDistance * activeScale, LayerMask.GetMask("Liftable"));
-            if (hit.collider != null)
-            {
-                currentLiftable = hit.collider.GetComponentInParent<Liftable>();
-                if (currentLiftable != null)
-                {
-                    print("oog");
-                    currentLiftable.EnterInteractable();
-                }
-            }
-            if (currentLiftable != prevLiftable && prevLiftable != null)
-            {
-                prevLiftable.ExitInteractable();
-            }
-        }
+        //Move player:
+        if (thrusting) velocity += Time.deltaTime * thrustPower * mouseDirection.normalized; //Apply thrust
+        velocity -= Time.deltaTime * dragCoefficient * velocity;                             //Apply drag
+        if (velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed;        //Cap speed
+
+        Vector2 newPos = transform.position;
+        newPos += velocity;
+        transform.position = newPos;
     }
 
     //INPUT METHODS:
     private void OnMouse(InputAction.CallbackContext ctx)
     {
         Vector2 mouseValue = ctx.ReadValue<Vector2>();
-        Quaternion bodyRotation = transform.rotation;
-        bodyRotation *= Quaternion.AngleAxis(mouseValue.x * mouseSensitivityX, Vector3.up);
-        transform.rotation = bodyRotation;
-        
-        cameraPitch -= mouseValue.y * mouseSensitivityY;
-        cameraPitch = Mathf.Clamp(cameraPitch, -maxHeadDownAngle, maxHeadUpAngle);
-        cam.transform.localEulerAngles = Vector3.right * cameraPitch;
+        mouseValue = new Vector2(Mathf.Clamp01(Mathf.InverseLerp(0, Camera.main.pixelWidth, mouseValue.x)), Mathf.Clamp01(Mathf.InverseLerp(0, Camera.main.pixelHeight, mouseValue.y)));
+        mouseDirection = mouseValue - new Vector2(0.5f, 0.5f);
     }
-    private void OnMove(InputAction.CallbackContext ctx)
+    private void OnThrust(InputAction.CallbackContext ctx)
     {
-        moveValue = ctx.ReadValue<Vector2>();
-        moveValue = Quaternion.AngleAxis(transform.rotation.z, Vector3.up) * moveValue;
-        moveValue = moveValue.normalized * moveSpeed;
+        if (ctx.performed) thrusting = true;
+        if (ctx.canceled) thrusting = false;
     }
-    private void OnLift(InputAction.CallbackContext ctx)
+    private void OnShoot(InputAction.CallbackContext ctx)
     {
-        //Validity checks:
-        if (lifting) return;
-        if (currentLiftable == null) return;
 
-        //Lift failure:
-
-    }
-
-    //UTILITY METHODS:
-    private void SetScale(float newScale)
-    {
-        transform.localScale = Vector3.one * newScale;
-        activeScale = newScale;
     }
 }
