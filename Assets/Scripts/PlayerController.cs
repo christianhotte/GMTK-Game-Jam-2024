@@ -103,6 +103,8 @@ public class PlayerController : MonoBehaviour
         if (lifting) return;
         if (currentLiftable == null) return;
 
+        currentLiftable.OnInteract();
+
         //Lift failure:
 
     }

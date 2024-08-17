@@ -124,7 +124,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d8658f48-9c8b-4ddb-914c-2e0c7e8f226f"",
+                    ""id"": ""e52d1e5f-cc7b-4355-ad36-3e8d3c0f17ef"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",

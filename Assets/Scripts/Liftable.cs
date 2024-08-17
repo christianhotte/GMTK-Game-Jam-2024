@@ -7,6 +7,10 @@ public abstract class Liftable : MonoBehaviour
 {
     [SerializeField, Tooltip("The weight of the item (in kilograms.)")] protected float itemWeight;
     [SerializeField, Tooltip("The material for the outlines.")] protected Material outlineMat;
+    [SerializeField, Tooltip("Movement height.")] private float liftHeight = 5f;
+    [SerializeField, Tooltip("The time it takes to lift the liftable.")] private float liftTime = 1f;
+    [SerializeField, Tooltip("The time it takes to hold the liftable.")] private float holdTime = 0.25f;
+    [SerializeField, Tooltip("The time it takes to lower the liftable.")] private float lowerTime = 1f;
 
     private bool isInteractable;
     private bool isHeld;
@@ -60,7 +64,15 @@ public abstract class Liftable : MonoBehaviour
         if (isInteractable && !isHeld)
         {
             isHeld = true;
+            LiftObject();
         }
+    }
+
+    private void LiftObject()
+    {
+        Debug.Log("Lifting object...");
+        LTDescr liftableRep = LeanTween.delayedCall(liftTime + holdTime + lowerTime, () => LeanTween.moveLocalY(gameObject, transform.localPosition.y + liftHeight, liftTime).setOnComplete(() =>
+     LeanTween.delayedCall(holdTime, () => LeanTween.moveLocalY(gameObject, transform.localPosition.y - liftHeight, lowerTime)))).setRepeat(-1);
     }
 
     /// <summary>
