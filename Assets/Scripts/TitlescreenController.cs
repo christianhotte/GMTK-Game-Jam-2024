@@ -55,7 +55,8 @@ public class TitlescreenController : MonoBehaviour
                 currentMenuPage.menuCanvasGroup.alpha = 0;
                 currentMenuPage.menuCanvasGroup.gameObject.SetActive(false);
                 currentMenuPage = menuStates[(int)MenuState.TITLE];
-                currentMenuPage.menuCanvasGroup.gameObject.SetActive(true);
+                currentMenuPage.menuCanvasGroup.gameObject.SetActive(true
+                    );
                 currentMenuPage.menuCanvasGroup.alpha = 1;
                 break;
         }
