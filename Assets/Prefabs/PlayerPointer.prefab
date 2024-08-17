@@ -50,21 +50,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 1887234780943325857, guid: 0c9ea50ad4218f74ca8e28fcfd9357e0, type: 3}
   boidPrefab: {fileID: 5690376234045105522, guid: 34060a4677820f34685ccc5ff7f5be6f, type: 3}
-  thrustPower: 0.03
+  thrustPower: 10
   dragCoefficient: 0.6
-  maxSpeed: 1
+  maxSpeed: 10
   rotationRate: 5
-  maxBoidSpeed: 2
+  baseFireRate: 1
+  maxBoidSpeed: 5
   maxBoidForce: 0.37
   boidRotRate: 2
+  boidDragCoefficient: 0.3
   boidNeighborRadius: 2
-  boidSeparationRadius: 0.5
-  boidSepForce: 0.74
+  boidSeparationRadius: 1.42
+  boidSepForce: 0.43
   boidCohForce: 0.3
   boidAlignForce: 0
-  boidLeaderFollowForce: 4.37
-  boidLeaderSepRadii: {x: 1.34, y: 4.65}
-  leaderAlignBlend: 1
+  boidLeaderFollowForce: 10
+  boidLeaderVelocityInheritance: 0.75
+  boidLeaderSepRadii: {x: 2.36, y: 10}
+  leaderAlignBlend: 0.804
   drawBoidRadii: 1
 --- !u!114 &3765562567524744116
 MonoBehaviour:
