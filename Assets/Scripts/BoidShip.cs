@@ -40,5 +40,10 @@ public class BoidShip : MonoBehaviour
                 }
             }
         }
+
+        if (active && collision.collider.TryGetComponent<GemController>(out GemController gem))
+        {
+            gem.DestroyGem();
+        }
     }
 }
