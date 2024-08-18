@@ -6,6 +6,8 @@ public class BoidShip : MonoBehaviour
 {
     //Settings:
     public float collisionDamage = 50;
+    public float maxAsteroidEatSize = 1;
+    public float spawnForce = 1;
 
     //Runtime Vars:
     internal Vector2 velocity;
@@ -15,12 +17,25 @@ public class BoidShip : MonoBehaviour
     {
         if (collision.collider.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
-            asteroid.Damage(collisionDamage);
-            if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
-            else
+            if (asteroid.GetSize() <= maxAsteroidEatSize) //Ship eats asteroid
             {
-                PlayerController.main.ships.Remove(this);
-                Destroy(gameObject);
+                asteroid.Damage(99999999);
+                Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
+                PlayerController.main.ships.Add(newShip.GetComponent<BoidShip>());
+                newShip.position = transform.position;
+                newShip.rotation = transform.rotation;
+                newShip.GetComponent<BoidShip>().velocity = velocity + (-velocity.normalized * spawnForce);
+                PlayerController.main.UpdateBoidSettings();
+            }
+            else //Asteroid destroys ship
+            {
+                asteroid.Damage(collisionDamage);
+                if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
+                else
+                {
+                    PlayerController.main.ships.Remove(this);
+                    Destroy(gameObject);
+                }
             }
         }
     }

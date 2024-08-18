@@ -26,5 +26,5 @@ MonoBehaviour:
   boidLeaderVelocityInheritance: 0.67
   boidLeaderSepRadii: {x: 2.52, y: 5.47}
   leaderAlignBlend: 0.804
-  camSize: 3.7
-  fireRate: 6
+  camSize: 8
+  fireRate: 10

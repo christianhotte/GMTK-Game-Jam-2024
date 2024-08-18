@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Rotate player:
-        float targetRot = Vector3.SignedAngle(Vector3.up, mousePosition - (Vector2)transform.position, Vector3.forward);
+        float targetRot = Vector3.SignedAngle(Vector3.up, (Vector2)Camera.main.ScreenToWorldPoint(mousePosition) - (Vector2)transform.position, Vector3.forward);
         float newRot = Mathf.LerpAngle(transform.eulerAngles.z, targetRot, rotationRate * Time.deltaTime);
         transform.eulerAngles = Vector3.forward * newRot;
 
@@ -120,7 +120,7 @@ public class PlayerController : MonoBehaviour
             boid.velocity -= Time.deltaTime * boidSettings.boidDragCoefficient * boid.velocity; //Apply drag
             boid.transform.position = boid.transform.position + ((Vector3)boid.velocity * Time.deltaTime);
 
-            float boidTargetRot = Vector3.SignedAngle(Vector3.up, mousePosition - (Vector2)boid.transform.position, Vector3.forward);
+            float boidTargetRot = Vector3.SignedAngle(Vector3.up, (Vector2)Camera.main.ScreenToWorldPoint(mousePosition) - (Vector2)boid.transform.position, Vector3.forward);
             boidTargetRot = Mathf.LerpAngle(boid.transform.eulerAngles.z, boidTargetRot, boidSettings.boidRotRate * Time.deltaTime);
             boid.transform.eulerAngles = Vector3.forward * boidTargetRot;
         }
@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
     private void OnMouse(InputAction.CallbackContext ctx)
     {
         Vector2 mouseValue = ctx.ReadValue<Vector2>();
-        mousePosition = Camera.main.ScreenToWorldPoint(mouseValue);
+        mousePosition = mouseValue;
     }
     private void OnThrust(InputAction.CallbackContext ctx)
     {
@@ -249,9 +249,13 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDebugDeSpawn(InputAction.CallbackContext ctx)
     {
-        BoidShip shipToDestroy = ships[^1];
-        ships.Remove(shipToDestroy);
-        Destroy(shipToDestroy.gameObject);
+        if (ctx.started && ships.Count > 0)
+        {
+            BoidShip shipToDestroy = ships[^1];
+            ships.Remove(shipToDestroy);
+            Destroy(shipToDestroy.gameObject);
+        }
+        
     }
     private Vector2 LimitMagnitude(Vector2 baseVector, float maxMagnitude)
     {
