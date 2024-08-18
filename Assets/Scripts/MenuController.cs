@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseController : MonoBehaviour
+public class MenuController : MonoBehaviour
 {
     private PlayerControls playerControls;
     [SerializeField, Tooltip("The GameObject for the pause menu.")] private GameObject pauseMenu;
+    [SerializeField, Tooltip("The GameObject for the game over menu.")] private GameObject gameOverMenu;
 
     private void Awake()
     {
         playerControls = new PlayerControls();
         playerControls.ActionMap.Pause.started += _ => TogglePause();
         pauseMenu.SetActive(false);
+        gameOverMenu.SetActive(false);
+        GameManager.Instance.isGameActive = true;
     }
 
     private void OnEnable()
@@ -27,6 +30,9 @@ public class PauseController : MonoBehaviour
 
     private void TogglePause()
     {
+        if (!GameManager.Instance.isGameActive)
+            return;
+
         GameManager.Instance.isPaused = !GameManager.Instance.isPaused;
 
         if (GameManager.Instance.isPaused)
@@ -49,6 +55,18 @@ public class PauseController : MonoBehaviour
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
         GameManager.Instance?.AudioManager.ResumeAllSounds();
+    }
+
+    public void DisplayGameOver()
+    {
+        GameManager.Instance?.AudioManager.StopAllSounds();
+        Time.timeScale = 0f;
+        gameOverMenu.SetActive(true);
+    }
+
+    public void Retry()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void ReturnToMain()

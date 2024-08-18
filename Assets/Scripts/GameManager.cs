@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public AudioManager AudioManager { get; private set; }
 
     internal bool isPaused;
+    internal bool isGameActive;
 
     private void Awake()
     {
@@ -20,5 +21,13 @@ public class GameManager : MonoBehaviour
         Instance = this;
         AudioManager = GetComponentInChildren<AudioManager>();
         isPaused = false;
+        isGameActive = false;
+    }
+
+    public void GameOver()
+    {
+        isGameActive = false;
+        isPaused = true;
+        FindObjectOfType<MenuController>()?.DisplayGameOver();
     }
 }
