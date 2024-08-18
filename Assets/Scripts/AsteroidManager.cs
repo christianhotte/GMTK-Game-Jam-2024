@@ -10,6 +10,13 @@ public class AsteroidManager : MonoBehaviour
     [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float tresholdToSpawn;
     [SerializeField, Tooltip("The distance to spawn an asteroid at.")] private float spawnDistance;
     [SerializeField, Tooltip("The max angle to offset the asteroid spawn at.")] private float maxAngleDeviation;
+    [SerializeField, Tooltip("The starting size for asteroids.")] private float startingSize = 4f;
+    [SerializeField, Tooltip("The amount the size of the asteroids increase per ship.")] private float sizeIncrement = 1f;
+
+    public float BASE_SPEED = 10f;
+    public float SPEED_FACTOR = 5f;
+    public float HEALTH_FACTOR = 30f;
+    public float ROTATION_MAX = 100f;
 
     private PlayerController player;
 
@@ -85,7 +92,10 @@ public class AsteroidManager : MonoBehaviour
     {
         Asteroid newAsteroid = Instantiate(asteroidPrefab, position, Quaternion.identity, asteroidContainer);
         if (!isChild)
+        {
+            newAsteroid.Init(startingSize + Mathf.Log(1 + PlayerController.main.ships.Count) * sizeIncrement);
             asteroidPool.Add(newAsteroid);
+        }
 
         return newAsteroid;
     }

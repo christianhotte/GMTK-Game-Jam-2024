@@ -8,11 +8,6 @@ public class Asteroid : MonoBehaviour
     private static readonly Vector2 ASTEROID_CHILDREN_RANGE = new Vector2(2, 5);
     private static readonly float ASTEROID_MINIMUM_SIZE = 0.5f;
 
-    public float BASE_SPEED = 10f;
-    public float SPEED_FACTOR = 5f;
-    public float HEALTH_FACTOR = 30f;
-    public float ROTATION_MAX = 100f;
-
     [SerializeField, Tooltip("The size of the asteroid.")] private float size;
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
     [SerializeField, Tooltip("The health of the asteroid.")] private float health;
@@ -45,9 +40,9 @@ public class Asteroid : MonoBehaviour
 
     public void Init()
     {
-        speed = BASE_SPEED + SPEED_FACTOR * Mathf.Log(size + 1);
-        health = HEALTH_FACTOR * Mathf.Sqrt(size);
-        rotationSpeed = ROTATION_MAX / Mathf.Sqrt(size + 1);
+        speed = asteroidManager.BASE_SPEED + asteroidManager.SPEED_FACTOR * Mathf.Log(size + 1);
+        health = asteroidManager.HEALTH_FACTOR * Mathf.Sqrt(size);
+        rotationSpeed = asteroidManager.ROTATION_MAX / Mathf.Sqrt(size + 1);
 
         int randomAsteroid = Random.Range(0, asteroidSprites.Length);
         spriteRenderer.sprite = asteroidSprites[randomAsteroid];
