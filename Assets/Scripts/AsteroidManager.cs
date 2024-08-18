@@ -65,7 +65,7 @@ public class AsteroidManager : MonoBehaviour
             //Spawn a prison
             if(Random.Range(0.0f, 1.0f) < prisonPercentage)
             {
-                Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponent<BoxCollider2D>().size.x);
+                Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponentInChildren<BoxCollider2D>().size.x);
 
                 SpawnPrison(spawnPosition);
             }
@@ -101,7 +101,7 @@ public class AsteroidManager : MonoBehaviour
         {
             spawnPosition = GenerateSpawnPosition(asteroidSize);
 
-            if (!IsPositionOccupied(spawnPosition, asteroidSize * asteroidPrefab.GetComponent<CircleCollider2D>().radius))
+            if (!IsPositionOccupied(spawnPosition, asteroidSize * asteroidPrefab.GetRadius()))
                 return spawnPosition;
         }
 
