@@ -15,10 +15,6 @@ public class ProjectileController : MonoBehaviour
     private Vector2 velocity;
 
     //UNITY METHODS:
-    private void Start()
-    {
-        velocity = (Vector2)transform.up * baseVelocity;
-    }
     private void Update()
     {
         //Check for death by old age:
@@ -38,5 +34,11 @@ public class ProjectileController : MonoBehaviour
             return;
         }
         transform.position = newPos;
+    }
+    public void Fire(Transform barrel, Vector2 addVelocity)
+    {
+        transform.position = barrel.position;
+        transform.rotation = barrel.rotation;
+        velocity = ((Vector2)transform.up * baseVelocity) + addVelocity;
     }
 }

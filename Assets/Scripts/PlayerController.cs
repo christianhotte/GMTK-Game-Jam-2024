@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     internal Vector2 velocity;
     private float timeUntilShoot;
     private float targetCameraSize;
+    private int lastFireShip = 0;
 
     //UNITY METHODS:
     private void Awake()
@@ -85,13 +86,13 @@ public class PlayerController : MonoBehaviour
             if (drawBoidRadii)
             {
                 Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(boid.transform.position, boidNeighborRadius);
+                Gizmos.DrawWireSphere(boid.transform.position, boidSettings.boidNeighborRadius);
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(boid.transform.position, boidSeparationRadius);
+                Gizmos.DrawWireSphere(boid.transform.position, boidSettings.boidSeparationRadius);
 
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(transform.position, boidLeaderSepRadii.x);
-                Gizmos.DrawWireSphere(transform.position, boidLeaderSepRadii.y);
+                Gizmos.DrawWireSphere(transform.position, boidSettings.boidLeaderSepRadii.x);
+                Gizmos.DrawWireSphere(transform.position, boidSettings.boidLeaderSepRadii.y);
             }
         }
     }
@@ -255,14 +256,18 @@ public class PlayerController : MonoBehaviour
 
     private void Fire()
     {
-        int fireShip = Random.Range(-1, ships.Count);
-        Transform barrel = null;
-        if (fireShip == -1) barrel = transform;
-        else barrel = ships[fireShip].transform;
+        //Increment barrel tracker:
+        lastFireShip++;
+        if (lastFireShip > ships.Count) lastFireShip = 0;
 
-        Transform newProj = Instantiate(projectilePrefab).transform;
-        newProj.position = barrel.position;
-        newProj.rotation = barrel.rotation;
+        //Find barrel:
+        Transform barrel = null;
+        if (lastFireShip == 0) barrel = transform;
+        else barrel = ships[lastFireShip - 1].transform;
+
+        //Fire projectile:
+        ProjectileController newProj = Instantiate(projectilePrefab).GetComponent<ProjectileController>();
+        newProj.Fire(barrel, barrel == transform ? velocity : ships[lastFireShip - 1].velocity);
     }
     public void UpdateBoidSettings()
     {

@@ -19,12 +19,12 @@ MonoBehaviour:
   boidDragCoefficient: 0.3
   boidNeighborRadius: 2
   boidSeparationRadius: 1.42
-  boidSepForce: 0.43
-  boidCohForce: 0.3
+  boidSepForce: 0.3
+  boidCohForce: 0.1
   boidAlignForce: 0
   boidLeaderFollowForce: 10
-  boidLeaderVelocityInheritance: 0.75
-  boidLeaderSepRadii: {x: 2.36, y: 10}
+  boidLeaderVelocityInheritance: 0.67
+  boidLeaderSepRadii: {x: 2.52, y: 5.47}
   leaderAlignBlend: 0.804
-  camSize: 2.49
+  camSize: 3.7
   fireRate: 6
