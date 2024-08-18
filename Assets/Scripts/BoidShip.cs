@@ -16,25 +16,32 @@ public class BoidShip : MonoBehaviour
     //BOID METHODS:
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (active && collision.collider.TryGetComponent<GemController>(out GemController gem))
+
+        if (active)
         {
-            Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
-            ScoreManager.Instance.AddToScore(1);
-            PlayerController.main.ships.Add(newShip.GetComponent<BoidShip>());
-            newShip.position = transform.position;
-            newShip.rotation = transform.rotation;
-            newShip.GetComponent<BoidShip>().velocity = velocity + (-velocity.normalized * spawnForce);
-            PlayerController.main.UpdateBoidSettings();
-            gem.DestroyGem();
-        }
-        else if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
-        {
-            asteroid.Damage(collisionDamage, velocity);
-            if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
+            if (collision.collider.TryGetComponent<GemController>(out GemController gem))
+            {
+                Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
+                ScoreManager.Instance.AddToScore(1);
+                PlayerController.main.ships.Add(newShip.GetComponent<BoidShip>());
+                newShip.position = transform.position;
+                newShip.rotation = transform.rotation;
+                newShip.GetComponent<BoidShip>().velocity = velocity + (-velocity.normalized * spawnForce);
+                PlayerController.main.UpdateBoidSettings();
+                gem.DestroyGem();
+            }
             else
             {
-                PlayerController.main.ships.Remove(this);
-                Destroy(gameObject);
+                if (collision.transform.parent != null && collision.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
+                {
+                    asteroid.Damage(collisionDamage, velocity);
+                }
+                if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
+                else
+                {
+                    PlayerController.main.ships.Remove(this);
+                    Destroy(gameObject);
+                }
             }
         }
         

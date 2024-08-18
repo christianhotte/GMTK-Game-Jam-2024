@@ -820,6 +820,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AsteroidSpawner (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6564903409470378875, guid: 920662fcd76d97c42a34bf2fcc381c4d, type: 3}
+      propertyPath: asteroidContainer
+      value: 
+      objectReference: {fileID: 703696478}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

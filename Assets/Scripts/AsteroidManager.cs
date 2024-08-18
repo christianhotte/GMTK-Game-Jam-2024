@@ -7,15 +7,18 @@ public class AsteroidManager : MonoBehaviour
     public static AsteroidManager main;
     [SerializeField, Tooltip("The Asteroid prefab.")] private Asteroid asteroidPrefab;
     [SerializeField, Tooltip("The Prison prefab.")] private GameObject prisonPrefab;
+    [SerializeField, Tooltip("The Prison prefab.")] private PlanetController planetPrefab;
     [SerializeField, Tooltip("The asteroid container.")] private Transform asteroidContainer;
     [SerializeField, Tooltip("The maximum pool size for the asteroid.")] private int maxPoolSize;
-    [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float tresholdToSpawn;
+    [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float thresholdToSpawn;
     [SerializeField, Tooltip("The distance to spawn an asteroid at.")] private float spawnDistance;
     [SerializeField, Tooltip("The multiplier to control the scaling of the distance.")] private float distanceMultiplier;
     [SerializeField, Tooltip("The max angle to offset the asteroid spawn at.")] private float maxAngleDeviation;
     [SerializeField, Tooltip("The starting size for asteroids.")] private float startingSize = 4f;
     [SerializeField, Tooltip("The amount the size of the asteroids increase per ship.")] private float sizeIncrement = 1f;
     [SerializeField, Tooltip("The percent chance that a prison will spawn instead of an asteroid.")] private float prisonPercentage = 0.15f;
+    [SerializeField, Tooltip("The amount of ships needed before planets begin to spawn.")] private int planetThreshold = 50;
+    [SerializeField, Tooltip("The percent chance that a planet will spawn instead of an asteroid.")] private float planetPercentage = 0.15f;
 
     public float BASE_SPEED = 10f;
     public float SPEED_FACTOR = 5f;
@@ -27,6 +30,7 @@ public class AsteroidManager : MonoBehaviour
 
     private List<Asteroid> asteroidPool = new List<Asteroid>();
     private List<PrisonController> prisonPool = new List<PrisonController>();
+    private List<PlanetController> planetPool = new List<PlanetController>();
     private Camera mainCamera;
 
     private Vector2 lastPosition;
@@ -61,32 +65,42 @@ public class AsteroidManager : MonoBehaviour
 
         if (currentAmountMoved >= PlayerController.main.boidSettings.asteroidSpawnRate)
         {
+            Vector2 spawnPosition;
+
+            //Spawn a planet
+            if (PlayerController.main.ships.Count >= planetThreshold && Random.Range(0.0f, 1.0f) < planetPercentage)
+            {
+                spawnPosition = CreateSpawnPoint(planetPrefab.GetComponent<CircleCollider2D>().radius);
+
+                SpawnPlanet(spawnPosition);
+                currentAmountMoved = 0;
+                return;
+            }
 
             //Spawn a prison
-            if(Random.Range(0.0f, 1.0f) < prisonPercentage)
+            if (Random.Range(0.0f, 1.0f) < prisonPercentage)
             {
-                Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponentInChildren<BoxCollider2D>().size.x);
+                spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponentInChildren<BoxCollider2D>().size.x);
 
                 SpawnPrison(spawnPosition);
+                currentAmountMoved = 0;
+                return;
             }
 
             //Spawn an asteroid
+            float asteroidSize = CalculateAsteroidSize();
+            spawnPosition = CreateSpawnPoint(asteroidSize);
+
+            if (asteroidPool.Count >= maxPoolSize)
+            {
+                Asteroid moveAsteroid = FindLongestUnseenAsteroid();
+                moveAsteroid.transform.position = spawnPosition;
+                moveAsteroid.transform.localScale = asteroidSize * Vector3.one;
+                moveAsteroid.timeSinceLastSeen = -1;
+            }
             else
             {
-                float asteroidSize = CalculateAsteroidSize();
-                Vector2 spawnPosition = CreateSpawnPoint(asteroidSize);
-
-                if (asteroidPool.Count >= maxPoolSize)
-                {
-                    Asteroid moveAsteroid = FindLongestUnseenAsteroid();
-                    moveAsteroid.transform.position = spawnPosition;
-                    moveAsteroid.transform.localScale = asteroidSize * Vector3.one;
-                    moveAsteroid.timeSinceLastSeen = -1;
-                }
-                else
-                {
-                    SpawnAsteroid(spawnPosition, asteroidSize);
-                }
+                SpawnAsteroid(spawnPosition, asteroidSize);
             }
 
             currentAmountMoved = 0;
@@ -152,6 +166,12 @@ public class AsteroidManager : MonoBehaviour
         }
 
         return longestUnseen;
+    }
+
+    public PlanetController SpawnPlanet(Vector2 position)
+    {
+        PlanetController newPlanet = Instantiate(planetPrefab, position, Quaternion.identity);
+        return newPlanet;
     }
 
     public PrisonController SpawnPrison()
