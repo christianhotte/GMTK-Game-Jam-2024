@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
     //Objects & Components:
     public static PlayerController main;
-    private Camera cam;
+    public CinemachineVirtualCamera cam;
     private PlayerInput input;
     private InputActionMap inputMap;
-    private Rigidbody rb;
     public GameObject projectilePrefab;
     public GameObject boidPrefab;
     internal List<BoidShip> ships = new List<BoidShip>();
+    public BoidSettings[] boidSettingsList;
+    private BoidSettings boidSettings;
 
     //Settings:
     [Header("Movement Settings:")]
@@ -22,8 +24,8 @@ public class PlayerController : MonoBehaviour
     public float dragCoefficient;
     public float maxSpeed;
     public float rotationRate;
-    [Header("Weapons Settings:")]
-    [Min(0)] public float baseFireRate;
+    [Header("Other Settings:")]
+    public float cameraAdjustRate = 1;
     [Header("Boid Settings:")]
     [Min(0)] public float maxBoidSpeed;
     [Min(0)] public float maxBoidForce;
@@ -49,15 +51,17 @@ public class PlayerController : MonoBehaviour
     private bool firing;
     internal Vector2 velocity;
     private float timeUntilShoot;
+    private float targetCameraSize;
 
     //UNITY METHODS:
     private void Awake()
     {
         main = this;
-        rb = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
         inputMap = input.actions.FindActionMap("ActionMap");
         inputMap.actionTriggered += OnPlayerInput;
+        boidSettings = (BoidSettings)ScriptableObject.CreateInstance("BoidSettings");
+        UpdateBoidSettings();
     }
     private void OnDisable()
     {
@@ -110,12 +114,12 @@ public class PlayerController : MonoBehaviour
         //Move boids:
         foreach (BoidShip boid in ships)
         {
-            if (thrusting) boid.velocity += Time.deltaTime * thrustPower * mouseDirection * boidLeaderVelocityInheritance;
-            boid.velocity -= Time.deltaTime * boidDragCoefficient * boid.velocity; //Apply drag
+            if (thrusting) boid.velocity += Time.deltaTime * thrustPower * mouseDirection * boidSettings.boidLeaderVelocityInheritance;
+            boid.velocity -= Time.deltaTime * boidSettings.boidDragCoefficient * boid.velocity; //Apply drag
             boid.transform.position = boid.transform.position + ((Vector3)boid.velocity * Time.deltaTime);
 
-            float angleTarget = Mathf.LerpAngle(Vector2.SignedAngle(Vector2.up, boid.velocity), Vector2.SignedAngle(Vector2.up, transform.up), leaderAlignBlend);
-            boid.transform.eulerAngles = Vector3.forward * Mathf.LerpAngle(boid.transform.eulerAngles.z, angleTarget, boidRotRate * Time.deltaTime);
+            float angleTarget = Mathf.LerpAngle(Vector2.SignedAngle(Vector2.up, boid.velocity), Vector2.SignedAngle(Vector2.up, transform.up), boidSettings.leaderAlignBlend);
+            boid.transform.eulerAngles = Vector3.forward * Mathf.LerpAngle(boid.transform.eulerAngles.z, angleTarget, boidSettings.boidRotRate * Time.deltaTime);
         }
 
         //Fire weapons:
@@ -124,18 +128,19 @@ public class PlayerController : MonoBehaviour
             timeUntilShoot -= Time.deltaTime;
             if (timeUntilShoot <= 0)
             {
-                timeUntilShoot = 1 / baseFireRate; //Set time until shoot so that baseFireRate is in shots per second
+                timeUntilShoot = 1 / boidSettings.fireRate; //Set time until shoot so that baseFireRate is in shots per second
                 Fire();
             }
         }
     }
     private void FixedUpdate()
     {
+        UpdateBoidSettings();
         //Flock ships:
         List<Vector2> newVelocities = new List<Vector2>();
         foreach (BoidShip boid in ships)
         {
-            List<BoidShip> neighbors = Physics2D.OverlapCircleAll(boid.transform.position, boidNeighborRadius).Where(b => b.TryGetComponent(out BoidShip shipCont) && shipCont != boid).Select(b => b.GetComponent<BoidShip>()).ToList();
+            List<BoidShip> neighbors = Physics2D.OverlapCircleAll(boid.transform.position, boidSettings.boidNeighborRadius).Where(b => b.TryGetComponent(out BoidShip shipCont) && shipCont != boid).Select(b => b.GetComponent<BoidShip>()).ToList();
             Vector2 newBoidVel = boid.velocity;
 
             //Neighbor velocity checks:
@@ -162,8 +167,8 @@ public class PlayerController : MonoBehaviour
                 }
                 totalPosition /= neighbors.Count;
                 Vector2 cohesionSep = (Vector2)boid.transform.position - totalPosition;
-                cohesionVelocity = -boidCohForce * maxBoidForce * cohesionSep;
-                cohesionVelocity = LimitMagnitude(cohesionVelocity, maxBoidSpeed);
+                cohesionVelocity = -boidSettings.boidCohForce * boidSettings.maxBoidForce * cohesionSep;
+                cohesionVelocity = LimitMagnitude(cohesionVelocity, boidSettings.maxBoidSpeed);
                 newBoidVel += cohesionVelocity;
 
                 //Apply neighbor separation:
@@ -173,26 +178,26 @@ public class PlayerController : MonoBehaviour
                 {
                     Vector2 separation = boid.transform.position - neighbor.transform.position;
                     float sepDist = separation.magnitude;
-                    if (sepDist < boidSeparationRadius)
+                    if (sepDist < boidSettings.boidSeparationRadius)
                     {
                         separatorNeighbors++;
-                        float sepStrength = Mathf.Clamp01(Mathf.InverseLerp(0, boidSeparationRadius, sepDist));
-                        separationVelocity += maxBoidForce * boidSepForce * sepStrength * separation.normalized;
+                        float sepStrength = Mathf.Clamp01(Mathf.InverseLerp(0, boidSettings.boidSeparationRadius, sepDist));
+                        separationVelocity += boidSettings.maxBoidForce * boidSettings.boidSepForce * sepStrength * separation.normalized;
                     }
                 }
                 //if (separatorNeighbors > 0) separationVelocity /= separatorNeighbors;
-                separationVelocity = LimitMagnitude(separationVelocity, maxBoidSpeed);
+                separationVelocity = LimitMagnitude(separationVelocity, boidSettings.maxBoidSpeed);
                 newBoidVel += separationVelocity;
             }
 
             //Leader velocity check:
             Vector2 leaderSeparation = transform.position - boid.transform.position;
             float leaderSepDist = leaderSeparation.magnitude;
-            if (leaderSepDist > boidLeaderSepRadii.x)
+            if (leaderSepDist > boidSettings.boidLeaderSepRadii.x)
             {
-                float sepStrength = Mathf.Clamp01(Mathf.InverseLerp(boidLeaderSepRadii.x, boidLeaderSepRadii.y, leaderSepDist));
-                Vector2 followVelocity = maxBoidForce * boidLeaderFollowForce * sepStrength * leaderSeparation.normalized;
-                followVelocity = LimitMagnitude(followVelocity, maxBoidSpeed);
+                float sepStrength = Mathf.Clamp01(Mathf.InverseLerp(boidSettings.boidLeaderSepRadii.x, boidSettings.boidLeaderSepRadii.y, leaderSepDist));
+                Vector2 followVelocity = boidSettings.maxBoidForce * boidSettings.boidLeaderFollowForce * sepStrength * leaderSeparation.normalized;
+                followVelocity = LimitMagnitude(followVelocity, boidSettings.maxBoidSpeed);
                 newBoidVel += followVelocity;
             }
 
@@ -202,8 +207,11 @@ public class PlayerController : MonoBehaviour
         for (int x = 0; x < ships.Count; x++)
         {
             BoidShip boid = ships[x];
-            boid.velocity = LimitMagnitude(newVelocities[x], maxBoidSpeed);
+            boid.velocity = LimitMagnitude(newVelocities[x], boidSettings.maxBoidSpeed);
         }
+
+        //Update camera size:
+        cam.m_Lens.OrthographicSize = Mathf.Lerp(cam.m_Lens.OrthographicSize, boidSettings.camSize, cameraAdjustRate);
     }
 
     //INPUT METHODS:
@@ -233,6 +241,7 @@ public class PlayerController : MonoBehaviour
             Transform newShip = Instantiate(boidPrefab.transform);
             ships.Add(newShip.GetComponent<BoidShip>());
             newShip.position = transform.position;
+            UpdateBoidSettings();
         }
     }
     private Vector2 LimitMagnitude(Vector2 baseVector, float maxMagnitude)
@@ -254,5 +263,25 @@ public class PlayerController : MonoBehaviour
         Transform newProj = Instantiate(projectilePrefab).transform;
         newProj.position = barrel.position;
         newProj.rotation = barrel.rotation;
+    }
+    public void UpdateBoidSettings()
+    {
+        int boidCount = ships.Count;
+        if (boidCount <= boidSettingsList[0].boidNumber || boidSettingsList.Length == 1) boidSettingsList[0].CopyValuesTo(boidSettings);
+        else
+        {
+            BoidSettings settingsA = boidSettingsList[0];
+            foreach (BoidSettings s in boidSettingsList)
+            {
+                if (s.boidNumber == boidCount) { s.CopyValuesTo(boidSettings); return; }
+                else if (s.boidNumber > boidCount)
+                {
+                    BoidSettings.LerpValues(settingsA, s, boidSettings, boidCount);
+                    return;
+                }
+                settingsA = s;
+            }
+            boidSettingsList[^0].CopyValuesTo(boidSettings);
+        }
     }
 }
