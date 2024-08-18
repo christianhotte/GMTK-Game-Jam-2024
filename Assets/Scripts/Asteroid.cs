@@ -80,7 +80,7 @@ public class Asteroid : MonoBehaviour
         {
             currentHealth = 0;
 
-            if(size / ASTEROID_CHILDREN_RANGE.x >= PlayerController.main.boidSettings.asteroidSizeRange.x)
+            if (size / ASTEROID_CHILDREN_RANGE.x >= PlayerController.main.boidSettings.asteroidSizeRange.x)
             {
                 int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
                 StartSpawn(amount, size / amount, velocity);

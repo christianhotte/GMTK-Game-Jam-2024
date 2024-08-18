@@ -29,5 +29,5 @@ MonoBehaviour:
   camSize: 14
   fireRate: 10
   asteroidSizeRange: {x: 5, y: 29.4}
-  asteroidSpawnDistance: 27.6
-  asteroidSpawnRate: 2
+  asteroidSpawnDistance: 21.9
+  asteroidSpawnRate: 3

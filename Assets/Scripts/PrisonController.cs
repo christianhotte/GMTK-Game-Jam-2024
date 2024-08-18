@@ -15,6 +15,7 @@ public class PrisonController : MonoBehaviour
     [SerializeField, Tooltip("The duration of the damage shake.")] private float shakeFrequency = 1;
     [SerializeField, Tooltip("The rotation speed of the prison.")] private float rotationSpeed;
     [SerializeField, Tooltip("The percentage of ships in the prison relative to the current ship count.")] private Vector2 shipPercentRange;
+    [SerializeField, Tooltip("stinky")] private float randomSpawnRadius;
 
     public bool debugDamage = false;
 
@@ -61,12 +62,11 @@ public class PrisonController : MonoBehaviour
 
             for (int i = 0; i < numberOfShips; i++)
             {
-                boidShips[i].active = true;
-                ScoreManager.Instance.AddToScore(1);
-                boidShips[i].transform.SetParent(null);
+                BoidShip newShip = Instantiate(PlayerController.main.boidPrefab).GetComponent<BoidShip>();
+                newShip.transform.position = (Vector2)transform.position + (Random.insideUnitCircle * randomSpawnRadius);
+                newShip.transform.eulerAngles = Vector2.Angle(Vector2.up, PlayerController.main.transform.position - transform.position) * Vector3.forward;
+                PlayerController.main.ships.Add(newShip);
             }
-
-            PlayerController.main.ships.AddRange(boidShips);
 
             Destroy(transform.parent.gameObject, 0.1f);
         }

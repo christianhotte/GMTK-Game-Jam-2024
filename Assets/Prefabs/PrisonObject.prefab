@@ -531,6 +531,7 @@ MonoBehaviour:
   shakeFrequency: 3
   rotationSpeed: 15
   shipPercentRange: {x: 0.2, y: 0.5}
+  randomSpawnRadius: 1
   debugDamage: 0
 --- !u!50 &1805756491539968775
 Rigidbody2D:
@@ -558,7 +559,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 3
 --- !u!61 &8050058004468054115
 BoxCollider2D:
   m_ObjectHideFlags: 0
