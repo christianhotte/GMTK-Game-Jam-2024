@@ -122,6 +122,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &36951039
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 36951040}
+  m_Layer: 0
+  m_Name: CamTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &36951040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36951039}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &207128483
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +490,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6.999992
+  orthographic size: 13.99998
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -604,10 +635,10 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 1957900395}
+  m_Follow: {fileID: 36951040}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 6.999992
+    OrthographicSize: 13.99998
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -640,11 +671,6 @@ Transform:
   - {fileID: 1241377262}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1957900395 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 515696931308888669, guid: f2cd035f6175f40438344660fa591076, type: 3}
-  m_PrefabInstance: {fileID: 4127046563658165460}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1533667897777281536
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -852,9 +878,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1948168349}
     - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: drawBoidRadii
-      value: 0
+      propertyPath: camTarget
+      value: 
+      objectReference: {fileID: 36951040}
+    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
+      propertyPath: boidSettingsList.Array.size
+      value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
+      propertyPath: boidSettingsList.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 77408b65c861aaf478ecb71fee8829d9, type: 2}
     - target: {fileID: 1116704755789398351, guid: f2cd035f6175f40438344660fa591076, type: 3}
       propertyPath: m_Name
       value: PlayerPointer
@@ -876,3 +910,4 @@ SceneRoots:
   - {fileID: 207128486}
   - {fileID: 498577425}
   - {fileID: 1599910641220451221}
+  - {fileID: 36951040}

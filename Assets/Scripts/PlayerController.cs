@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     internal List<BoidShip> ships = new List<BoidShip>();
     public BoidSettings[] boidSettingsList;
     internal BoidSettings boidSettings;
+    public Transform camTarget;
 
     //Settings:
     [Header("Movement Settings:")]
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
     [Header("Other Settings:")]
     public float cameraAdjustRate = 1;
     public bool drawBoidRadii;
+    [Range(0, 1)] public float cameraDistBlend;
 
     //Runtime variables:
     internal Vector2 mousePosition;
@@ -83,6 +85,9 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        //Move cam target:
+        camTarget.transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(mousePosition), cameraDistBlend);
+
         //Rotate player:
         float targetRot = Vector3.SignedAngle(Vector3.up, (Vector2)Camera.main.ScreenToWorldPoint(mousePosition) - (Vector2)transform.position, Vector3.forward);
         float newRot = Mathf.LerpAngle(transform.eulerAngles.z, targetRot, rotationRate * Time.deltaTime);

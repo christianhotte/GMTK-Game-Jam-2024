@@ -55,9 +55,9 @@ public class AsteroidManager : MonoBehaviour
 
     private void Update()
     {
-        float distanceMoved = Vector2.Distance(mainCamera.transform.position, lastPosition);
+        float distanceMoved = Vector2.Distance(PlayerController.main.transform.position, lastPosition);
         currentAmountMoved += distanceMoved;
-        lastPosition = mainCamera.transform.position;
+        lastPosition = PlayerController.main.transform.position;
 
         if (currentAmountMoved >= (PlayerController.main.boidSettings.asteroidSpawnRate + distanceMultiplier * Mathf.Log(PlayerController.main.ships.Count + 1)))
         {
