@@ -59,6 +59,7 @@ public class PrisonController : MonoBehaviour
             for (int i = 0; i < numberOfShips; i++)
             {
                 boidShips[i].active = true;
+                ScoreManager.Instance.AddToScore(1);
                 boidShips[i].transform.SetParent(null);
             }
 
