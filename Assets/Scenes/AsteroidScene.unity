@@ -763,6 +763,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 8836467463555864461, guid: 1e05e6f6177a93640b723b325ff0a950, type: 3}
+      propertyPath: textInstructions.Array.data[1].duration
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
