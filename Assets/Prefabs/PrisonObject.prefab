@@ -208,6 +208,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7467740615330384561}
+  - component: {fileID: 8080283660920736619}
   m_Layer: 0
   m_Name: Visuals
   m_TagString: Untagged
@@ -240,6 +241,27 @@ Transform:
   - {fileID: 3176937371178787280}
   m_Father: {fileID: 7676321281662877278}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &8080283660920736619
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4816856278476139092}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3fc60485dbb982c4ba7cb6a09e5495be, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4848265671790349137
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,7 +638,7 @@ GameObject:
   - component: {fileID: 750914966201318628}
   - component: {fileID: 8844127636457075880}
   m_Layer: 0
-  m_Name: Overlay
+  m_Name: Overlay2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -929,7 +951,7 @@ GameObject:
   - component: {fileID: 3860563245625183666}
   - component: {fileID: 2378059926441225641}
   m_Layer: 0
-  m_Name: Overlay
+  m_Name: Overlay1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
