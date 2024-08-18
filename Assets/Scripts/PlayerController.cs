@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     public bool drawBoidRadii;
 
     //Runtime variables:
-    private Vector2 mouseDirection;
+    private Vector2 mousePosition;
     private bool thrusting;
     private bool firing;
     internal Vector2 velocity;
@@ -76,6 +76,7 @@ public class PlayerController : MonoBehaviour
             case "Thrust": OnThrust(ctx); break;
             case "Shoot": OnShoot(ctx); break;
             case "DebugSpawn": OnDebugSpawn(ctx); break;
+            case "DebugDeSpawn": OnDebugDeSpawn(ctx); break;
             default: break;
         }
     }
@@ -99,14 +100,14 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Rotate player:
-        float targetRot = Vector3.SignedAngle(Vector3.up, mouseDirection, Vector3.forward);
+        float targetRot = Vector3.SignedAngle(Vector3.up, mousePosition - (Vector2)transform.position, Vector3.forward);
         float newRot = Mathf.LerpAngle(transform.eulerAngles.z, targetRot, rotationRate * Time.deltaTime);
         transform.eulerAngles = Vector3.forward * newRot;
 
         //Move player:
-        if (thrusting) velocity += Time.deltaTime * thrustPower * mouseDirection;     //Apply thrust
-        velocity -= Time.deltaTime * dragCoefficient * velocity;                      //Apply drag
-        if (velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed; //Cap speed
+        if (thrusting) velocity += Time.deltaTime * thrustPower * (Vector2)transform.up; //Apply thrust
+        velocity -= Time.deltaTime * dragCoefficient * velocity;                         //Apply drag
+        if (velocity.magnitude > maxSpeed) velocity = velocity.normalized * maxSpeed;    //Cap speed
 
         Vector2 newPos = transform.position;
         newPos += velocity * Time.deltaTime;
@@ -115,12 +116,13 @@ public class PlayerController : MonoBehaviour
         //Move boids:
         foreach (BoidShip boid in ships)
         {
-            if (thrusting) boid.velocity += Time.deltaTime * thrustPower * mouseDirection * boidSettings.boidLeaderVelocityInheritance;
+            if (thrusting) boid.velocity += Time.deltaTime * thrustPower * boidSettings.boidLeaderVelocityInheritance * (Vector2)transform.up;
             boid.velocity -= Time.deltaTime * boidSettings.boidDragCoefficient * boid.velocity; //Apply drag
             boid.transform.position = boid.transform.position + ((Vector3)boid.velocity * Time.deltaTime);
 
-            float angleTarget = Mathf.LerpAngle(Vector2.SignedAngle(Vector2.up, boid.velocity), Vector2.SignedAngle(Vector2.up, transform.up), boidSettings.leaderAlignBlend);
-            boid.transform.eulerAngles = Vector3.forward * Mathf.LerpAngle(boid.transform.eulerAngles.z, angleTarget, boidSettings.boidRotRate * Time.deltaTime);
+            float boidTargetRot = Vector3.SignedAngle(Vector3.up, mousePosition - (Vector2)boid.transform.position, Vector3.forward);
+            boidTargetRot = Mathf.LerpAngle(boid.transform.eulerAngles.z, boidTargetRot, boidSettings.boidRotRate * Time.deltaTime);
+            boid.transform.eulerAngles = Vector3.forward * boidTargetRot;
         }
 
         //Fire weapons:
@@ -219,7 +221,7 @@ public class PlayerController : MonoBehaviour
     private void OnMouse(InputAction.CallbackContext ctx)
     {
         Vector2 mouseValue = ctx.ReadValue<Vector2>();
-        mouseDirection = (mouseValue - (Vector2)Camera.main.WorldToScreenPoint(transform.position)).normalized;
+        mousePosition = Camera.main.ScreenToWorldPoint(mouseValue);
     }
     private void OnThrust(InputAction.CallbackContext ctx)
     {
@@ -244,6 +246,12 @@ public class PlayerController : MonoBehaviour
             newShip.position = transform.position;
             UpdateBoidSettings();
         }
+    }
+    private void OnDebugDeSpawn(InputAction.CallbackContext ctx)
+    {
+        BoidShip shipToDestroy = ships[^1];
+        ships.Remove(shipToDestroy);
+        Destroy(shipToDestroy.gameObject);
     }
     private Vector2 LimitMagnitude(Vector2 baseVector, float maxMagnitude)
     {

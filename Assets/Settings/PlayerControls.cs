@@ -71,6 +71,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugDeSpawn"",
+                    ""type"": ""Button"",
+                    ""id"": ""efc51fb3-5b6b-4e00-9cdd-263ca55a9af1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -150,6 +159,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c75ad0cc-e996-41a2-9ea7-89000d628947"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugDeSpawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -163,6 +183,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_ActionMap_Shoot = m_ActionMap.FindAction("Shoot", throwIfNotFound: true);
         m_ActionMap_DebugSpawn = m_ActionMap.FindAction("DebugSpawn", throwIfNotFound: true);
         m_ActionMap_Pause = m_ActionMap.FindAction("Pause", throwIfNotFound: true);
+        m_ActionMap_DebugDeSpawn = m_ActionMap.FindAction("DebugDeSpawn", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -229,6 +250,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_ActionMap_Shoot;
     private readonly InputAction m_ActionMap_DebugSpawn;
     private readonly InputAction m_ActionMap_Pause;
+    private readonly InputAction m_ActionMap_DebugDeSpawn;
     public struct ActionMapActions
     {
         private @PlayerControls m_Wrapper;
@@ -238,6 +260,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_ActionMap_Shoot;
         public InputAction @DebugSpawn => m_Wrapper.m_ActionMap_DebugSpawn;
         public InputAction @Pause => m_Wrapper.m_ActionMap_Pause;
+        public InputAction @DebugDeSpawn => m_Wrapper.m_ActionMap_DebugDeSpawn;
         public InputActionMap Get() { return m_Wrapper.m_ActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -262,6 +285,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @DebugDeSpawn.started += instance.OnDebugDeSpawn;
+            @DebugDeSpawn.performed += instance.OnDebugDeSpawn;
+            @DebugDeSpawn.canceled += instance.OnDebugDeSpawn;
         }
 
         private void UnregisterCallbacks(IActionMapActions instance)
@@ -281,6 +307,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @DebugDeSpawn.started -= instance.OnDebugDeSpawn;
+            @DebugDeSpawn.performed -= instance.OnDebugDeSpawn;
+            @DebugDeSpawn.canceled -= instance.OnDebugDeSpawn;
         }
 
         public void RemoveCallbacks(IActionMapActions instance)
@@ -305,5 +334,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnDebugSpawn(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnDebugDeSpawn(InputAction.CallbackContext context);
     }
 }
