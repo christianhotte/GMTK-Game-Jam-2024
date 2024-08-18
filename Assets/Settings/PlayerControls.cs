@@ -80,6 +80,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugPrisonSpawn"",
+                    ""type"": ""Button"",
+                    ""id"": ""64537582-6bd1-44c4-a064-d19a76b4e418"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -170,6 +179,50 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""DebugDeSpawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Two Modifiers"",
+                    ""id"": ""26ec0b6d-0aca-40c0-91e4-1bb74f82e0c9"",
+                    ""path"": ""TwoModifiers"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugPrisonSpawn"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier1"",
+                    ""id"": ""8249afbd-f33d-4a7f-bfd1-ccc4c30b1d1f"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugPrisonSpawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""modifier2"",
+                    ""id"": ""6437af0f-cceb-4bea-8c77-047ffd55111d"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugPrisonSpawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""a39f709c-8eda-4c97-a526-634a725e4785"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugPrisonSpawn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -184,6 +237,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_ActionMap_DebugSpawn = m_ActionMap.FindAction("DebugSpawn", throwIfNotFound: true);
         m_ActionMap_Pause = m_ActionMap.FindAction("Pause", throwIfNotFound: true);
         m_ActionMap_DebugDeSpawn = m_ActionMap.FindAction("DebugDeSpawn", throwIfNotFound: true);
+        m_ActionMap_DebugPrisonSpawn = m_ActionMap.FindAction("DebugPrisonSpawn", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -251,6 +305,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_ActionMap_DebugSpawn;
     private readonly InputAction m_ActionMap_Pause;
     private readonly InputAction m_ActionMap_DebugDeSpawn;
+    private readonly InputAction m_ActionMap_DebugPrisonSpawn;
     public struct ActionMapActions
     {
         private @PlayerControls m_Wrapper;
@@ -261,6 +316,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @DebugSpawn => m_Wrapper.m_ActionMap_DebugSpawn;
         public InputAction @Pause => m_Wrapper.m_ActionMap_Pause;
         public InputAction @DebugDeSpawn => m_Wrapper.m_ActionMap_DebugDeSpawn;
+        public InputAction @DebugPrisonSpawn => m_Wrapper.m_ActionMap_DebugPrisonSpawn;
         public InputActionMap Get() { return m_Wrapper.m_ActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -288,6 +344,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @DebugDeSpawn.started += instance.OnDebugDeSpawn;
             @DebugDeSpawn.performed += instance.OnDebugDeSpawn;
             @DebugDeSpawn.canceled += instance.OnDebugDeSpawn;
+            @DebugPrisonSpawn.started += instance.OnDebugPrisonSpawn;
+            @DebugPrisonSpawn.performed += instance.OnDebugPrisonSpawn;
+            @DebugPrisonSpawn.canceled += instance.OnDebugPrisonSpawn;
         }
 
         private void UnregisterCallbacks(IActionMapActions instance)
@@ -310,6 +369,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @DebugDeSpawn.started -= instance.OnDebugDeSpawn;
             @DebugDeSpawn.performed -= instance.OnDebugDeSpawn;
             @DebugDeSpawn.canceled -= instance.OnDebugDeSpawn;
+            @DebugPrisonSpawn.started -= instance.OnDebugPrisonSpawn;
+            @DebugPrisonSpawn.performed -= instance.OnDebugPrisonSpawn;
+            @DebugPrisonSpawn.canceled -= instance.OnDebugPrisonSpawn;
         }
 
         public void RemoveCallbacks(IActionMapActions instance)
@@ -335,5 +397,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnDebugSpawn(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnDebugDeSpawn(InputAction.CallbackContext context);
+        void OnDebugPrisonSpawn(InputAction.CallbackContext context);
     }
 }

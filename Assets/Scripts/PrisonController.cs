@@ -8,6 +8,8 @@ public class PrisonController : MonoBehaviour
     [SerializeField, Tooltip("The container for the ships.")] private Transform shipParent;
     [SerializeField, Tooltip("The health of the prison cell.")] private float health;
     [SerializeField, Tooltip("The container for the prison visuals.")] private Transform prisonVisualParent;
+    public Transform barSpawnPoint;
+    [SerializeField, Tooltip("The prefab used for bar visuals")] public GameObject bar;
     [SerializeField, Tooltip("The intensity of the damage shake.")] private float shakeIntensity;
     [SerializeField, Tooltip("The duration of the damage shake.")] private float shakeDuration;
     [SerializeField, Tooltip("The duration of the damage shake.")] private float shakeFrequency = 1;
@@ -25,6 +27,7 @@ public class PrisonController : MonoBehaviour
     private void Start()
     {
         Init();
+        StartCoroutine(SpawnBar());
     }
 
     public void Init()
@@ -94,5 +97,12 @@ public class PrisonController : MonoBehaviour
             isShaking = false;
             prisonVisualParent.localPosition = Vector2.zero;
         }
+    }
+
+    public IEnumerator SpawnBar()
+    {
+        var tempBar = Instantiate(bar, barSpawnPoint);
+        yield return new WaitForSeconds(0.8f);
+        StartCoroutine(SpawnBar());
     }
 }

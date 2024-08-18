@@ -92,6 +92,7 @@ MonoBehaviour:
   sounds:
   - name: AsteroidExplode
     clip: {fileID: 8300000, guid: bd707a9142da9204a912a77944add0b1, type: 3}
-    pitchMin: 0.9
-    pitchMax: 1.1
+    loop: 0
+  - name: DebugSound
+    clip: {fileID: 8300000, guid: f91ebd6c23e2cd444bb9942dbec8cba8, type: 3}
     loop: 0

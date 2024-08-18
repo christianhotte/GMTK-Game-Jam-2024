@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
             case "Shoot": OnShoot(ctx); break;
             case "DebugSpawn": OnDebugSpawn(ctx); break;
             case "DebugDeSpawn": OnDebugDeSpawn(ctx); break;
+            case "DebugPrisonSpawn": OnDebugPrisonSpawn(ctx); break;
             default: break;
         }
     }
@@ -228,6 +229,16 @@ public class PlayerController : MonoBehaviour
         }
         
     }
+
+    private void OnDebugPrisonSpawn(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+        {
+            FindObjectOfType<AsteroidManager>().SpawnPrison();
+            GameManager.Instance.AudioManager.PlayOneShot("DebugSound", 0.5f);
+        }
+    }
+
     private Vector2 LimitMagnitude(Vector2 baseVector, float maxMagnitude)
     {
         if (baseVector.sqrMagnitude > maxMagnitude * maxMagnitude)
