@@ -281,7 +281,7 @@ public class PlayerController : MonoBehaviour
                 }
                 settingsA = s;
             }
-            boidSettingsList[^0].CopyValuesTo(boidSettings);
+            boidSettingsList[^1].CopyValuesTo(boidSettings);
         }
     }
 }
