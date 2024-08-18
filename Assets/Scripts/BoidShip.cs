@@ -22,6 +22,7 @@ public class BoidShip : MonoBehaviour
             {
                 asteroid.Damage(99999999, velocity);
                 Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
+                ScoreManager.Instance.AddToScore(1);
                 PlayerController.main.ships.Add(newShip.GetComponent<BoidShip>());
                 newShip.position = transform.position;
                 newShip.rotation = transform.rotation;

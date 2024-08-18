@@ -45,25 +45,58 @@ public class AsteroidManager : MonoBehaviour
 
         if (currentAmountMoved > (tresholdToSpawn + distanceMultiplier * Mathf.Log(CalculateAsteroidSize() + 1)))
         {
-            Vector2 baseDirection = player.velocity.normalized;
-            float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
-            Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle);
-            Vector2 spawnPosition = (Vector2)player.transform.position + rotatedDirection * (spawnDistance + distanceMultiplier * Mathf.Log(CalculateAsteroidSize() + 1));
 
+            //Spawn a prison
             if(Random.Range(0.0f, 1.0f) < prisonPercentage)
             {
+                Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponent<BoxCollider2D>().size.x);
+
                 SpawnPrison(spawnPosition);
-                return;
             }
 
-            if (asteroidPool.Count >= maxPoolSize)
-                FindLongestUnseenAsteroid().transform.position = spawnPosition;
-
+            //Spawn an asteroid
             else
-                SpawnAsteroid(spawnPosition);
+            {
+                Vector2 spawnPosition = CreateSpawnPoint(CalculateAsteroidSize() * asteroidPrefab.GetComponent<CircleCollider2D>().radius);
+
+                if (asteroidPool.Count >= maxPoolSize)
+                    FindLongestUnseenAsteroid().transform.position = spawnPosition;
+
+                else
+                    SpawnAsteroid(spawnPosition);
+            }
 
             currentAmountMoved = 0;
         }
+    }
+
+    private Vector2 CreateSpawnPoint(float collisionRadius)
+    {
+        Vector2 spawnPosition = Vector2.zero;
+
+        for (int i = 0; i < 100; i++)
+        {
+            spawnPosition = GenerateSpawnPosition();
+
+            if (!IsPositionOccupied(spawnPosition, collisionRadius))
+                return spawnPosition;
+        }
+
+        return spawnPosition;
+    }
+
+    private Vector2 GenerateSpawnPosition()
+    {
+        Vector2 baseDirection = player.velocity.normalized;
+        float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
+        Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle);
+        return (Vector2)player.transform.position + rotatedDirection * (spawnDistance + distanceMultiplier * Mathf.Log(CalculateAsteroidSize() + 1));
+    }
+
+    private bool IsPositionOccupied(Vector2 spawnPosition, float collisionRadius)
+    {
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(spawnPosition, collisionRadius);
+        return hitColliders.Length > 0;
     }
 
     private Vector2 RotatePositionByAngle(Vector2 vector, float angle)

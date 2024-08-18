@@ -86,6 +86,7 @@ public class Asteroid : MonoBehaviour
                 StartSpawn(amount, size / amount, velocity);
             }
 
+            ScoreManager.Instance.AddToScore(Mathf.RoundToInt((size * 10.0f) / 10.0f) * 10);
             asteroidManager?.DestroyAsteroid(this);
 
         }
@@ -175,7 +176,7 @@ public class Asteroid : MonoBehaviour
 
             if(currentFlickerTime >= flickerSpeed)
             {
-                flashSpriteRenderer.color = flashSpriteRenderer.color.a == 0 ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0);
+                flashSpriteRenderer.color = flashSpriteRenderer.color.a == 0 ? new Color(0, 0, 0, 1) : new Color(0, 0, 0, 0);
                 currentFlickerTime = 0f;
             }
         }
@@ -193,6 +194,7 @@ public class Asteroid : MonoBehaviour
         this.velocity = velocity;
     }
 
+    public float GetRadius() => GetComponent<CircleCollider2D>().radius * size;
     public float GetSize() => size;
 
     public float GetTimeSinceLastSeen() => timeSinceLastSeen;

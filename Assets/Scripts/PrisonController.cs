@@ -39,6 +39,7 @@ public class PrisonController : MonoBehaviour
         for (int i = 0; i < totalShips; i++)
         {
             BoidShip boidShip = Instantiate(PlayerController.main.boidPrefab, shipParent).GetComponent<BoidShip>();
+            boidShip.active = false;
             boidShips.Add(boidShip);
         }
 
@@ -54,10 +55,15 @@ public class PrisonController : MonoBehaviour
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            PlayerController.main.ships.AddRange(boidShips);
 
-            for(int i = 0; i < numberOfShips; i++)
+            for (int i = 0; i < numberOfShips; i++)
+            {
+                boidShips[i].active = true;
+                ScoreManager.Instance.AddToScore(1);
                 boidShips[i].transform.SetParent(null);
+            }
+
+            PlayerController.main.ships.AddRange(boidShips);
 
             Destroy(gameObject);
         }
