@@ -54,6 +54,7 @@ MonoBehaviour:
   boidSettingsList:
   - {fileID: 11400000, guid: 6fcc9212786cfd34d8af9d00589c0e91, type: 2}
   - {fileID: 11400000, guid: f036987a47979724bb12e4dd08e43ea0, type: 2}
+  - {fileID: 11400000, guid: fdda4dbbe9411d941b9045440b07b37b, type: 2}
   thrustPower: 10
   dragCoefficient: 0.6
   maxSpeed: 10
@@ -150,6 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d57fa176b33d824b8cbc51df95aef69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collisionDamage: 0
+  maxAsteroidEatSize: 1
+  spawnForce: 1
 --- !u!1 &5569220967573815814
 GameObject:
   m_ObjectHideFlags: 0

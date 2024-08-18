@@ -420,7 +420,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.600008
+  orthographic size: 7.999894
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -568,7 +568,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1957900395}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 5.600008
+    OrthographicSize: 7.999894
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -755,22 +755,6 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 1948168349}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSettingsList.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSettingsList.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6fcc9212786cfd34d8af9d00589c0e91, type: 2}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSettingsList.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: f036987a47979724bb12e4dd08e43ea0, type: 2}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSettingsList.Array.data[2]
-      value: 
-      objectReference: {fileID: 11400000, guid: fdda4dbbe9411d941b9045440b07b37b, type: 2}
     - target: {fileID: 1116704755789398351, guid: f2cd035f6175f40438344660fa591076, type: 3}
       propertyPath: m_Name
       value: PlayerPointer
