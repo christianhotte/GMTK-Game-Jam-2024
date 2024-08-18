@@ -11,11 +11,12 @@ public class BoidShip : MonoBehaviour
 
     //Runtime Vars:
     internal Vector2 velocity;
+    internal bool active = true;
 
     //BOID METHODS:
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.TryGetComponent<Asteroid>(out Asteroid asteroid))
+        if (active && collision.collider.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
             if (asteroid.GetSize() <= maxAsteroidEatSize) //Ship eats asteroid
             {
