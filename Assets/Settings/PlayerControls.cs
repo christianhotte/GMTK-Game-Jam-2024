@@ -62,6 +62,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""8851efee-50d1-46c2-af7f-889347b4647d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -108,6 +117,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""DebugSpawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5e29487-d3c1-482f-b057-6298ed46a07a"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f697b38-e06e-46ab-8436-a69d0571c79f"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7a59b09-9b89-45be-8287-1a1bc836d4a9"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -120,6 +162,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_ActionMap_Thrust = m_ActionMap.FindAction("Thrust", throwIfNotFound: true);
         m_ActionMap_Shoot = m_ActionMap.FindAction("Shoot", throwIfNotFound: true);
         m_ActionMap_DebugSpawn = m_ActionMap.FindAction("DebugSpawn", throwIfNotFound: true);
+        m_ActionMap_Pause = m_ActionMap.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -185,6 +228,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_ActionMap_Thrust;
     private readonly InputAction m_ActionMap_Shoot;
     private readonly InputAction m_ActionMap_DebugSpawn;
+    private readonly InputAction m_ActionMap_Pause;
     public struct ActionMapActions
     {
         private @PlayerControls m_Wrapper;
@@ -193,6 +237,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Thrust => m_Wrapper.m_ActionMap_Thrust;
         public InputAction @Shoot => m_Wrapper.m_ActionMap_Shoot;
         public InputAction @DebugSpawn => m_Wrapper.m_ActionMap_DebugSpawn;
+        public InputAction @Pause => m_Wrapper.m_ActionMap_Pause;
         public InputActionMap Get() { return m_Wrapper.m_ActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -214,6 +259,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @DebugSpawn.started += instance.OnDebugSpawn;
             @DebugSpawn.performed += instance.OnDebugSpawn;
             @DebugSpawn.canceled += instance.OnDebugSpawn;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
         }
 
         private void UnregisterCallbacks(IActionMapActions instance)
@@ -230,6 +278,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @DebugSpawn.started -= instance.OnDebugSpawn;
             @DebugSpawn.performed -= instance.OnDebugSpawn;
             @DebugSpawn.canceled -= instance.OnDebugSpawn;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
         }
 
         public void RemoveCallbacks(IActionMapActions instance)
@@ -253,5 +304,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnThrust(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnDebugSpawn(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
 }
