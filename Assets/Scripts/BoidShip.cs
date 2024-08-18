@@ -15,7 +15,13 @@ public class BoidShip : MonoBehaviour
     {
         if (collision.collider.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
-            //asteroid.Damage(50, )
+            asteroid.Damage(collisionDamage);
+            if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
+            else
+            {
+                PlayerController.main.ships.Remove(this);
+                Destroy(gameObject);
+            }
         }
     }
 }

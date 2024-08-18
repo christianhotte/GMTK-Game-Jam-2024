@@ -297,4 +297,43 @@ public class PlayerController : MonoBehaviour
             boidSettingsList[^1].CopyValuesTo(boidSettings);
         }
     }
+    public void IsHit()
+    {
+        if (ships.Count > 0)
+        {
+            //Find closest boid:
+            BoidShip closestBoid = ships[0];
+            float bestDist = Vector2.SqrMagnitude(closestBoid.transform.position - transform.position);
+            if (ships.Count > 1)
+            {
+                foreach (BoidShip ship in ships)
+                {
+                    float shipDist = Vector2.SqrMagnitude(ship.transform.position - transform.position);
+                    if (shipDist < bestDist)
+                    {
+                        closestBoid = ship;
+                        bestDist = shipDist;
+                    }
+                }
+            }
+
+            //Swap places:
+            Vector2 oldPos = transform.position;
+            float oldRot = transform.eulerAngles.z;
+            transform.position = closestBoid.transform.position;
+            transform.rotation = closestBoid.transform.rotation;
+            closestBoid.transform.position = oldPos;
+            closestBoid.transform.eulerAngles = Vector3.forward * oldRot;
+
+            //Destroy boid:
+            ships.Remove(closestBoid);
+            Destroy(closestBoid.gameObject);
+        }
+        else
+        {
+            //GAME OVER:
+            GameManager.Instance.GameOver();
+            Destroy(gameObject);
+        }
+    }
 }
