@@ -16,6 +16,7 @@ public class MenuController : MonoBehaviour
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         GameManager.Instance.isGameActive = true;
+        GameManager.Instance.AudioManager.Play("GameMusic", 0.3f);
     }
 
     private void OnEnable()

@@ -68,7 +68,7 @@ public class PrisonController : MonoBehaviour
 
             PlayerController.main.ships.AddRange(boidShips);
 
-            Destroy(gameObject);
+            Destroy(transform.parent.gameObject, 0.1f);
         }
     }
 
