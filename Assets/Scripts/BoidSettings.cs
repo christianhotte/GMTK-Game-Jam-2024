@@ -25,6 +25,10 @@ public class BoidSettings : ScriptableObject
     [Header("Other Settings:")]
     public float camSize;
     public float fireRate;
+    [Header("Asteroid Settings:")]
+    public Vector2 asteroidSizeRange;
+    public float asteroidSpawnDistance;
+    [Min(0)] public float asteroidSpawnRate;
 
     public void CopyValuesTo(BoidSettings target)
     {
@@ -43,6 +47,10 @@ public class BoidSettings : ScriptableObject
         target.leaderAlignBlend = leaderAlignBlend;
         target.camSize = camSize;
         target.fireRate = fireRate;
+
+        target.asteroidSizeRange = asteroidSizeRange;
+        target.asteroidSpawnDistance = asteroidSpawnDistance;
+        target.asteroidSpawnRate = asteroidSpawnRate;
     }
     public static void LerpValues(BoidSettings settingsA, BoidSettings settingsB, BoidSettings target, int boidCount)
     {
@@ -63,5 +71,9 @@ public class BoidSettings : ScriptableObject
         target.leaderAlignBlend = Mathf.Lerp(settingsA.leaderAlignBlend, settingsB.leaderAlignBlend, interpolant);
         target.camSize = Mathf.Lerp(settingsA.camSize, settingsB.camSize, interpolant);
         target.fireRate = Mathf.Lerp(settingsA.fireRate, settingsB.fireRate, interpolant);
+
+        target.asteroidSizeRange = Vector2.Lerp(settingsA.asteroidSizeRange, settingsB.asteroidSizeRange, interpolant);
+        target.asteroidSpawnDistance = Mathf.Lerp(settingsA.asteroidSpawnDistance, settingsB.asteroidSpawnDistance, interpolant);
+        target.asteroidSpawnRate = Mathf.Lerp(settingsA.asteroidSpawnRate, settingsB.asteroidSpawnRate, interpolant);
     }
 }

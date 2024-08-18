@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AsteroidManager : MonoBehaviour
 {
+    public static AsteroidManager main;
     [SerializeField, Tooltip("The Asteroid prefab.")] private Asteroid asteroidPrefab;
     [SerializeField, Tooltip("The Prison prefab.")] private PrisonController prisonPrefab;
     [SerializeField, Tooltip("The asteroid container.")] private Transform asteroidContainer;
@@ -20,6 +21,7 @@ public class AsteroidManager : MonoBehaviour
     public float SPEED_FACTOR = 5f;
     public float HEALTH_FACTOR = 30f;
     public float ROTATION_MAX = 100f;
+    public bool showGizmos = true;
 
     private PlayerController player;
 
@@ -30,11 +32,25 @@ public class AsteroidManager : MonoBehaviour
     private Vector2 lastPosition;
     private float currentAmountMoved;
 
+    private void Awake()
+    {
+        main = this;
+    }
     private void Start()
     {
         player = FindObjectOfType<PlayerController>();
         mainCamera = Camera.main;
         lastPosition = mainCamera.transform.position;
+    }
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere((Vector2)Camera.main.transform.position, PlayerController.main.boidSettings.asteroidSpawnDistance + (PlayerController.main.boidSettings.asteroidSizeRange.x / 2));
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere((Vector2)Camera.main.transform.position, PlayerController.main.boidSettings.asteroidSpawnDistance + (PlayerController.main.boidSettings.asteroidSizeRange.y / 2));
+        }
     }
 
     private void Update()
@@ -43,7 +59,7 @@ public class AsteroidManager : MonoBehaviour
         currentAmountMoved += distanceMoved;
         lastPosition = mainCamera.transform.position;
 
-        if (currentAmountMoved > (tresholdToSpawn + distanceMultiplier * Mathf.Log(CalculateAsteroidSize() + 1)))
+        if (currentAmountMoved >= (PlayerController.main.boidSettings.asteroidSpawnRate + distanceMultiplier * Mathf.Log(PlayerController.main.ships.Count + 1)))
         {
 
             //Spawn a prison
@@ -57,40 +73,47 @@ public class AsteroidManager : MonoBehaviour
             //Spawn an asteroid
             else
             {
-                Vector2 spawnPosition = CreateSpawnPoint(CalculateAsteroidSize() * asteroidPrefab.GetComponent<CircleCollider2D>().radius);
+                float asteroidSize = CalculateAsteroidSize();
+                Vector2 spawnPosition = CreateSpawnPoint(asteroidSize);
 
                 if (asteroidPool.Count >= maxPoolSize)
-                    FindLongestUnseenAsteroid().transform.position = spawnPosition;
-
+                {
+                    Asteroid moveAsteroid = FindLongestUnseenAsteroid();
+                    moveAsteroid.transform.position = spawnPosition;
+                    moveAsteroid.transform.localScale = asteroidSize * Vector3.one;
+                    moveAsteroid.timeSinceLastSeen = -1;
+                }
                 else
-                    SpawnAsteroid(spawnPosition);
+                {
+                    SpawnAsteroid(spawnPosition, asteroidSize);
+                }
             }
 
             currentAmountMoved = 0;
         }
     }
 
-    private Vector2 CreateSpawnPoint(float collisionRadius)
+    private Vector2 CreateSpawnPoint(float asteroidSize)
     {
         Vector2 spawnPosition = Vector2.zero;
 
         for (int i = 0; i < 100; i++)
         {
-            spawnPosition = GenerateSpawnPosition();
+            spawnPosition = GenerateSpawnPosition(asteroidSize);
 
-            if (!IsPositionOccupied(spawnPosition, collisionRadius))
+            if (!IsPositionOccupied(spawnPosition, asteroidSize * asteroidPrefab.GetComponent<CircleCollider2D>().radius))
                 return spawnPosition;
         }
 
         return spawnPosition;
     }
 
-    private Vector2 GenerateSpawnPosition()
+    private Vector2 GenerateSpawnPosition(float asteroidSize)
     {
         Vector2 baseDirection = player.velocity.normalized;
         float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
-        Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle);
-        return (Vector2)player.transform.position + rotatedDirection * (spawnDistance + distanceMultiplier * Mathf.Log(CalculateAsteroidSize() + 1));
+        Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle).normalized;
+        return (Vector2)Camera.main.transform.position + (rotatedDirection * (PlayerController.main.boidSettings.asteroidSpawnDistance + (asteroidSize / 2)));
     }
 
     private bool IsPositionOccupied(Vector2 spawnPosition, float collisionRadius)
@@ -124,7 +147,7 @@ public class AsteroidManager : MonoBehaviour
 
         for (int i = 1; i < asteroidPool.Count; i++)
         {
-            if (asteroidPool[i].GetTimeSinceLastSeen() > longestUnseen.GetTimeSinceLastSeen())
+            if (asteroidPool[i].GetTimeSinceLastSeen() != -1 && asteroidPool[i].GetTimeSinceLastSeen() > longestUnseen.GetTimeSinceLastSeen())
                 longestUnseen = asteroidPool[i];
         }
 
@@ -139,12 +162,12 @@ public class AsteroidManager : MonoBehaviour
         return newPrison;
     }
 
-    public Asteroid SpawnAsteroid(Vector2 position, bool isChild = false)
+    public Asteroid SpawnAsteroid(Vector2 position, float size, bool isChild = false)
     {
         Asteroid newAsteroid = Instantiate(asteroidPrefab, position, Quaternion.identity, asteroidContainer);
         if (!isChild)
         {
-            newAsteroid.Init(CalculateAsteroidSize());
+            newAsteroid.Init(size);
             asteroidPool.Add(newAsteroid);
         }
 
@@ -154,7 +177,7 @@ public class AsteroidManager : MonoBehaviour
     private float CalculateAsteroidSize()
     {
         //Uses a logarithmic function to increase the size of the asteroids and have it taper off as they get much larger
-        return startingSize + sizeIncrement * (Mathf.Log(PlayerController.main.ships.Count + 1) / Mathf.Log(10));
+        return Random.Range(PlayerController.main.boidSettings.asteroidSizeRange.x, PlayerController.main.boidSettings.asteroidSizeRange.y);
     }
 
     public void DestroyAsteroid(Asteroid currentAsteroid)

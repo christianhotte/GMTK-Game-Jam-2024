@@ -33,11 +33,8 @@ public class ProjectileController : MonoBehaviour
         {
             if(hit.collider.TryGetComponent(out Asteroid asteroid))
             {
-                if (asteroid.GetSize() > doNotDamageSize)
-                {
-                    asteroid.Damage(damage, velocity.normalized);
-                    Destroy(gameObject);
-                }
+                asteroid.Damage(damage, velocity.normalized);
+                Destroy(gameObject);
                 return;
             }
 

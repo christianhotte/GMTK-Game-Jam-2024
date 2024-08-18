@@ -29,5 +29,6 @@ public class GameManager : MonoBehaviour
         isGameActive = false;
         isPaused = true;
         FindObjectOfType<MenuController>()?.DisplayGameOver();
+        Cursor.visible = true;
     }
 }

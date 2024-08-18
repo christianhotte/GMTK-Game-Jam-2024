@@ -7,7 +7,6 @@ using System.Linq;
 public class Asteroid : MonoBehaviour
 {
     private static readonly Vector2 ASTEROID_CHILDREN_RANGE = new Vector2(2, 5);
-    private static readonly float ASTEROID_MINIMUM_SIZE = 1.2f;
 
     [SerializeField, Tooltip("The size of the asteroid.")] private float size;
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
@@ -21,15 +20,12 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("The speed at which asteroids flicker.")] private float flickerSpeed;
     [SerializeField, Tooltip("The duration at which asteroids flicker.")] private float flickerDuration;
     [Space]
-    [SerializeField, Tooltip("")] private float edibleSize = 1;
-    [SerializeField, Tooltip("")] private float magnetRadius = 1;
-    [SerializeField, Tooltip("")] private float magnetStrength = 1;
     [SerializeField, Tooltip("The gem prefab.")] private GameObject gemPrefab;
 
     private Rigidbody2D rb2D;
     private Vector2 velocity;
 
-    private float timeSinceLastSeen;
+    internal float timeSinceLastSeen = -1;
     private float currentHealth;
     private bool isFlickering;
     private float currentFlickerTime;
@@ -81,7 +77,7 @@ public class Asteroid : MonoBehaviour
         {
             currentHealth = 0;
 
-            if(size / ASTEROID_CHILDREN_RANGE.x >= ASTEROID_MINIMUM_SIZE)
+            if(size / ASTEROID_CHILDREN_RANGE.x >= PlayerController.main.boidSettings.asteroidSizeRange.x)
             {
                 int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
                 StartSpawn(amount, size / amount, velocity);
@@ -107,8 +103,7 @@ public class Asteroid : MonoBehaviour
 
         for(int i = 0; i < amount; i++)
         {
-            asteroids[i] = asteroidManager?.SpawnAsteroid(transform.position, true);
-            asteroids[i].Init(size);
+            asteroids[i] = asteroidManager?.SpawnAsteroid(transform.position, size);
             asteroids[i].AddExplosionForce(size * explosionForce, velocity);
         }
     }
@@ -132,32 +127,7 @@ public class Asteroid : MonoBehaviour
             Damage(10, Vector2.zero);
         }
 
-        timeSinceLastSeen += Time.deltaTime;
-
-        if (size <= edibleSize)
-        {
-            BoidShip[] closeShips = Physics2D.OverlapCircleAll(transform.position, magnetRadius, LayerMask.GetMask("PlayerShip")).Select(o => o.GetComponent<BoidShip>()).ToArray();
-            if (closeShips.Length > 0)
-            {
-                BoidShip closestShip = closeShips[0];
-                float bestDist = Vector2.SqrMagnitude(transform.position - closestShip.transform.position);
-                if (closeShips.Length > 1)
-                {
-                    for (int x = 1; x < closeShips.Length; x++)
-                    {
-                        float dist = Vector2.SqrMagnitude(transform.position - closeShips[x].transform.position);
-                        if (dist < bestDist)
-                        {
-                            closestShip = closeShips[x];
-                            bestDist = dist;
-                        }
-                    }
-                }
-                float interpolant = 1 - Mathf.InverseLerp(0, magnetRadius, bestDist);
-                Vector2 magnetAccel = interpolant * magnetStrength * Time.deltaTime * (closestShip.transform.position - transform.position).normalized;
-                transform.position = transform.position + (Vector3)magnetAccel;
-            }
-        }
+        if (timeSinceLastSeen != -1) timeSinceLastSeen += Time.deltaTime;
     }
 
     private void FixedUpdate()

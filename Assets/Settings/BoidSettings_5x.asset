@@ -26,5 +26,8 @@ MonoBehaviour:
   boidLeaderVelocityInheritance: 0.67
   boidLeaderSepRadii: {x: 2.52, y: 5.47}
   leaderAlignBlend: 0.804
-  camSize: 5
+  camSize: 12
   fireRate: 6
+  asteroidSizeRange: {x: 3, y: 13}
+  asteroidSpawnDistance: 24.4
+  asteroidSpawnRate: 1

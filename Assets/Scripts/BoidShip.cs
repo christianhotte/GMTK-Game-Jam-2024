@@ -18,31 +18,23 @@ public class BoidShip : MonoBehaviour
     {
         if (active && collision.collider.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
-            if (asteroid.GetSize() <= maxAsteroidEatSize) //Ship eats asteroid
+            asteroid.Damage(collisionDamage, velocity);
+            if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
+            else
             {
-                asteroid.Damage(99999999, velocity);
-                Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
-                ScoreManager.Instance.AddToScore(1);
-                PlayerController.main.ships.Add(newShip.GetComponent<BoidShip>());
-                newShip.position = transform.position;
-                newShip.rotation = transform.rotation;
-                newShip.GetComponent<BoidShip>().velocity = velocity + (-velocity.normalized * spawnForce);
-                PlayerController.main.UpdateBoidSettings();
-            }
-            else //Asteroid destroys ship
-            {
-                asteroid.Damage(collisionDamage, velocity);
-                if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
-                else
-                {
-                    PlayerController.main.ships.Remove(this);
-                    Destroy(gameObject);
-                }
+                PlayerController.main.ships.Remove(this);
+                Destroy(gameObject);
             }
         }
-
-        if (active && collision.collider.TryGetComponent<GemController>(out GemController gem))
+        else if (active && collision.collider.TryGetComponent<GemController>(out GemController gem))
         {
+            Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
+            ScoreManager.Instance.AddToScore(1);
+            PlayerController.main.ships.Add(newShip.GetComponent<BoidShip>());
+            newShip.position = transform.position;
+            newShip.rotation = transform.rotation;
+            newShip.GetComponent<BoidShip>().velocity = velocity + (-velocity.normalized * spawnForce);
+            PlayerController.main.UpdateBoidSettings();
             gem.DestroyGem();
         }
     }

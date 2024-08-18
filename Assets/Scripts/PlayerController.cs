@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public GameObject boidPrefab;
     internal List<BoidShip> ships = new List<BoidShip>();
     public BoidSettings[] boidSettingsList;
-    private BoidSettings boidSettings;
+    internal BoidSettings boidSettings;
 
     //Settings:
     [Header("Movement Settings:")]
