@@ -131,6 +131,12 @@ public class AsteroidManager : MonoBehaviour
         return longestUnseen;
     }
 
+    public PrisonController SpawnPrison()
+    {
+        Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponent<BoxCollider2D>().size.x);
+        return SpawnPrison(spawnPosition);
+    }
+
     public PrisonController SpawnPrison(Vector2 position)
     {
         PrisonController newPrison = Instantiate(prisonPrefab, position, Quaternion.identity, asteroidContainer);
