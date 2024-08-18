@@ -5,13 +5,16 @@ using UnityEngine;
 public class AsteroidManager : MonoBehaviour
 {
     [SerializeField, Tooltip("The Asteroid prefab.")] private Asteroid asteroidPrefab;
+    [SerializeField, Tooltip("The Prison prefab.")] private PrisonController prisonPrefab;
     [SerializeField, Tooltip("The asteroid container.")] private Transform asteroidContainer;
     [SerializeField, Tooltip("The maximum pool size for the asteroid.")] private int maxPoolSize;
     [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float tresholdToSpawn;
     [SerializeField, Tooltip("The distance to spawn an asteroid at.")] private float spawnDistance;
+    [SerializeField, Tooltip("The multiplier to control the scaling of the distance.")] private float distanceMultiplier;
     [SerializeField, Tooltip("The max angle to offset the asteroid spawn at.")] private float maxAngleDeviation;
     [SerializeField, Tooltip("The starting size for asteroids.")] private float startingSize = 4f;
     [SerializeField, Tooltip("The amount the size of the asteroids increase per ship.")] private float sizeIncrement = 1f;
+    [SerializeField, Tooltip("The percent chance that a prison will spawn instead of an asteroid.")] private float prisonPercentage = 0.15f;
 
     public float BASE_SPEED = 10f;
     public float SPEED_FACTOR = 5f;
@@ -21,6 +24,7 @@ public class AsteroidManager : MonoBehaviour
     private PlayerController player;
 
     private List<Asteroid> asteroidPool = new List<Asteroid>();
+    private List<PrisonController> prisonPool = new List<PrisonController>();
     private Camera mainCamera;
 
     private Vector2 lastPosition;
@@ -39,12 +43,18 @@ public class AsteroidManager : MonoBehaviour
         currentAmountMoved += distanceMoved;
         lastPosition = mainCamera.transform.position;
 
-        if (currentAmountMoved > tresholdToSpawn)
+        if (currentAmountMoved > (tresholdToSpawn + distanceMultiplier * Mathf.Log(CalculateAsteroidSize() + 1)))
         {
             Vector2 baseDirection = player.velocity.normalized;
             float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
             Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle);
-            Vector2 spawnPosition = (Vector2)player.transform.position + rotatedDirection * spawnDistance;
+            Vector2 spawnPosition = (Vector2)player.transform.position + rotatedDirection * (spawnDistance + distanceMultiplier * Mathf.Log(CalculateAsteroidSize() + 1));
+
+            if(Random.Range(0.0f, 1.0f) < prisonPercentage)
+            {
+                SpawnPrison(spawnPosition);
+                return;
+            }
 
             if (asteroidPool.Count >= maxPoolSize)
                 FindLongestUnseenAsteroid().transform.position = spawnPosition;
@@ -88,16 +98,29 @@ public class AsteroidManager : MonoBehaviour
         return longestUnseen;
     }
 
+    public PrisonController SpawnPrison(Vector2 position)
+    {
+        PrisonController newPrison = Instantiate(prisonPrefab, position, Quaternion.identity, asteroidContainer);
+        prisonPool.Add(newPrison);
+        return newPrison;
+    }
+
     public Asteroid SpawnAsteroid(Vector2 position, bool isChild = false)
     {
         Asteroid newAsteroid = Instantiate(asteroidPrefab, position, Quaternion.identity, asteroidContainer);
         if (!isChild)
         {
-            newAsteroid.Init(startingSize + Mathf.Log(1 + PlayerController.main.ships.Count) * sizeIncrement);
+            newAsteroid.Init(CalculateAsteroidSize());
             asteroidPool.Add(newAsteroid);
         }
 
         return newAsteroid;
+    }
+
+    private float CalculateAsteroidSize()
+    {
+        //Uses a logarithmic function to increase the size of the asteroids and have it taper off as they get much larger
+        return startingSize + sizeIncrement * (Mathf.Log(PlayerController.main.ships.Count + 1) / Mathf.Log(10));
     }
 
     public void DestroyAsteroid(Asteroid currentAsteroid)

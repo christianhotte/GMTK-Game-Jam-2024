@@ -48,14 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a28057c01aa164299b58ee0ef0e384, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BASE_SPEED: 10
-  SPEED_FACTOR: 5
-  HEALTH_FACTOR: 30
-  ROTATION_MAX: 100
   size: 4
   speed: 40
   health: 30
   rotationSpeed: 75
+  explosionForce: 7
   spriteRenderer: {fileID: 2288061938881531102}
   flashSpriteRenderer: {fileID: 1921739469269104111}
   asteroidSprites:
