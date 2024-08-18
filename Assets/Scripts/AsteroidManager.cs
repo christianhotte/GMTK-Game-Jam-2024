@@ -133,7 +133,7 @@ public class AsteroidManager : MonoBehaviour
 
     public PrisonController SpawnPrison()
     {
-        Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponent<BoxCollider2D>().size.x);
+        Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponentInChildren<BoxCollider2D>().size.x);
         return SpawnPrison(spawnPosition);
     }
 
