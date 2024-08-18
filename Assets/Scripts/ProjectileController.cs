@@ -29,7 +29,7 @@ public class ProjectileController : MonoBehaviour
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, hitRadius, velocity, velocity.magnitude * Time.deltaTime);
         if (hit.collider != null && hit.collider.TryGetComponent(out Asteroid asteroid))
         {
-            asteroid.Damage(damage, 2);
+            asteroid.Damage(damage);
             Destroy(gameObject);
             return;
         }

@@ -152,13 +152,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   asteroidPrefab: {fileID: 9201244221126722480, guid: 75b9db138eee19947b9b16a44538411f, type: 3}
+  prisonPrefab: {fileID: 5876578285009696136, guid: 9a55c6a3609b48947aae037433ccceb3, type: 3}
   asteroidContainer: {fileID: 703696478}
-  maxPoolSize: 50
+  maxPoolSize: 10
   tresholdToSpawn: 5
   spawnDistance: 7
+  distanceMultiplier: 3
   maxAngleDeviation: 30
   startingSize: 4
-  sizeIncrement: 3
+  sizeIncrement: 5
+  prisonPercentage: 0.15
   BASE_SPEED: 10
   SPEED_FACTOR: 5
   HEALTH_FACTOR: 30

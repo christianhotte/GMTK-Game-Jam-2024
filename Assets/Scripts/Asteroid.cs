@@ -12,6 +12,7 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
     [SerializeField, Tooltip("The health of the asteroid.")] private float health;
     [SerializeField, Tooltip("The rotation speed of the asteroid.")] private float rotationSpeed;
+    [SerializeField, Tooltip("The explosion force of the asteroid.")] private float explosionForce = 15f;
     [SerializeField, Tooltip("The sprite renderer used for the main asteroid sprite.")] private SpriteRenderer spriteRenderer;
     [SerializeField, Tooltip("The sprite renderer used for the flash animation.")] private SpriteRenderer flashSpriteRenderer;
     [SerializeField, Tooltip("All possible sprites for the asteroids.")] private Sprite[] asteroidSprites;
@@ -59,14 +60,14 @@ public class Asteroid : MonoBehaviour
         Init();
     }
 
-    private void OnBecameVisible()
+    private void OnOnscreen()
     {
         timeSinceLastSeen = 0f;
     }
 
     private Vector2 GetRandomDirection() => new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
 
-    public void Damage(float damage, float explosionPower)
+    public void Damage(float damage)
     {
         currentHealth -= damage;
 
@@ -77,7 +78,7 @@ public class Asteroid : MonoBehaviour
             if(size / ASTEROID_CHILDREN_RANGE.x >= ASTEROID_MINIMUM_SIZE)
             {
                 int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
-                StartSpawn(amount, explosionPower, size / amount);
+                StartSpawn(amount, size / amount);
             }
 
             asteroidManager?.DestroyAsteroid(this);
@@ -89,7 +90,7 @@ public class Asteroid : MonoBehaviour
         isFlickering = true;
     }
 
-    protected void StartSpawn(int amount, float explosionPower, float size)
+    protected void StartSpawn(int amount, float size)
     {
         Asteroid[] asteroids = new Asteroid[amount];
 
@@ -97,7 +98,7 @@ public class Asteroid : MonoBehaviour
         {
             asteroids[i] = asteroidManager?.SpawnAsteroid(transform.position, true);
             asteroids[i].Init(size);
-            asteroids[i].SetVelocity((asteroids[i].GetVelocity() + velocity) * explosionPower);
+            asteroids[i].AddExplosionForce(size * explosionForce);
         }
     }
 
@@ -105,7 +106,11 @@ public class Asteroid : MonoBehaviour
 
     private void Update()
     {
-        if (isFlickering)
+        Vector2 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
+        if (!(viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1))
+            OnOnscreen();
+
+            if (isFlickering)
         {
             FlickerAnimation();
         }
@@ -113,7 +118,7 @@ public class Asteroid : MonoBehaviour
         if (debugDamage)
         {
             debugDamage = false;
-            Damage(1, 2);
+            Damage(10);
         }
 
         timeSinceLastSeen += Time.deltaTime;
@@ -148,10 +153,17 @@ public class Asteroid : MonoBehaviour
 
     public Vector2 GetVelocity() => velocity;
 
+    public void AddExplosionForce(float explosionForce)
+    {
+        rb2D.AddForce(velocity * speed * explosionForce);
+    }
+
     public void SetVelocity(Vector2 velocity)
     {
         this.velocity = velocity;
     }
+
+    public float GetSize() => size;
 
     public float GetTimeSinceLastSeen() => timeSinceLastSeen;
 }
