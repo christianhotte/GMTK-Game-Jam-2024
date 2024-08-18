@@ -158,7 +158,7 @@ MonoBehaviour:
   spawnDistance: 7
   maxAngleDeviation: 30
   startingSize: 4
-  sizeIncrement: 4
+  sizeIncrement: 3
   BASE_SPEED: 10
   SPEED_FACTOR: 5
   HEALTH_FACTOR: 30
