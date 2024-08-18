@@ -101,6 +101,7 @@ public class AsteroidManager : MonoBehaviour
     public PrisonController SpawnPrison(Vector2 position)
     {
         PrisonController newPrison = Instantiate(prisonPrefab, position, Quaternion.identity, asteroidContainer);
+        newPrison.Init();
         prisonPool.Add(newPrison);
         return newPrison;
     }
