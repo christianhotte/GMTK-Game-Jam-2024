@@ -31,9 +31,9 @@ public class ProjectileController : MonoBehaviour
         transform.position = newPos;
         if (hit.collider != null)
         {
-            if(hit.collider.TryGetComponent(out Asteroid asteroid))
+            if (hit.collider.GetComponentInParent<Asteroid>() != null)
             {
-                asteroid.Damage(damage, velocity.normalized);
+                hit.collider.GetComponentInParent<Asteroid>().Damage(damage, velocity.normalized);
                 Destroy(gameObject);
                 return;
             }

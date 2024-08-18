@@ -59,7 +59,7 @@ public class AsteroidManager : MonoBehaviour
         currentAmountMoved += distanceMoved;
         lastPosition = PlayerController.main.transform.position;
 
-        if (currentAmountMoved >= (PlayerController.main.boidSettings.asteroidSpawnRate + distanceMultiplier * Mathf.Log(PlayerController.main.ships.Count + 1)))
+        if (currentAmountMoved >= PlayerController.main.boidSettings.asteroidSpawnRate)
         {
 
             //Spawn a prison

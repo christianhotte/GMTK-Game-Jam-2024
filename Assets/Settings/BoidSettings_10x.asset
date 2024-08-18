@@ -30,4 +30,4 @@ MonoBehaviour:
   fireRate: 10
   asteroidSizeRange: {x: 5, y: 29.4}
   asteroidSpawnDistance: 27.6
-  asteroidSpawnRate: 0.3
+  asteroidSpawnRate: 2

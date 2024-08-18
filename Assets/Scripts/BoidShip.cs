@@ -16,17 +16,7 @@ public class BoidShip : MonoBehaviour
     //BOID METHODS:
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
-        {
-            asteroid.Damage(collisionDamage, velocity);
-            if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
-            else
-            {
-                PlayerController.main.ships.Remove(this);
-                Destroy(gameObject);
-            }
-        }
-        else if (active && collision.collider.TryGetComponent<GemController>(out GemController gem))
+        if (active && collision.collider.TryGetComponent<GemController>(out GemController gem))
         {
             Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
             ScoreManager.Instance.AddToScore(1);
@@ -37,5 +27,16 @@ public class BoidShip : MonoBehaviour
             PlayerController.main.UpdateBoidSettings();
             gem.DestroyGem();
         }
+        else if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
+        {
+            asteroid.Damage(collisionDamage, velocity);
+            if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
+            else
+            {
+                PlayerController.main.ships.Remove(this);
+                Destroy(gameObject);
+            }
+        }
+        
     }
 }

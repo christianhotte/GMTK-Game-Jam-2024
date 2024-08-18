@@ -490,7 +490,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 13.99998
+  orthographic size: 7.940001
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -638,7 +638,7 @@ MonoBehaviour:
   m_Follow: {fileID: 36951040}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 13.99998
+    OrthographicSize: 7.940001
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -881,14 +881,6 @@ PrefabInstance:
       propertyPath: camTarget
       value: 
       objectReference: {fileID: 36951040}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSettingsList.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSettingsList.Array.data[3]
-      value: 
-      objectReference: {fileID: 11400000, guid: 77408b65c861aaf478ecb71fee8829d9, type: 2}
     - target: {fileID: 1116704755789398351, guid: f2cd035f6175f40438344660fa591076, type: 3}
       propertyPath: m_Name
       value: PlayerPointer
