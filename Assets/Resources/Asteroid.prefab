@@ -52,7 +52,7 @@ MonoBehaviour:
   speed: 40
   health: 30
   rotationSpeed: 75
-  explosionForce: 7
+  explosionForce: 3
   spriteRenderer: {fileID: 2288061938881531102}
   flashSpriteRenderer: {fileID: 1921739469269104111}
   asteroidSprites:
