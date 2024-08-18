@@ -9,11 +9,13 @@ public class Asteroid : MonoBehaviour
     private static readonly Vector2 ASTEROID_CHILDREN_RANGE = new Vector2(2, 5);
 
     [SerializeField, Tooltip("The size of the asteroid.")] private float size;
+    public float minSpawnerSize = 4;
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
     [SerializeField, Tooltip("The health of the asteroid.")] private float health;
     [SerializeField, Tooltip("The radius of the asteroid.")] private float radius;
     [SerializeField, Tooltip("The rotation speed of the asteroid.")] private float rotationSpeed;
     [SerializeField, Tooltip("The explosion force of the asteroid.")] private float explosionForce = 15f;
+    public float explosionRadius;
     [SerializeField, Tooltip("The sprite renderer used for the main asteroid sprite.")] private SpriteRenderer spriteRenderer;
     [SerializeField, Tooltip("The sprite renderer used for the flash animation.")] private SpriteRenderer flashSpriteRenderer;
     [SerializeField, Tooltip("All possible sprites for the asteroids.")] private Sprite[] asteroidSprites;
@@ -72,6 +74,15 @@ public class Asteroid : MonoBehaviour
 
     private Vector2 GetRandomDirection() => new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
 
+    private void OnDrawGizmos()
+    {
+        if (Application.isEditor)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.position, (size / 2) * explosionRadius);
+        }
+    }
+
     public void Damage(float damage, Vector2 velocity)
     {
         currentHealth -= damage;
@@ -80,10 +91,18 @@ public class Asteroid : MonoBehaviour
         {
             currentHealth = 0;
 
-            if (size / ASTEROID_CHILDREN_RANGE.x >= PlayerController.main.boidSettings.asteroidSizeRange.x)
+            if (size >= minSpawnerSize)
             {
                 int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
-                StartSpawn(amount, size / amount, velocity);
+
+                Asteroid[] asteroids = new Asteroid[amount];
+                for (int i = 0; i < amount; i++)
+                {
+                    Vector2 spawnPoint = (Vector2)transform.position + ((size / 2) * explosionRadius * Random.insideUnitCircle.normalized);
+                    float spawnSize = size / 2.5f;
+                    asteroids[i] = asteroidManager?.SpawnAsteroid(spawnPoint, spawnSize);
+                    asteroids[i].AddExplosionForce(size * explosionForce, (spawnPoint - (Vector2)transform.position).normalized);
+                }
             }
             else
             {
@@ -98,17 +117,6 @@ public class Asteroid : MonoBehaviour
         currentFlickerTime = flickerSpeed;
         currentFlickerDurationTime = 0f;
         isFlickering = true;
-    }
-
-    protected void StartSpawn(int amount, float size, Vector2 velocity)
-    {
-        Asteroid[] asteroids = new Asteroid[amount];
-
-        for(int i = 0; i < amount; i++)
-        {
-            asteroids[i] = asteroidManager?.SpawnAsteroid(transform.position, size);
-            asteroids[i].AddExplosionForce(size * explosionForce, velocity);
-        }
     }
 
     public bool debugDamage = false;

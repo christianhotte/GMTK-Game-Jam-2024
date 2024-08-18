@@ -130,6 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d57fa176b33d824b8cbc51df95aef69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionParticles:
+  - {fileID: 587711309508051336, guid: fca2a106d859b884fb766c581d9718a8, type: 3}
+  - {fileID: 2180308007056991224, guid: 81e4ca1e8ecc10a45829062c3a80e487, type: 3}
   collisionDamage: 0
   maxAsteroidEatSize: 1
   spawnForce: 1

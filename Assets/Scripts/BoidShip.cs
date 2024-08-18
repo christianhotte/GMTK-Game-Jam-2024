@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BoidShip : MonoBehaviour
 {
+    //Objects
+    public GameObject[] explosionParticles;
+
     //Settings:
     public float collisionDamage = 50;
     public float maxAsteroidEatSize = 1;
@@ -42,6 +45,15 @@ public class BoidShip : MonoBehaviour
                     PlayerController.main.ships.Remove(this);
                     Destroy(gameObject);
                 }
+
+                //Particle Fx
+                for (int i = 0; i < explosionParticles.Length; i++)
+                {
+                    var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
+                }
+
+                PlayerController.main.ships.Remove(this);
+                Destroy(gameObject);
             }
         }
         

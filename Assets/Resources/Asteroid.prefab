@@ -48,11 +48,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: 4
+  minSpawnerSize: 4
   speed: 40
   health: 30
   radius: 0.2
   rotationSpeed: 75
-  explosionForce: 2
+  explosionForce: 0.5
+  explosionRadius: 0.35
   spriteRenderer: {fileID: 2288061938881531102}
   flashSpriteRenderer: {fileID: 1921739469269104111}
   asteroidSprites:
