@@ -16,7 +16,7 @@ public class BoidShip : MonoBehaviour
     //BOID METHODS:
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (active && collision.collider.TryGetComponent<Asteroid>(out Asteroid asteroid))
+        if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
             asteroid.Damage(collisionDamage, velocity);
             if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }

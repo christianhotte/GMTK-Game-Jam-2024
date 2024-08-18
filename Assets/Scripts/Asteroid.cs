@@ -11,6 +11,7 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("The size of the asteroid.")] private float size;
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
     [SerializeField, Tooltip("The health of the asteroid.")] private float health;
+    [SerializeField, Tooltip("The radius of the asteroid.")] private float radius;
     [SerializeField, Tooltip("The rotation speed of the asteroid.")] private float rotationSpeed;
     [SerializeField, Tooltip("The explosion force of the asteroid.")] private float explosionForce = 15f;
     [SerializeField, Tooltip("The sprite renderer used for the main asteroid sprite.")] private SpriteRenderer spriteRenderer;
@@ -60,6 +61,8 @@ public class Asteroid : MonoBehaviour
     {
         this.size = size;
         Init();
+        Destroy(spriteRenderer.gameObject.GetComponent<PolygonCollider2D>());
+        spriteRenderer.gameObject.AddComponent<PolygonCollider2D>();
     }
 
     private void OnOnscreen()
@@ -158,7 +161,7 @@ public class Asteroid : MonoBehaviour
     }
 
     public Vector2 GetVelocity() => velocity;
-
+    public float GetRadius() => radius;
     public void AddExplosionForce(float explosionForce, Vector2 velocity)
     {
         rb2D.AddForce(velocity * speed * explosionForce);
@@ -169,7 +172,6 @@ public class Asteroid : MonoBehaviour
         this.velocity = velocity;
     }
 
-    public float GetRadius() => GetComponent<CircleCollider2D>().radius * size;
     public float GetSize() => size;
 
     public float GetTimeSinceLastSeen() => timeSinceLastSeen;
