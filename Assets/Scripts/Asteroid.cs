@@ -163,6 +163,7 @@ public class Asteroid : MonoBehaviour
         this.velocity = velocity;
     }
 
+    public float GetRadius() => GetComponent<CircleCollider2D>().radius * size;
     public float GetSize() => size;
 
     public float GetTimeSinceLastSeen() => timeSinceLastSeen;
