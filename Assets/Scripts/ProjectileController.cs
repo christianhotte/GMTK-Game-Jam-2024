@@ -28,6 +28,7 @@ public class ProjectileController : MonoBehaviour
         //Move and check for impact:
         Vector2 newPos = (Vector2)transform.position + (velocity * Time.deltaTime);
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, hitRadius, velocity, velocity.magnitude * Time.deltaTime);
+        transform.position = newPos;
         if (hit.collider != null)
         {
             if(hit.collider.TryGetComponent(out Asteroid asteroid))
@@ -35,8 +36,8 @@ public class ProjectileController : MonoBehaviour
                 if (asteroid.GetSize() > doNotDamageSize)
                 {
                     asteroid.Damage(damage, velocity.normalized);
+                    Destroy(gameObject);
                 }
-                Destroy(gameObject);
                 return;
             }
 
@@ -47,7 +48,6 @@ public class ProjectileController : MonoBehaviour
                 return;
             }
         }
-        transform.position = newPos;
     }
     public void Fire(Transform barrel, Vector2 addVelocity)
     {

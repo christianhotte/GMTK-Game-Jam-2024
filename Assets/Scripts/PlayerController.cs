@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public bool drawBoidRadii;
 
     //Runtime variables:
-    private Vector2 mousePosition;
+    internal Vector2 mousePosition;
     private bool thrusting;
     private bool firing;
     internal Vector2 velocity;
@@ -308,7 +308,6 @@ public class PlayerController : MonoBehaviour
         {
             //GAME OVER:
             GameManager.Instance.GameOver();
-            Destroy(gameObject);
         }
     }
 }
