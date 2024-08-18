@@ -9,6 +9,7 @@ public class ProjectileController : MonoBehaviour
     public float hitRadius;
     public float lifetime = 1;
     public float damage;
+    public float doNotDamageSize = 1;
 
     //Runtime Variables:
     private float timeAlive;
@@ -31,7 +32,10 @@ public class ProjectileController : MonoBehaviour
         {
             if(hit.collider.TryGetComponent(out Asteroid asteroid))
             {
-                asteroid.Damage(damage, velocity.normalized);
+                if (asteroid.GetSize() > doNotDamageSize)
+                {
+                    asteroid.Damage(damage, velocity.normalized);
+                }
                 Destroy(gameObject);
                 return;
             }

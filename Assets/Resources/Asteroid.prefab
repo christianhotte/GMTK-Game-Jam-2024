@@ -65,6 +65,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5493bc046e0020c4ca3d6ac8c57138e7, type: 3}
   flickerSpeed: 0.05
   flickerDuration: 0.2
+  edibleSize: 1
+  magnetRadius: 6
+  magnetStrength: 2
   debugDamage: 0
 --- !u!50 &5758889531417644147
 Rigidbody2D:

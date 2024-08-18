@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Asteroid : MonoBehaviour
@@ -19,6 +20,10 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("All possible sprites for the asteroid overlays.")] private Sprite[] asteroidSpriteOverlays;
     [SerializeField, Tooltip("The speed at which asteroids flicker.")] private float flickerSpeed;
     [SerializeField, Tooltip("The duration at which asteroids flicker.")] private float flickerDuration;
+    [Space]
+    [SerializeField, Tooltip("")] private float edibleSize = 1;
+    [SerializeField, Tooltip("")] private float magnetRadius = 1;
+    [SerializeField, Tooltip("")] private float magnetStrength = 1;
 
     private Rigidbody2D rb2D;
     private Vector2 velocity;
@@ -122,6 +127,31 @@ public class Asteroid : MonoBehaviour
         }
 
         timeSinceLastSeen += Time.deltaTime;
+
+        if (size <= edibleSize)
+        {
+            BoidShip[] closeShips = Physics2D.OverlapCircleAll(transform.position, magnetRadius, LayerMask.GetMask("PlayerShip")).Select(o => o.GetComponent<BoidShip>()).ToArray();
+            if (closeShips.Length > 0)
+            {
+                BoidShip closestShip = closeShips[0];
+                float bestDist = Vector2.SqrMagnitude(transform.position - closestShip.transform.position);
+                if (closeShips.Length > 1)
+                {
+                    for (int x = 1; x < closeShips.Length; x++)
+                    {
+                        float dist = Vector2.SqrMagnitude(transform.position - closeShips[x].transform.position);
+                        if (dist < bestDist)
+                        {
+                            closestShip = closeShips[x];
+                            bestDist = dist;
+                        }
+                    }
+                }
+                float interpolant = 1 - Mathf.InverseLerp(0, magnetRadius, bestDist);
+                Vector2 magnetAccel = interpolant * magnetStrength * Time.deltaTime * (closestShip.transform.position - transform.position).normalized;
+                transform.position = transform.position + (Vector3)magnetAccel;
+            }
+        }
     }
 
     private void FixedUpdate()

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6668176467141080382}
   - component: {fileID: 235204875849935918}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 4885242130801991085}
   - component: {fileID: 3780004070158502053}
   - component: {fileID: 6237676587675255202}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BoidShip
   m_TagString: Untagged
   m_Icon: {fileID: 0}

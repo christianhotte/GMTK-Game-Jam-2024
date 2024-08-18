@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3765562567524744116}
   - component: {fileID: 6818110513735615145}
   - component: {fileID: 5359868423901593432}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerPointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,19 +60,6 @@ MonoBehaviour:
   maxSpeed: 10
   rotationRate: 5
   cameraAdjustRate: 0.03
-  maxBoidSpeed: 10
-  maxBoidForce: 0.37
-  boidRotRate: 2
-  boidDragCoefficient: 0.3
-  boidNeighborRadius: 2
-  boidSeparationRadius: 1.42
-  boidSepForce: 0.43
-  boidCohForce: 0.3
-  boidAlignForce: 0
-  boidLeaderFollowForce: 10
-  boidLeaderVelocityInheritance: 0.75
-  boidLeaderSepRadii: {x: 2.36, y: 10}
-  leaderAlignBlend: 0.804
   drawBoidRadii: 1
 --- !u!114 &3765562567524744116
 MonoBehaviour:
@@ -164,7 +151,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5958342286140271043}
   - component: {fileID: 1448362131115427864}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: spr_ship2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

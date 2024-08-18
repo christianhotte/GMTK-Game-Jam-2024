@@ -26,23 +26,6 @@ public class PlayerController : MonoBehaviour
     public float rotationRate;
     [Header("Other Settings:")]
     public float cameraAdjustRate = 1;
-    [Header("Boid Settings:")]
-    [Min(0)] public float maxBoidSpeed;
-    [Min(0)] public float maxBoidForce;
-    [Min(0)] public float boidRotRate;
-    [Min(0)] public float boidDragCoefficient;
-    [Space()]
-    [Min(0)] public float boidNeighborRadius;
-    [Min(0)] public float boidSeparationRadius;
-    [Min(0)] public float boidSepForce;
-    [Min(0)] public float boidCohForce;
-    [Min(0)] public float boidAlignForce;
-    [Space()]
-    public float boidLeaderFollowForce;
-    [Range(0, 1)] public float boidLeaderVelocityInheritance;
-    public Vector2 boidLeaderSepRadii;
-    [Range(0, 1)] public float leaderAlignBlend;
-    [Space()]
     public bool drawBoidRadii;
 
     //Runtime variables:
@@ -149,18 +132,6 @@ public class PlayerController : MonoBehaviour
             //Neighbor velocity checks:
             if (neighbors.Count > 0)
             {
-
-                //Apply neighbor alignment:
-                /*Vector2 alignVelocity = Vector2.zero;
-                foreach (BoidShip neighbor in neighbors)
-                {
-                    alignVelocity += neighbor.velocity;
-                }
-                alignVelocity /= neighbors.Count;
-                alignVelocity *= maxBoidForce * boidAlignForce;
-                alignVelocity = LimitMagnitude(alignVelocity, maxBoidSpeed);
-                newBoidVel += alignVelocity;*/
-
                 //Apply neighbor cohesion:
                 Vector2 cohesionVelocity = Vector2.zero;
                 Vector2 totalPosition = Vector2.zero;
