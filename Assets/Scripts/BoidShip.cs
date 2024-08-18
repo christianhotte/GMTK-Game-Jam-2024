@@ -19,7 +19,7 @@ public class BoidShip : MonoBehaviour
         {
             if (asteroid.GetSize() <= maxAsteroidEatSize) //Ship eats asteroid
             {
-                asteroid.Damage(99999999);
+                asteroid.Damage(99999999, velocity);
                 Transform newShip = Instantiate(PlayerController.main.boidPrefab.transform);
                 PlayerController.main.ships.Add(newShip.GetComponent<BoidShip>());
                 newShip.position = transform.position;
@@ -29,7 +29,7 @@ public class BoidShip : MonoBehaviour
             }
             else //Asteroid destroys ship
             {
-                asteroid.Damage(collisionDamage);
+                asteroid.Damage(collisionDamage, velocity);
                 if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
                 else
                 {
