@@ -27,11 +27,21 @@ public class ProjectileController : MonoBehaviour
         //Move and check for impact:
         Vector2 newPos = (Vector2)transform.position + (velocity * Time.deltaTime);
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, hitRadius, velocity, velocity.magnitude * Time.deltaTime);
-        if (hit.collider != null && hit.collider.TryGetComponent(out Asteroid asteroid))
+        if (hit.collider != null)
         {
-            asteroid.Damage(damage);
-            Destroy(gameObject);
-            return;
+            if(hit.collider.TryGetComponent(out Asteroid asteroid))
+            {
+                asteroid.Damage(damage, velocity.normalized);
+                Destroy(gameObject);
+                return;
+            }
+
+            if (hit.collider.TryGetComponent(out PrisonController prison))
+            {
+                prison.Damage(damage);
+                Destroy(gameObject);
+                return;
+            }
         }
         transform.position = newPos;
     }

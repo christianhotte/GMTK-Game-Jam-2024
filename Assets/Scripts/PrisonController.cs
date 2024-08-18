@@ -12,6 +12,7 @@ public class PrisonController : MonoBehaviour
     [SerializeField, Tooltip("The duration of the damage shake.")] private float shakeDuration;
     [SerializeField, Tooltip("The duration of the damage shake.")] private float shakeFrequency = 1;
     [SerializeField, Tooltip("The rotation speed of the prison.")] private float rotationSpeed;
+    [SerializeField, Tooltip("The percentage of ships in the prison relative to the current ship count.")] private Vector2 shipPercentRange;
 
     public bool debugDamage = false;
 
@@ -28,9 +29,14 @@ public class PrisonController : MonoBehaviour
 
     public void Init()
     {
-        boidShips = new List<BoidShip>(numberOfShips);
+        int totalShips = numberOfShips;
 
-        for (int i = 0; i < numberOfShips; i++)
+        if(PlayerController.main.ships.Count > 0)
+            totalShips += Mathf.CeilToInt(PlayerController.main.ships.Count * Random.Range(shipPercentRange.x, shipPercentRange.y));
+
+        boidShips = new List<BoidShip>(totalShips);
+
+        for (int i = 0; i < totalShips; i++)
         {
             BoidShip boidShip = Instantiate(PlayerController.main.boidPrefab, shipParent).GetComponent<BoidShip>();
             boidShips.Add(boidShip);
@@ -39,7 +45,7 @@ public class PrisonController : MonoBehaviour
         currentHealth = health;
     }
 
-    public void DamagePrison(float damage)
+    public void Damage(float damage)
     {
         currentHealth -= damage;
         isShaking = true;
@@ -62,7 +68,7 @@ public class PrisonController : MonoBehaviour
         if (debugDamage)
         {
             debugDamage = false;
-            DamagePrison(10);
+            Damage(10);
         }
 
         if (isShaking)
