@@ -7,7 +7,7 @@ using System.Linq;
 public class Asteroid : MonoBehaviour
 {
     private static readonly Vector2 ASTEROID_CHILDREN_RANGE = new Vector2(2, 5);
-    private static readonly float ASTEROID_MINIMUM_SIZE = 0.5f;
+    private static readonly float ASTEROID_MINIMUM_SIZE = 1.2f;
 
     [SerializeField, Tooltip("The size of the asteroid.")] private float size;
     [SerializeField, Tooltip("The speed of the asteroid.")] private float speed;
@@ -24,6 +24,7 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("")] private float edibleSize = 1;
     [SerializeField, Tooltip("")] private float magnetRadius = 1;
     [SerializeField, Tooltip("")] private float magnetStrength = 1;
+    [SerializeField, Tooltip("The gem prefab.")] private GameObject gemPrefab;
 
     private Rigidbody2D rb2D;
     private Vector2 velocity;
@@ -84,6 +85,10 @@ public class Asteroid : MonoBehaviour
             {
                 int amount = Random.Range((int)ASTEROID_CHILDREN_RANGE.x, (int)ASTEROID_CHILDREN_RANGE.y);
                 StartSpawn(amount, size / amount, velocity);
+            }
+            else
+            {
+                Instantiate(gemPrefab, transform.position, Quaternion.identity);
             }
 
             ScoreManager.Instance.AddToScore(Mathf.RoundToInt((size * 10.0f) / 10.0f) * 10);
