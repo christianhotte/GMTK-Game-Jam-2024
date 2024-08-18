@@ -48,14 +48,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb8a07ff520e08d45a5330dfdbbd6973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
   projectilePrefab: {fileID: 1887234780943325857, guid: 0c9ea50ad4218f74ca8e28fcfd9357e0, type: 3}
   boidPrefab: {fileID: 5690376234045105522, guid: 34060a4677820f34685ccc5ff7f5be6f, type: 3}
+  boidSettingsList:
+  - {fileID: 11400000, guid: 6fcc9212786cfd34d8af9d00589c0e91, type: 2}
+  - {fileID: 11400000, guid: f036987a47979724bb12e4dd08e43ea0, type: 2}
   thrustPower: 10
   dragCoefficient: 0.6
   maxSpeed: 10
   rotationRate: 5
-  baseFireRate: 1
-  maxBoidSpeed: 5
+  cameraAdjustRate: 0.03
+  maxBoidSpeed: 10
   maxBoidForce: 0.37
   boidRotRate: 2
   boidDragCoefficient: 0.3

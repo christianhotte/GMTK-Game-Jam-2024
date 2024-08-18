@@ -417,7 +417,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.74
+  orthographic size: 2.490004
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1957900395}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 7.74
+    OrthographicSize: 2.490004
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -749,53 +749,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: maxSpeed
-      value: 10
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 1948168349}
+    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
+      propertyPath: boidSettingsList.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: thrustPower
-      value: 10
-      objectReference: {fileID: 0}
+      propertyPath: boidSettingsList.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6fcc9212786cfd34d8af9d00589c0e91, type: 2}
     - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: baseFireRate
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSepForce
-      value: 0.43
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: maxBoidSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: leaderAlignBlend
-      value: 0.804
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidDragCoefficient
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidLeaderSepRadii.x
-      value: 2.36
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidLeaderSepRadii.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidSeparationRadius
-      value: 1.42
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidLeaderFollowForce
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 526382610454324461, guid: f2cd035f6175f40438344660fa591076, type: 3}
-      propertyPath: boidLeaderVelocityInheritance
-      value: 0.75
-      objectReference: {fileID: 0}
+      propertyPath: boidSettingsList.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: f036987a47979724bb12e4dd08e43ea0, type: 2}
     - target: {fileID: 1116704755789398351, guid: f2cd035f6175f40438344660fa591076, type: 3}
       propertyPath: m_Name
       value: PlayerPointer
