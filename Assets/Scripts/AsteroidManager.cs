@@ -5,7 +5,7 @@ using UnityEngine;
 public class AsteroidManager : MonoBehaviour
 {
     [SerializeField, Tooltip("The Asteroid prefab.")] private Asteroid asteroidPrefab;
-    [SerializeField, Tooltip("The Prison prefab.")] private PrisonController prisonPrefab;
+    [SerializeField, Tooltip("The Prison prefab.")] private GameObject prisonPrefab;
     [SerializeField, Tooltip("The asteroid container.")] private Transform asteroidContainer;
     [SerializeField, Tooltip("The maximum pool size for the asteroid.")] private int maxPoolSize;
     [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float tresholdToSpawn;
@@ -139,7 +139,7 @@ public class AsteroidManager : MonoBehaviour
 
     public PrisonController SpawnPrison(Vector2 position)
     {
-        PrisonController newPrison = Instantiate(prisonPrefab, position, Quaternion.identity, asteroidContainer);
+        PrisonController newPrison = Instantiate(prisonPrefab, position, Quaternion.identity, asteroidContainer).GetComponentInChildren<PrisonController>();
         newPrison.Init();
         prisonPool.Add(newPrison);
         return newPrison;
