@@ -44,6 +44,19 @@ public class ProjectileController : MonoBehaviour
                 Destroy(gameObject);
                 return;
             }
+
+            if (hit.collider.TryGetComponent(out CopBoid cop))
+            {
+                cop.Damage(true);
+                Destroy(gameObject);
+                return;
+            }
+            if (hit.collider.TryGetComponent(out CopBoidLeader copl))
+            {
+                copl.Damage(true);
+                Destroy(gameObject);
+                return;
+            }
         }
     }
     public void Fire(Transform barrel, Vector2 addVelocity)

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 946bb818b76946943baff4d378167394, type: 3}
+  m_Name: BoidSettings_10x
+  m_EditorClassIdentifier: 
+  boidNumber: 10
+  maxBoidSpeed: 15
+  maxBoidForce: 0.2
+  boidRotRate: 5
+  boidDragCoefficient: 0.3
+  boidNeighborRadius: 2
+  boidSeparationRadius: 1.42
+  boidSepForce: 0.3
+  boidCohForce: 0.1
+  boidAlignForce: 0
+  boidLeaderFollowForce: 10
+  boidLeaderVelocityInheritance: 0.67
+  boidLeaderSepRadii: {x: 2.52, y: 5.47}
+  leaderAlignBlend: 0.804
+  camSize: 14
+  fireRate: 10
+  asteroidSizeRange: {x: 5, y: 29.4}
+  asteroidSpawnDistance: 27.6
+  asteroidSpawnRate: 2
