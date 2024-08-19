@@ -32,6 +32,9 @@ public class Asteroid : MonoBehaviour
     private float currentFlickerTime;
     private float currentFlickerDurationTime;
 
+    private bool prevOnScreen = false;
+    private AsteroidManager asteroidManager;
+
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
@@ -68,6 +71,8 @@ public class Asteroid : MonoBehaviour
 
     private void OnOnscreen()
     {
+        AsteroidManager.main.asteroidPool.Remove(this);
+        AsteroidManager.main.asteroidPool.Add(this);
         timeSinceLastSeen = 0f;
     }
 
@@ -125,8 +130,10 @@ public class Asteroid : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.IsOnScreen(transform.position))
-            OnOnscreen();
+
+        bool onScreen = GameManager.Instance.IsOnScreen(transform.position);
+        if (onScreen && !prevOnScreen) OnOnscreen();
+        prevOnScreen = onScreen;
 
         if (isFlickering)
         {
