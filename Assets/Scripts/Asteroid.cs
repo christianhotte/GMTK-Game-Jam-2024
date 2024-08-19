@@ -126,7 +126,7 @@ public class Asteroid : MonoBehaviour
         if (GameManager.Instance.IsOnScreen(transform.position))
             OnOnscreen();
 
-            if (isFlickering)
+        if (isFlickering)
         {
             FlickerAnimation();
         }
