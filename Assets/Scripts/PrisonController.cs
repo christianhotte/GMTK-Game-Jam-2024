@@ -24,9 +24,11 @@ public class PrisonController : MonoBehaviour
     private float currentShakeTime;
 
     private List<BoidShip> boidShips;
+    private BoxCollider2D prisonCollider;
 
     private void Start()
     {
+        prisonCollider = GetComponentInChildren<BoxCollider2D>();
         Init();
         StartCoroutine(SpawnBar());
     }
@@ -105,4 +107,6 @@ public class PrisonController : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
         StartCoroutine(SpawnBar());
     }
+
+    public BoxCollider2D GetPrisonCollider() => prisonCollider;
 }

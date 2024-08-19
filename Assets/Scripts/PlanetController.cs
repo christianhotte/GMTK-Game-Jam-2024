@@ -8,10 +8,12 @@ public class PlanetController : MonoBehaviour
     [SerializeField, Tooltip("The force of the gravitational pull.")] private float gravitationalForce = 50f;
 
     private Rigidbody2D rb2D;
+    private CircleCollider2D circleCollider;
 
     private void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
+        circleCollider = GetComponent<CircleCollider2D>();
     }
 
     private void FixedUpdate()
@@ -42,6 +44,8 @@ public class PlanetController : MonoBehaviour
             }
         }
     }
+
+    public CircleCollider2D GetCircleCollider() => circleCollider;
 
     private void OnDrawGizmos()
     {

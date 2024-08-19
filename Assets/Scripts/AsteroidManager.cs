@@ -20,6 +20,7 @@ public class AsteroidManager : MonoBehaviour
     [SerializeField, Tooltip("The amount of ships needed before planets begin to spawn.")] private int planetThreshold = 50;
     [SerializeField, Tooltip("The percent chance that a planet will spawn instead of an asteroid.")] private float planetPercentage = 0.15f;
 
+    private PrisonController prefabPrisonController;
     public float BASE_SPEED = 10f;
     public float SPEED_FACTOR = 5f;
     public float HEALTH_FACTOR = 30f;
@@ -42,6 +43,7 @@ public class AsteroidManager : MonoBehaviour
     }
     private void Start()
     {
+        prefabPrisonController = prisonPrefab.GetComponentInChildren<PrisonController>();
         player = FindObjectOfType<PlayerController>();
         mainCamera = Camera.main;
         lastPosition = mainCamera.transform.position;
@@ -70,7 +72,7 @@ public class AsteroidManager : MonoBehaviour
             //Spawn a planet
             if (PlayerController.main.ships.Count >= planetThreshold && Random.Range(0.0f, 1.0f) < planetPercentage)
             {
-                spawnPosition = CreateSpawnPoint(planetPrefab.GetComponent<CircleCollider2D>().radius);
+                spawnPosition = CreateSpawnPoint(planetPrefab.GetCircleCollider().radius);
 
                 SpawnPlanet(spawnPosition);
                 currentAmountMoved = 0;
@@ -80,7 +82,7 @@ public class AsteroidManager : MonoBehaviour
             //Spawn a prison
             if (Random.Range(0.0f, 1.0f) < prisonPercentage)
             {
-                spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponentInChildren<BoxCollider2D>().size.x);
+                spawnPosition = CreateSpawnPoint(prefabPrisonController.GetPrisonCollider().size.x);
 
                 SpawnPrison(spawnPosition);
                 currentAmountMoved = 0;
@@ -171,12 +173,13 @@ public class AsteroidManager : MonoBehaviour
     public PlanetController SpawnPlanet(Vector2 position)
     {
         PlanetController newPlanet = Instantiate(planetPrefab, position, Quaternion.identity);
+        planetPool.Add(newPlanet);
         return newPlanet;
     }
 
     public PrisonController SpawnPrison()
     {
-        Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponentInChildren<BoxCollider2D>().size.x);
+        Vector2 spawnPosition = CreateSpawnPoint(prefabPrisonController.GetPrisonCollider().size.x);
         return SpawnPrison(spawnPosition);
     }
 
