@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     public bool IsOnScreen(Vector3 position)
     {
-        Vector2 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
+        Vector2 viewportPos = Camera.main.WorldToViewportPoint(position);
         return (!(viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1));
     }
 

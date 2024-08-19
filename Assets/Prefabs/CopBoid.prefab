@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 647769081726151514}
   - component: {fileID: 652772888180036138}
   - component: {fileID: 2252935180157249168}
+  - component: {fileID: 4137631207692674303}
   m_Layer: 0
   m_Name: CopBoid
   m_TagString: Untagged
@@ -122,6 +123,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4137631207692674303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015799575916851512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf4f57195fee3c14581b2d39aaba7d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tickRate: 0.2
+  offscreenLifetime: 5
+  isOnscreen: 0
 --- !u!1001 &3222639301263675667
 PrefabInstance:
   m_ObjectHideFlags: 0
