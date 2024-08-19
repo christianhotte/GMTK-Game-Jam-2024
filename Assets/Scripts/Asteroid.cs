@@ -22,8 +22,6 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("All possible sprites for the asteroid overlays.")] private Sprite[] asteroidSpriteOverlays;
     [SerializeField, Tooltip("The speed at which asteroids flicker.")] private float flickerSpeed;
     [SerializeField, Tooltip("The duration at which asteroids flicker.")] private float flickerDuration;
-    [Space]
-    [SerializeField, Tooltip("The gem prefab.")] private GameObject gemPrefab;
 
     private Rigidbody2D rb2D;
     private Vector2 velocity;
@@ -34,21 +32,17 @@ public class Asteroid : MonoBehaviour
     private float currentFlickerTime;
     private float currentFlickerDurationTime;
 
-    private AsteroidManager asteroidManager;
-
     private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
         flashSpriteRenderer.color = new Color(1, 1, 1, 0);
-        asteroidManager = FindObjectOfType<AsteroidManager>();
-        Init();
     }
 
     public void Init()
     {
-        speed = asteroidManager.BASE_SPEED + asteroidManager.SPEED_FACTOR * Mathf.Log(size + 1);
-        health = asteroidManager.HEALTH_FACTOR * Mathf.Sqrt(size);
-        rotationSpeed = asteroidManager.ROTATION_MAX / Mathf.Sqrt(size + 1);
+        speed = AsteroidManager.main.BASE_SPEED + AsteroidManager.main.SPEED_FACTOR * Mathf.Log(size + 1);
+        health = AsteroidManager.main.HEALTH_FACTOR * Mathf.Sqrt(size);
+        rotationSpeed = AsteroidManager.main.ROTATION_MAX / Mathf.Sqrt(size + 1);
 
         int randomAsteroid = Random.Range(0, asteroidSprites.Length);
         spriteRenderer.sprite = asteroidSprites[randomAsteroid];
@@ -65,6 +59,11 @@ public class Asteroid : MonoBehaviour
         Init();
         Destroy(spriteRenderer.gameObject.GetComponent<PolygonCollider2D>());
         spriteRenderer.gameObject.AddComponent<PolygonCollider2D>();
+    }
+
+    private void OnEnable()
+    {
+        Init();
     }
 
     private void OnOnscreen()
@@ -100,7 +99,7 @@ public class Asteroid : MonoBehaviour
                 {
                     Vector2 spawnPoint = (Vector2)transform.position + ((size / 2) * explosionRadius * Random.insideUnitCircle.normalized);
                     float spawnSize = size / 2.5f;
-                    asteroids[i] = asteroidManager?.SpawnAsteroid(spawnPoint, spawnSize);
+                    asteroids[i] = AsteroidManager.main?.SpawnAsteroid(spawnPoint, spawnSize);
                     asteroids[i].AddExplosionForce(size * explosionForce, (spawnPoint - (Vector2)transform.position).normalized);
                 }
             }
@@ -108,12 +107,12 @@ public class Asteroid : MonoBehaviour
             {
                 if (GameManager.Instance.CheckGem())
                 {
-                    Instantiate(gemPrefab, transform.position, Quaternion.identity);
+                    AsteroidManager.main?.SpawnGem(transform.position);
                 }
             }
 
             ScoreManager.Instance.AddToScore(Mathf.RoundToInt((size * 10.0f) / 10.0f) * 10);
-            asteroidManager?.DestroyAsteroid(this);
+            AsteroidManager.main?.DestroyAsteroid(this);
 
         }
 

@@ -6,9 +6,10 @@ public class AsteroidManager : MonoBehaviour
 {
     public static AsteroidManager main;
     [SerializeField, Tooltip("The Asteroid prefab.")] private Asteroid asteroidPrefab;
-    [SerializeField, Tooltip("The Prison prefab.")] private GameObject prisonPrefab;
+    [SerializeField, Tooltip("The Prison prefab.")] private PrisonController prisonPrefab;
     [SerializeField, Tooltip("The Prison prefab.")] private PlanetController planetPrefab;
-    [SerializeField, Tooltip("The asteroid container.")] private Transform asteroidContainer;
+    [SerializeField, Tooltip("The Prison prefab.")] private GemController gemPrefab;
+    [SerializeField, Tooltip("The object container.")] private Transform objectContainer;
     [SerializeField, Tooltip("The maximum pool size for the asteroid.")] private int maxPoolSize;
     [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float thresholdToSpawn;
     [SerializeField, Tooltip("The distance to spawn an asteroid at.")] private float spawnDistance;
@@ -20,7 +21,6 @@ public class AsteroidManager : MonoBehaviour
     [SerializeField, Tooltip("The amount of ships needed before planets begin to spawn.")] private int planetThreshold = 50;
     [SerializeField, Tooltip("The percent chance that a planet will spawn instead of an asteroid.")] private float planetPercentage = 0.15f;
 
-    private PrisonController prefabPrisonController;
     public float BASE_SPEED = 10f;
     public float SPEED_FACTOR = 5f;
     public float HEALTH_FACTOR = 30f;
@@ -32,6 +32,7 @@ public class AsteroidManager : MonoBehaviour
     private List<Asteroid> asteroidPool = new List<Asteroid>();
     private List<PrisonController> prisonPool = new List<PrisonController>();
     private List<PlanetController> planetPool = new List<PlanetController>();
+    private List<GemController> gemPool = new List<GemController>();
     private Camera mainCamera;
 
     private Vector2 lastPosition;
@@ -43,11 +44,30 @@ public class AsteroidManager : MonoBehaviour
     }
     private void Start()
     {
-        prefabPrisonController = prisonPrefab.GetComponentInChildren<PrisonController>();
         player = FindObjectOfType<PlayerController>();
         mainCamera = Camera.main;
         lastPosition = mainCamera.transform.position;
+        CreateObjectPools();
     }
+
+    private void CreateObjectPools()
+    {
+        for (int i = 0; i < maxPoolSize; i++)
+        {
+            planetPool.Add(Instantiate(planetPrefab, Vector2.zero, Quaternion.identity, objectContainer));
+            planetPool[i].gameObject.SetActive(false);
+
+            prisonPool.Add(Instantiate(prisonPrefab, Vector2.zero, Quaternion.identity, objectContainer));
+            prisonPool[i].gameObject.SetActive(false);
+
+            asteroidPool.Add(Instantiate(asteroidPrefab, Vector2.zero, Quaternion.identity, objectContainer));
+            asteroidPool[i].gameObject.SetActive(false);
+
+            gemPool.Add(Instantiate(gemPrefab, Vector2.zero, Quaternion.identity, objectContainer));
+            gemPool[i].gameObject.SetActive(false);
+        }
+    }
+
     private void OnDrawGizmos()
     {
         if (Application.isPlaying)
@@ -72,6 +92,7 @@ public class AsteroidManager : MonoBehaviour
             //Spawn a planet
             if (PlayerController.main.ships.Count >= planetThreshold && Random.Range(0.0f, 1.0f) < planetPercentage)
             {
+                Debug.Log("Spawning A Planet...");
                 spawnPosition = CreateSpawnPoint(planetPrefab.GetCircleCollider().radius);
 
                 SpawnPlanet(spawnPosition);
@@ -82,7 +103,8 @@ public class AsteroidManager : MonoBehaviour
             //Spawn a prison
             if (Random.Range(0.0f, 1.0f) < prisonPercentage)
             {
-                spawnPosition = CreateSpawnPoint(prefabPrisonController.GetPrisonCollider().size.x);
+                Debug.Log("Spawning A Prison...");
+                spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponent<BoxCollider2D>().size.x);
 
                 SpawnPrison(spawnPosition);
                 currentAmountMoved = 0;
@@ -90,20 +112,23 @@ public class AsteroidManager : MonoBehaviour
             }
 
             //Spawn an asteroid
+            Debug.Log("Spawning An Asteroid...");
             float asteroidSize = CalculateAsteroidSize();
             spawnPosition = CreateSpawnPoint(asteroidSize);
 
-            if (asteroidPool.Count >= maxPoolSize)
-            {
-                Asteroid moveAsteroid = FindLongestUnseenAsteroid();
-                moveAsteroid.transform.position = spawnPosition;
-                moveAsteroid.transform.localScale = asteroidSize * Vector3.one;
-                moveAsteroid.timeSinceLastSeen = -1;
-            }
-            else
-            {
-                SpawnAsteroid(spawnPosition, asteroidSize);
-            }
+            SpawnAsteroid(spawnPosition, asteroidSize);
+
+            /*            if (asteroidPool.Count >= maxPoolSize)
+                        {
+                            Asteroid moveAsteroid = FindLongestUnseenAsteroid();
+                            moveAsteroid.transform.position = spawnPosition;
+                            moveAsteroid.transform.localScale = asteroidSize * Vector3.one;
+                            moveAsteroid.timeSinceLastSeen = -1;
+                        }
+                        else
+                        {
+                            SpawnAsteroid(spawnPosition, asteroidSize);
+                        }*/
 
             currentAmountMoved = 0;
         }
@@ -172,35 +197,82 @@ public class AsteroidManager : MonoBehaviour
 
     public PlanetController SpawnPlanet(Vector2 position)
     {
-        PlanetController newPlanet = Instantiate(planetPrefab, position, Quaternion.identity);
-        planetPool.Add(newPlanet);
+        PlanetController newPlanet = null;
+        for (int i = 0; i < planetPool.Count; i++)
+        {
+            if (!planetPool[i].gameObject.activeInHierarchy)
+            {
+                newPlanet = planetPool[i];
+                newPlanet.gameObject.SetActive(true);
+                newPlanet.transform.position = position;
+                newPlanet.transform.SetParent(objectContainer);
+                break;
+            }
+        }
         return newPlanet;
     }
 
     public PrisonController SpawnPrison()
     {
-        Vector2 spawnPosition = CreateSpawnPoint(prefabPrisonController.GetPrisonCollider().size.x);
+        Vector2 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponent<BoxCollider2D>().size.x);
         return SpawnPrison(spawnPosition);
     }
 
     public PrisonController SpawnPrison(Vector2 position)
     {
-        PrisonController newPrison = Instantiate(prisonPrefab, position, Quaternion.identity, asteroidContainer).GetComponentInChildren<PrisonController>();
-        newPrison.Init();
-        prisonPool.Add(newPrison);
+        PrisonController newPrison = null;
+        for (int i = 0; i < prisonPool.Count; i++)
+        {
+            if (!prisonPool[i].gameObject.activeInHierarchy)
+            {
+                newPrison = prisonPool[i];
+                newPrison.gameObject.SetActive(true);
+                newPrison.transform.position = position;
+                newPrison.transform.SetParent(objectContainer);
+                newPrison.Init();
+                break;
+            }
+        }
         return newPrison;
     }
 
     public Asteroid SpawnAsteroid(Vector2 position, float size, bool isChild = false)
     {
-        Asteroid newAsteroid = Instantiate(asteroidPrefab, position, Quaternion.identity, asteroidContainer);
-        if (!isChild)
+        Asteroid newAsteroid = null;
+        for (int i = 0; i < asteroidPool.Count; i++)
         {
-            newAsteroid.Init(size);
-            asteroidPool.Add(newAsteroid);
+            if (!asteroidPool[i].gameObject.activeInHierarchy)
+            {
+                newAsteroid = asteroidPool[i];
+                newAsteroid.gameObject.SetActive(true);
+                newAsteroid.transform.position = position;
+                newAsteroid.transform.SetParent(objectContainer);
+                break;
+            }
         }
 
+        if (!isChild)
+            newAsteroid.Init(size);
+
         return newAsteroid;
+    }
+
+    public GemController SpawnGem(Vector2 position)
+    {
+        GemController newGem = null;
+        for (int i = 0; i < gemPool.Count; i++)
+        {
+            if (!planetPool[i].gameObject.activeInHierarchy)
+            {
+                newGem = gemPool[i];
+                newGem.gameObject.SetActive(true);
+                newGem.transform.position = position;
+                newGem.transform.SetParent(objectContainer);
+                break;
+            }
+        }
+
+        return newGem;
     }
 
     private float CalculateAsteroidSize()
@@ -212,7 +284,6 @@ public class AsteroidManager : MonoBehaviour
     public void DestroyAsteroid(Asteroid currentAsteroid)
     {
         GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode", 0.5f);
-        asteroidPool.Remove(currentAsteroid);
-        Destroy(currentAsteroid.gameObject);
+        currentAsteroid.gameObject.SetActive(false);
     }
 }

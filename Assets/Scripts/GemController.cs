@@ -27,7 +27,7 @@ public class GemController : MonoBehaviour
         boidShip.active = true;
         PlayerController.main.ships.Add(boidShip);
 
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
     private void Update()
     {

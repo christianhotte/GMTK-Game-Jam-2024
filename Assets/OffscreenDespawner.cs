@@ -12,7 +12,7 @@ public class OffscreenDespawner : MonoBehaviour
 
     public bool isOnscreen;
 
-    void Awake()
+    private void OnEnable()
     {
         isOnscreen = true;
         tickTimer = tickRate;
@@ -42,7 +42,7 @@ public class OffscreenDespawner : MonoBehaviour
 
         if (offscreenTimer <= 0)
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }
