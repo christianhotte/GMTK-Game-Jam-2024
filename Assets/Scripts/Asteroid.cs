@@ -106,7 +106,10 @@ public class Asteroid : MonoBehaviour
             }
             else
             {
-                Instantiate(gemPrefab, transform.position, Quaternion.identity);
+                if (GameManager.Instance.CheckGem())
+                {
+                    Instantiate(gemPrefab, transform.position, Quaternion.identity);
+                }
             }
 
             ScoreManager.Instance.AddToScore(Mathf.RoundToInt((size * 10.0f) / 10.0f) * 10);
