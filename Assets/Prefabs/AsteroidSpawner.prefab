@@ -48,14 +48,16 @@ MonoBehaviour:
   prisonPrefab: {fileID: 5467302083380182494, guid: 0956308f3bbccd14b9720ab92af265e9, type: 3}
   planetPrefab: {fileID: 9187907896298145554, guid: 0c513c687669cc44bb175b944feaf550, type: 3}
   asteroidContainer: {fileID: 0}
-  maxPoolSize: 100
-  tresholdToSpawn: 2
+  maxPoolSize: 500
+  thresholdToSpawn: 0
   spawnDistance: 12
   distanceMultiplier: 3
   maxAngleDeviation: 40
   startingSize: 4
   sizeIncrement: 15
   prisonPercentage: 0.05
+  planetThreshold: 50
+  planetPercentage: 0.15
   BASE_SPEED: 30
   SPEED_FACTOR: 5
   HEALTH_FACTOR: 30

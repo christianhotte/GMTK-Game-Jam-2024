@@ -29,7 +29,7 @@ public class AsteroidManager : MonoBehaviour
 
     private PlayerController player;
 
-    private List<Asteroid> asteroidPool = new List<Asteroid>();
+    internal List<Asteroid> asteroidPool = new List<Asteroid>();
     private List<PrisonController> prisonPool = new List<PrisonController>();
     private List<PlanetController> planetPool = new List<PlanetController>();
     private Camera mainCamera;
@@ -160,12 +160,14 @@ public class AsteroidManager : MonoBehaviour
             return null;
 
         Asteroid longestUnseen = asteroidPool[0];
-
+        asteroidPool.Remove(longestUnseen);
+        asteroidPool.Add(longestUnseen);
+        /*
         for (int i = 1; i < asteroidPool.Count; i++)
         {
             if (asteroidPool[i].GetTimeSinceLastSeen() != -1 && asteroidPool[i].GetTimeSinceLastSeen() > longestUnseen.GetTimeSinceLastSeen())
                 longestUnseen = asteroidPool[i];
-        }
+        }*/
 
         return longestUnseen;
     }
