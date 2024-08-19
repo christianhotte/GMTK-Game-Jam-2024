@@ -5,9 +5,21 @@ using System.Linq;
 
 public class GemController : MonoBehaviour
 {
+    //Components
+    public Rigidbody2D rb;
+
     //Settings:
     [SerializeField, Tooltip("")] private float magnetRadius = 1;
     [SerializeField, Tooltip("")] private float magnetStrength = 1;
+
+    public void Start()
+    {
+        float randomX = Random.Range(-15, 15);
+        float randomY = Random.Range(-15, 15);
+        Vector2 random = new Vector2(randomX, randomY);
+        rb.AddForce(random);
+        rb.AddTorque(Random.Range(8, 20));
+    }
 
     public void DestroyGem()
     {

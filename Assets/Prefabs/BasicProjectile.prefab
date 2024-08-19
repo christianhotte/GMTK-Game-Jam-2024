@@ -101,3 +101,4 @@ MonoBehaviour:
   hitRadius: 0.1
   lifetime: 2
   damage: 10
+  doNotDamageSize: 1
