@@ -123,8 +123,7 @@ public class Asteroid : MonoBehaviour
 
     private void Update()
     {
-        Vector2 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
-        if (!(viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1))
+        if (GameManager.Instance.IsOnScreen(transform.position))
             OnOnscreen();
 
             if (isFlickering)

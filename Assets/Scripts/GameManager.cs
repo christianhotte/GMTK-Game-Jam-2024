@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
         isGameActive = false;
     }
 
+    public bool IsOnScreen(Vector3 position)
+    {
+        Vector2 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
+        return (!(viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1));
+    }
+
     public void GameOver()
     {
         isGameActive = false;
