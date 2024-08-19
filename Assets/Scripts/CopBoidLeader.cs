@@ -10,6 +10,7 @@ using Unity.PlasticSCM.Editor.WebApi;
 
 public class CopBoidLeader : MonoBehaviour
 {
+    public GameObject[] explosionParticles;
     public int hp = 10;
 
     internal bool alert = false;
@@ -25,22 +26,14 @@ public class CopBoidLeader : MonoBehaviour
     private bool isFlickering;
     private float currentFlickerTime;
     private float currentFlickerDurationTime;
-    private SpriteRenderer flashSpriteRenderer;
+    public SpriteRenderer flashSpriteRenderer;
 
     internal List<CopBoid> ships = new List<CopBoid>();
     public BoidSettings boidSettings;
 
-    private void Awake()
-    {
-        flashSpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
-    }
-
     private void Update()
     {
-        if (isFlickering)
-        {
-            FlickerAnimation();
-        }
+        if (flashSpriteRenderer != null) FlickerAnimation();
         //Move boids:
         foreach (CopBoid boid in ships)
         {
@@ -143,38 +136,36 @@ public class CopBoidLeader : MonoBehaviour
         return baseVector;
     }
 
-    public void Damage()
+    public void Damage(bool from_shooting)
     {
         hp -= 1;
-        alert = true;
+        if (from_shooting) alert = true;
         if (hp <= 0)
         {
+            //Particle Fx
+            for (int i = 0; i < explosionParticles.Length; i++)
+            {
+                var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
+            }
             Destroy(gameObject);
         }
-        currentFlickerTime = flickerSpeed;
-        currentFlickerDurationTime = 0f;
-        isFlickering = true;
+        flashSpriteRenderer.color = new Color(1, 1, 1, 0);
     }
 
     private void FlickerAnimation()
     {
-        currentFlickerDurationTime += Time.deltaTime;
+        float temp = flashSpriteRenderer.color.a;
+        temp = Mathf.Lerp(temp, 1, Time.deltaTime * 4.0f);
+        flashSpriteRenderer.color = new Color(1, 1, 1, temp);
+    }
 
-        if (currentFlickerDurationTime >= flickerDuration)
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.gameObject.transform.parent == null) return;
+        if (collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
-            isFlickering = false;
-            flashSpriteRenderer.color = new Color(1, 1, 1, 0);
-        }
-
-        else
-        {
-            currentFlickerTime += Time.deltaTime;
-
-            if (currentFlickerTime >= flickerSpeed)
-            {
-                flashSpriteRenderer.color = flashSpriteRenderer.color.a == 0 ? new Color(0, 0, 0, 1) : new Color(0, 0, 0, 0);
-                currentFlickerTime = 0f;
-            }
+            Damage(false);
+            asteroid.Damage(100, transform.up);
         }
     }
 

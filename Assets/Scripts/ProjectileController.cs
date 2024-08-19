@@ -47,13 +47,13 @@ public class ProjectileController : MonoBehaviour
 
             if (hit.collider.TryGetComponent(out CopBoid cop))
             {
-                cop.Damage();
+                cop.Damage(true);
                 Destroy(gameObject);
                 return;
             }
             if (hit.collider.TryGetComponent(out CopBoidLeader copl))
             {
-                copl.Damage();
+                copl.Damage(true);
                 Destroy(gameObject);
                 return;
             }

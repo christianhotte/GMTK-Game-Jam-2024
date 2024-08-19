@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CopBoid : MonoBehaviour
 {
+    public GameObject[] explosionParticles;
+
     //Settings:
     public int hp = 2;
     public float collisionDamage = 50;
@@ -19,7 +21,7 @@ public class CopBoid : MonoBehaviour
     private bool isFlickering;
     private float currentFlickerTime;
     private float currentFlickerDurationTime;
-    private SpriteRenderer flashSpriteRenderer;
+    public SpriteRenderer flashSpriteRenderer;
 
     //Runtime Vars:
     internal Vector2 velocity;
@@ -27,11 +29,6 @@ public class CopBoid : MonoBehaviour
 
     //Leader ref
     public CopBoidLeader leader;
-
-    private void Awake()
-    {
-        flashSpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
-    }
 
     private void Start()
     {
@@ -64,24 +61,34 @@ public class CopBoid : MonoBehaviour
             }
         }
         */
+        if (collision.collider.gameObject.transform.parent == null) return;
+        if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
+        {
+            Damage(false);
+            asteroid.Damage(collisionDamage, velocity);
+        }
     }
 
-    public void Damage()
+    public void Damage(bool from_shooting)
     {
         hp -= 1;
-        leader.alert = true;
-        if (hp <= 1)
+        if (from_shooting) leader.alert = true;
+        if (hp <= 0)
         {
+            //Particle Fx
+            for (int i = 0; i < explosionParticles.Length; i++)
+            {
+                var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
+            }
             leader.ships.Remove(this);
             Destroy(gameObject);
         }
-        currentFlickerTime = flickerSpeed;
-        currentFlickerDurationTime = 0f;
-        isFlickering = true;
+        flashSpriteRenderer.color = new Color(1, 1, 1, 0);
     }
 
     public void Update()
     {
+        FlickerAnimation();
         if (isFlickering)
         {
             FlickerAnimation();
@@ -99,23 +106,8 @@ public class CopBoid : MonoBehaviour
 
     private void FlickerAnimation()
     {
-        currentFlickerDurationTime += Time.deltaTime;
-
-        if (currentFlickerDurationTime >= flickerDuration)
-        {
-            isFlickering = false;
-            flashSpriteRenderer.color = new Color(1, 1, 1, 0);
-        }
-
-        else
-        {
-            currentFlickerTime += Time.deltaTime;
-
-            if (currentFlickerTime >= flickerSpeed)
-            {
-                flashSpriteRenderer.color = flashSpriteRenderer.color.a == 0 ? new Color(0, 0, 0, 1) : new Color(0, 0, 0, 0);
-                currentFlickerTime = 0f;
-            }
-        }
+        float temp = flashSpriteRenderer.color.a;
+        temp = Mathf.Lerp(temp, 1, Time.deltaTime * 4.0f);
+        flashSpriteRenderer.color = new Color(1, 1, 1, temp);
     }
 }

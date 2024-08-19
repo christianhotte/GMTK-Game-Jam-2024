@@ -30,22 +30,38 @@ public class BoidShip : MonoBehaviour
             PlayerController.main.UpdateBoidSettings();
             gem.DestroyGem();
         }
-        else if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
+        else if (active && collision.collider.gameObject.TryGetComponent<CopBoid>(out CopBoid cb))
         {
-            asteroid.Damage(collisionDamage, velocity);
-            if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
-            else
+            BlowUp();
+        }
+        else if (active && collision.collider.gameObject.TryGetComponent<CopBoidLeader>(out CopBoidLeader cbl))
+        {
+            BlowUp();
+        }
+        else if (collision.collider.gameObject.transform.parent != null)
+        {
+            if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
             {
-                //Particle Fx
-                for (int i = 0; i < explosionParticles.Length; i++)
-                {
-                    var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
-                }
-
-                PlayerController.main.ships.Remove(this);
-                Destroy(gameObject);
+                asteroid.Damage(collisionDamage, velocity);
+                BlowUp();
             }
         }
         
+    }
+
+    public void BlowUp()
+    {
+        if (TryGetComponent<PlayerController>(out PlayerController player)) { player.IsHit(); }
+        else
+        {
+            //Particle Fx
+            for (int i = 0; i < explosionParticles.Length; i++)
+            {
+                var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
+            }
+
+            PlayerController.main.ships.Remove(this);
+            Destroy(gameObject);
+        }
     }
 }

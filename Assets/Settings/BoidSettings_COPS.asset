@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BoidSettings_10x
   m_EditorClassIdentifier: 
   boidNumber: 10
-  maxBoidSpeed: 10
-  maxBoidForce: 0.37
+  maxBoidSpeed: 15
+  maxBoidForce: 0.2
   boidRotRate: 5
   boidDragCoefficient: 0.3
   boidNeighborRadius: 2
