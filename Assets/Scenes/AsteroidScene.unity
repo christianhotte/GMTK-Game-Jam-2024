@@ -289,7 +289,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1000
   m_Sprite: {fileID: 21300000, guid: 157105a1f6d7b91469ae4a97c4897104, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -819,6 +819,18 @@ PrefabInstance:
     - target: {fileID: 6419359796921350471, guid: 920662fcd76d97c42a34bf2fcc381c4d, type: 3}
       propertyPath: m_Name
       value: AsteroidSpawner (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6564903409470378875, guid: 920662fcd76d97c42a34bf2fcc381c4d, type: 3}
+      propertyPath: copPrefab
+      value: 
+      objectReference: {fileID: 647769081726151514, guid: 4aa5135a5693d514d8a000c697bd20b7, type: 3}
+    - target: {fileID: 6564903409470378875, guid: 920662fcd76d97c42a34bf2fcc381c4d, type: 3}
+      propertyPath: copLeaderPrefab
+      value: 
+      objectReference: {fileID: 6884158070565738014, guid: f099a1c0e2e7a224694a5413bb7efe9e, type: 3}
+    - target: {fileID: 6564903409470378875, guid: 920662fcd76d97c42a34bf2fcc381c4d, type: 3}
+      propertyPath: copLeaderPercentage
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

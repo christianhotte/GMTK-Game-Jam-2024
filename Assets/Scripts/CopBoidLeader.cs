@@ -10,6 +10,7 @@ using Unity.PlasticSCM.Editor.WebApi;
 
 public class CopBoidLeader : MonoBehaviour
 {
+    public static CopBoidLeader instance = null;
     public GameObject[] explosionParticles;
     public int hp = 10;
 
@@ -30,9 +31,18 @@ public class CopBoidLeader : MonoBehaviour
 
     internal List<CopBoid> ships = new List<CopBoid>();
     public BoidSettings boidSettings;
+    private Rigidbody2D r2d;
+
+    private void Awake()
+    {
+        instance = this;
+        r2d = GetComponent<Rigidbody2D>();
+    }
 
     private void Update()
     {
+        r2d.velocity = Vector2.zero;
+        r2d.angularVelocity = 0;
         if (flashSpriteRenderer != null) FlickerAnimation();
         //Move boids:
         foreach (CopBoid boid in ships)
@@ -136,9 +146,9 @@ public class CopBoidLeader : MonoBehaviour
         return baseVector;
     }
 
-    public void Damage(bool from_shooting)
+    public void Damage(bool from_shooting, int amt)
     {
-        hp -= 1;
+        hp -= amt;
         if (from_shooting) alert = true;
         if (hp <= 0)
         {
@@ -150,6 +160,10 @@ public class CopBoidLeader : MonoBehaviour
             Destroy(gameObject);
         }
         flashSpriteRenderer.color = new Color(1, 1, 1, 0);
+    }
+    public void Damage(bool from_shooting)
+    {
+        Damage(from_shooting, 1);
     }
 
     private void FlickerAnimation()
@@ -164,7 +178,7 @@ public class CopBoidLeader : MonoBehaviour
         if (collision.collider.gameObject.transform.parent == null) return;
         if (collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
-            Damage(false);
+            Damage(false, 999);
             asteroid.Damage(100, transform.up);
         }
     }

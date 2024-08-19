@@ -26,13 +26,19 @@ public class CopBoid : MonoBehaviour
     //Runtime Vars:
     internal Vector2 velocity;
     internal bool active = true;
+    private Rigidbody2D r2d;
 
     //Leader ref
     public CopBoidLeader leader;
 
-    private void Start()
+    private void Awake()
     {
-        leader.ships.Add(this);
+        r2d = GetComponent<Rigidbody2D>();
+    }
+
+    public void Init()
+    {
+        if (leader != null) leader.ships.Add(this);
     }
 
     //BOID METHODS:
@@ -64,15 +70,15 @@ public class CopBoid : MonoBehaviour
         if (collision.collider.gameObject.transform.parent == null) return;
         if (active && collision.collider.gameObject.transform.parent.TryGetComponent<Asteroid>(out Asteroid asteroid))
         {
-            Damage(false);
+            Damage(false, 999);
             asteroid.Damage(collisionDamage, velocity);
         }
     }
 
-    public void Damage(bool from_shooting)
+    public void Damage(bool from_shooting, int amt)
     {
-        hp -= 1;
-        if (from_shooting) leader.alert = true;
+        hp -= amt;
+        if (from_shooting && leader != null) leader.alert = true;
         if (hp <= 0)
         {
             //Particle Fx
@@ -85,9 +91,15 @@ public class CopBoid : MonoBehaviour
         }
         flashSpriteRenderer.color = new Color(1, 1, 1, 0);
     }
+    public void Damage(bool from_shooting)
+    {
+        Damage(from_shooting, 1);
+    }
 
     public void Update()
     {
+        r2d.velocity = Vector2.zero;
+        r2d.angularVelocity = 0;
         FlickerAnimation();
         if (isFlickering)
         {
