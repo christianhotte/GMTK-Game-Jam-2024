@@ -98,6 +98,11 @@ public class MenuController : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    public void ClickSoundUI()
+    {
+        GameManager.Instance.AudioManager.PlayOneShot("Click", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+    }
+
     private void Update()
     {
         if (flickerHighScore)

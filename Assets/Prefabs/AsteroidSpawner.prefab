@@ -48,6 +48,8 @@ MonoBehaviour:
   prisonPrefab: {fileID: 7572452742451508560, guid: 0956308f3bbccd14b9720ab92af265e9, type: 3}
   planetPrefab: {fileID: 9187907896298145554, guid: 0c513c687669cc44bb175b944feaf550, type: 3}
   gemPrefab: {fileID: 5991099105758395093, guid: 37fcdd907021d4f4dab87184a3fbabdd, type: 3}
+  copLeaderPrefab: {fileID: 6884158070565738014, guid: f099a1c0e2e7a224694a5413bb7efe9e, type: 3}
+  copPrefab: {fileID: 647769081726151514, guid: 4aa5135a5693d514d8a000c697bd20b7, type: 3}
   objectContainer: {fileID: 0}
   maxPoolSize: 500
   thresholdToSpawn: 0
@@ -59,6 +61,8 @@ MonoBehaviour:
   prisonPercentage: 0.05
   planetThreshold: 50
   planetPercentage: 0.005
+  copLeaderPercentage: 0.009
+  maxAmountOfCops: 30
   BASE_SPEED: 30
   SPEED_FACTOR: 5
   HEALTH_FACTOR: 30

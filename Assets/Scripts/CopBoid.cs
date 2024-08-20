@@ -79,6 +79,7 @@ public class CopBoid : MonoBehaviour
     {
         hp -= amt;
         if (from_shooting && leader != null) leader.alert = true;
+        GameManager.Instance.AudioManager.PlayOneShot("CopHit", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
         if (hp <= 0)
         {
             //Particle Fx
@@ -87,7 +88,8 @@ public class CopBoid : MonoBehaviour
                 var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
             }
             leader.ships.Remove(this);
-            Destroy(gameObject);
+            GameManager.Instance.AudioManager.PlayOneShot("CopDeath", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+            gameObject.SetActive(false);
         }
         flashSpriteRenderer.color = new Color(1, 1, 1, 0);
     }
@@ -111,7 +113,8 @@ public class CopBoid : MonoBehaviour
             transform.position = transform.position + ((Vector3)velocity * Time.deltaTime);
             if (Vector3.Distance(PlayerController.main.transform.position, transform.position) > despawnDistance)
             {
-                Destroy(gameObject);
+                GameManager.Instance.AudioManager.PlayOneShot("CopDeath", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+                gameObject.SetActive(false);
             }
         }
     }

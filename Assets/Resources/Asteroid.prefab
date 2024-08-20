@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9201244221126722480}
   - component: {fileID: 5758889531417644147}
   - component: {fileID: 7657548260616505375}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Asteroid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3427639867409658305}
   - component: {fileID: 1921739469269104111}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 5627094041562695831}
   - component: {fileID: 2288061938881531102}
   - component: {fileID: 5275643861353220825}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

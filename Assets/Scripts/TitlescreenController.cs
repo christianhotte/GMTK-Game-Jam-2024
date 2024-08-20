@@ -74,6 +74,11 @@ public class TitlescreenController : MonoBehaviour
         PlayerPrefs.SetFloat("AudioVolume", newVolume * 0.1f);
     }
 
+    public void ClickSoundUI()
+    {
+        GameManager.Instance.AudioManager.PlayOneShot("Click", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+    }
+
     /// <summary>
     /// Quits the game.
     /// </summary>

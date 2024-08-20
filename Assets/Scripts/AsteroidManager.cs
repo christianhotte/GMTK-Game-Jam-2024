@@ -24,6 +24,7 @@ public class AsteroidManager : MonoBehaviour
     [SerializeField, Tooltip("The amount of ships needed before planets begin to spawn.")] private int planetThreshold = 50;
     [SerializeField, Tooltip("The percent chance that a planet will spawn instead of an asteroid.")] private float planetPercentage = 0.15f;
     [SerializeField, Tooltip("The percent chance that a cop swarm will spawn instead of an asteroid.")] private float copLeaderPercentage = 0.08f;
+    [SerializeField, Tooltip("The max amount of cops that can be spawned.")] private int maxAmountOfCops = 30;
 
     public float BASE_SPEED = 10f;
     public float SPEED_FACTOR = 5f;
@@ -37,6 +38,7 @@ public class AsteroidManager : MonoBehaviour
     private List<PrisonController> prisonPool = new List<PrisonController>();
     private List<PlanetController> planetPool = new List<PlanetController>();
     private List<GemController> gemPool = new List<GemController>();
+    private List<CopBoid> copBoidPool = new List<CopBoid>();
     private List<CopBoidLeader> copBoidLeaderPool = new List<CopBoidLeader>();
 
     private Camera mainCamera;
@@ -71,6 +73,12 @@ public class AsteroidManager : MonoBehaviour
 
             gemPool.Add(Instantiate(gemPrefab, Vector2.zero, Quaternion.identity, objectContainer));
             gemPool[i].gameObject.SetActive(false);
+
+            copBoidPool.Add(Instantiate(copPrefab, Vector2.zero, Quaternion.identity, objectContainer));
+            copBoidPool[i].gameObject.SetActive(false);
+
+            copBoidLeaderPool.Add(Instantiate(copLeaderPrefab, Vector2.zero, Quaternion.identity, objectContainer));
+            copBoidLeaderPool[i].gameObject.SetActive(false);
         }
     }
 
@@ -93,10 +101,10 @@ public class AsteroidManager : MonoBehaviour
 
         if (currentAmountMoved >= PlayerController.main.boidSettings.asteroidSpawnRate)
         {
-            Vector2 spawnPosition;
+            Vector2 spawnPosition = Vector2.zero;
 
             //Spawn a planet
-            if (PlayerController.main.ships.Count >= planetThreshold && Random.Range(0.0f, 1.0f) < planetPercentage)
+            if (PlayerController.main.ships.Count >= planetThreshold && UnityEngine.Random.Range(0.0f, 1.0f) < planetPercentage)
             {
                 Debug.Log("Spawning A Planet...");
                 spawnPosition = CreateSpawnPoint(planetPrefab.GetComponent<CircleCollider2D>().radius);
@@ -109,8 +117,10 @@ public class AsteroidManager : MonoBehaviour
             //Spawn cops
             else if (UnityEngine.Random.Range(0.0f, 1.0f) < copLeaderPercentage)
             {
-                Vector2 spawnPosition = CreateSpawnPoint(10.0f);
+                Debug.Log("Spawning Cops...");
+                spawnPosition = CreateSpawnPoint(10.0f);
                 SpawnCopBoidLeader(spawnPosition);
+                currentAmountMoved = 0;
                 return;
             }
 
@@ -255,18 +265,40 @@ public class AsteroidManager : MonoBehaviour
 
     public CopBoidLeader SpawnCopBoidLeader(Vector2 position)
     {
-        if (CopBoidLeader.instance != null) return null;
-        CopBoidLeader temp = Instantiate(copLeaderPrefab, position, Quaternion.identity, asteroidContainer);
-        for (int i = 0; i < PlayerController.main.ships.Count; i++)
+        //if (CopBoidLeader.instance != null) return null;
+
+        CopBoidLeader temp = null;
+        for (int i = 0; i < copBoidLeaderPool.Count; i++)
+        {
+            if (!copBoidLeaderPool[i].gameObject.activeInHierarchy)
+            {
+                temp = copBoidLeaderPool[i];
+                temp.gameObject.SetActive(true);
+                temp.transform.position = position;
+                break;
+            }
+        }
+
+        for (int i = 0; i < Mathf.Clamp(PlayerController.main.ships.Count, 0, maxAmountOfCops); i++)
         {
             float angle = (360f / PlayerController.main.ships.Count) * i;
             Vector2 smallpos = Quaternion.AngleAxis(20f, Vector3.forward) * Vector2.right*0.1f;
             smallpos += position;
-            CopBoid cb = Instantiate(copPrefab, smallpos, Quaternion.identity, asteroidContainer);
-            cb.leader = temp;
-            cb.Init();
+
+            CopBoid cb = null;
+            for (int j = 0; j < copBoidPool.Count; j++)
+            {
+                if (!copBoidPool[j].gameObject.activeInHierarchy)
+                {
+                    cb = copBoidPool[j];
+                    cb.gameObject.SetActive(true);
+                    cb.transform.position = smallpos;
+                    cb.leader = temp;
+                    cb.Init();
+                    break;
+                }
+            }
         }
-        copBoidLeaderPool.Add(temp);
         return temp;
     }
 
@@ -317,7 +349,7 @@ public class AsteroidManager : MonoBehaviour
 
     public void DestroyAsteroid(Asteroid currentAsteroid, float size)
     {
-        int random = Random.Range(0, 3);
+        int random = UnityEngine.Random.Range(0, 3);
 
         float pitchFactor = 5f / size;
         Mathf.Clamp(pitchFactor, 0.2f, 2.9f);

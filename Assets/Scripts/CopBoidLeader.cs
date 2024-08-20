@@ -1,12 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Build.Content;
 using System.Linq;
 using UnityEngine;
 using System;
-using System.Security.Cryptography;
-using Unity.PlasticSCM.Editor.WebApi;
 
 public class CopBoidLeader : MonoBehaviour
 {
@@ -150,6 +146,7 @@ public class CopBoidLeader : MonoBehaviour
     {
         hp -= amt;
         if (from_shooting) alert = true;
+        GameManager.Instance.AudioManager.PlayOneShot("CopHit", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
         if (hp <= 0)
         {
             //Particle Fx
@@ -157,7 +154,8 @@ public class CopBoidLeader : MonoBehaviour
             {
                 var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
             }
-            Destroy(gameObject);
+            GameManager.Instance.AudioManager.PlayOneShot("CopDeath", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+            gameObject.SetActive(false);
         }
         flashSpriteRenderer.color = new Color(1, 1, 1, 0);
     }

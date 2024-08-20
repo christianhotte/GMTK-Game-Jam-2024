@@ -89,6 +89,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a49228ae16127134a8bf24b828f414f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgmMixer: {fileID: 5802316482864546721, guid: b344f9b7b2227db408116ba5b9a3e6d5, type: 2}
+  sfxMixer: {fileID: 4279340188021939522, guid: cd100e0035cd37440801fadbe7889377, type: 2}
   sounds:
   - name: AsteroidHit
     clip: {fileID: 8300000, guid: 5b9b6562d0573d04a970806c4dbafe2e, type: 3}
@@ -119,4 +121,10 @@ MonoBehaviour:
     loop: 0
   - name: Click
     clip: {fileID: 8300000, guid: 2747acd0a62a68b438fd19abe7ca46ad, type: 3}
+    loop: 0
+  - name: CopHit
+    clip: {fileID: 8300000, guid: 2747acd0a62a68b438fd19abe7ca46ad, type: 3}
+    loop: 0
+  - name: CopDeath
+    clip: {fileID: 8300000, guid: cae259b97508e35419ff03a1a1d58985, type: 3}
     loop: 0
