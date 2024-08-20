@@ -15,13 +15,16 @@ public class PrisonController : MonoBehaviour
     [SerializeField, Tooltip("The duration of the damage shake.")] private float shakeFrequency = 1;
     [SerializeField, Tooltip("The rotation speed of the prison.")] private float rotationSpeed;
     [SerializeField, Tooltip("The percentage of ships in the prison relative to the current ship count.")] private Vector2 shipPercentRange;
-    [SerializeField, Tooltip("stinky")] private float randomSpawnRadius;
+    [SerializeField, Tooltip("The maximum amount of ships to gain from a prison.")] private int maxShips = 30;
+    [SerializeField, Tooltip("The random spawn radius for the boids after spawning.")] private float randomSpawnRadius;
+    [SerializeField, Tooltip("The explosion particle for the prison.")] private GameObject explosionParticle;
 
     public bool debugDamage = false;
 
     private float currentHealth;
     private bool isShaking;
     private float currentShakeTime;
+    private int totalShips;
 
     private List<BoidShip> boidShips;
 
@@ -33,10 +36,12 @@ public class PrisonController : MonoBehaviour
 
     public void Init()
     {
-        int totalShips = numberOfShips;
+        totalShips = numberOfShips;
 
         if(PlayerController.main.ships.Count > 0)
             totalShips += Mathf.CeilToInt(PlayerController.main.ships.Count * Random.Range(shipPercentRange.x, shipPercentRange.y));
+
+        totalShips = Mathf.Clamp(totalShips, 0, maxShips);
 
         boidShips = new List<BoidShip>(totalShips);
 
@@ -63,7 +68,7 @@ public class PrisonController : MonoBehaviour
         {
             currentHealth = 0;
 
-            for (int i = 0; i < numberOfShips; i++)
+            for (int i = 0; i < totalShips; i++)
             {
                 BoidShip newShip = Instantiate(PlayerController.main.boidPrefab).GetComponent<BoidShip>();
                 newShip.transform.position = (Vector2)transform.position + (Random.insideUnitCircle * randomSpawnRadius);
@@ -71,10 +76,11 @@ public class PrisonController : MonoBehaviour
                 PlayerController.main.ships.Add(newShip);
             }
 
-            ScoreManager.Instance.AddToScore(numberOfShips);
+            ScoreManager.Instance.AddToScore(totalShips);
             ScoreManager.Instance.AdjustShipNumber(PlayerController.main.ships.Count);
             GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode3", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
             GameManager.Instance.AudioManager.PlayOneShot("BoidGet", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+            Instantiate(explosionParticle, transform.position, Quaternion.identity);
             gameObject.SetActive(false);
         }
     }

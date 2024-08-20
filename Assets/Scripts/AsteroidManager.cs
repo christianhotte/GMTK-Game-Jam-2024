@@ -232,7 +232,6 @@ public class AsteroidManager : MonoBehaviour
                 newPlanet = planetPool[i];
                 newPlanet.gameObject.SetActive(true);
                 newPlanet.transform.position = position;
-                newPlanet.transform.SetParent(objectContainer);
                 break;
             }
         }
@@ -255,8 +254,6 @@ public class AsteroidManager : MonoBehaviour
                 newPrison = prisonPool[i];
                 newPrison.gameObject.SetActive(true);
                 newPrison.transform.position = position;
-                newPrison.transform.SetParent(objectContainer);
-                newPrison.Init();
                 break;
             }
         }
@@ -315,7 +312,6 @@ public class AsteroidManager : MonoBehaviour
                 newAsteroid = asteroidPool[i];
                 newAsteroid.gameObject.SetActive(true);
                 newAsteroid.transform.position = position;
-                newAsteroid.transform.SetParent(objectContainer);
                 break;
             }
         }

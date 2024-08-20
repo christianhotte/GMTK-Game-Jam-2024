@@ -70,6 +70,7 @@ public class BoidShip : MonoBehaviour
             GameManager.Instance.AudioManager.PlayOneShot("BoidDeath", PlayerPrefs.GetFloat("AudioVolume", 0.5f), (pitchScale - 0.2f), (pitchScale + 0.2f));
             PlayerController.main.ships.Remove(this);
             ScoreManager.Instance.AdjustShipNumber(PlayerController.main.ships.Count);
+            CameraShaker.Instance.ShakeCamera(5f, 0.2f);
             Destroy(gameObject);
         }
     }
