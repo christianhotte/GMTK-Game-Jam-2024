@@ -288,7 +288,7 @@ public class AsteroidManager : MonoBehaviour
         int random = Random.Range(0, 3);
 
         float pitchFactor = 5f / size;
-        Mathf.Clamp(pitchFactor, 0.1f, 2.9f);
+        Mathf.Clamp(pitchFactor, 0.2f, 2.9f);
 
         if (random == 0) GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode", PlayerPrefs.GetFloat("AudioVolume", 0.5f), (pitchFactor - 0.3f), (pitchFactor + 0.3f));
         else if (random == 1) GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode2", PlayerPrefs.GetFloat("AudioVolume", 0.5f), (pitchFactor - 0.3f), (pitchFactor + 0.3f));
