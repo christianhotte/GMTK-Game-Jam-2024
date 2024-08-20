@@ -93,7 +93,7 @@ public class AsteroidManager : MonoBehaviour
             if (PlayerController.main.ships.Count >= planetThreshold && Random.Range(0.0f, 1.0f) < planetPercentage)
             {
                 Debug.Log("Spawning A Planet...");
-                spawnPosition = CreateSpawnPoint(planetPrefab.GetCircleCollider().radius);
+                spawnPosition = CreateSpawnPoint(planetPrefab.GetComponent<CircleCollider2D>().radius);
 
                 SpawnPlanet(spawnPosition);
                 currentAmountMoved = 0;
