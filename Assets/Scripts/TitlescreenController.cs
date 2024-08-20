@@ -53,20 +53,28 @@ public class TitlescreenController : MonoBehaviour
             //Go to the settings menu
             case MenuState.SETTINGS:
                 currentMenuPage.menuCanvasGroup.alpha = 0;
+                currentMenuPage.menuCanvasGroup.interactable = false;
+                currentMenuPage.menuCanvasGroup.blocksRaycasts = false;
                 currentMenuPage.menuCanvasGroup.gameObject.SetActive(false);
                 currentMenuPage = menuStates[(int)MenuState.SETTINGS];
                 currentMenuPage.menuCanvasGroup.gameObject.SetActive(true);
                 currentMenuPage.menuCanvasGroup.alpha = 1;
+                currentMenuPage.menuCanvasGroup.interactable = true;
+                currentMenuPage.menuCanvasGroup.blocksRaycasts = true;
                 break;
 
             //Go to the main menu
             default:
                 currentMenuPage.menuCanvasGroup.alpha = 0;
+                currentMenuPage.menuCanvasGroup.interactable = false;
+                currentMenuPage.menuCanvasGroup.blocksRaycasts = false;
                 currentMenuPage.menuCanvasGroup.gameObject.SetActive(false);
                 currentMenuPage = menuStates[(int)MenuState.TITLE];
                 currentMenuPage.menuCanvasGroup.gameObject.SetActive(true
                     );
                 currentMenuPage.menuCanvasGroup.alpha = 1;
+                currentMenuPage.menuCanvasGroup.interactable = true;
+                currentMenuPage.menuCanvasGroup.blocksRaycasts = true;
                 break;
         }
     }

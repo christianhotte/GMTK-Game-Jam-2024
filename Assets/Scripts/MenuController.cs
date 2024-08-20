@@ -56,6 +56,7 @@ public class MenuController : MonoBehaviour
         GameManager.Instance?.AudioManager.PauseAllSounds();
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;
+        Cursor.visible = true;
     }
 
     public void Resume()
@@ -64,6 +65,7 @@ public class MenuController : MonoBehaviour
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
         GameManager.Instance?.AudioManager.ResumeAllSounds();
+        Cursor.visible = false;
     }
 
     public void DisplayGameOver()
@@ -80,6 +82,7 @@ public class MenuController : MonoBehaviour
 
         Time.timeScale = 0f;
         gameOverMenu.SetActive(true);
+        Cursor.visible = true;
     }
 
     public void Retry()
@@ -88,6 +91,7 @@ public class MenuController : MonoBehaviour
         GameManager.Instance.isGameActive = true;
         GameManager.Instance.isPaused = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Cursor.visible = false;
     }
 
     public void ReturnToMain()
