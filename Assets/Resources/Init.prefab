@@ -110,6 +110,9 @@ MonoBehaviour:
   - name: GameMusic
     clip: {fileID: 8300000, guid: 7c07b5e84d826af4caec2be942baf602, type: 3}
     loop: 1
+  - name: TitleMusic
+    clip: {fileID: 8300000, guid: 125fcc5d17c518541b9918ac6fa91919, type: 3}
+    loop: 1
   - name: Shoot
     clip: {fileID: 8300000, guid: 16772ec7808c3074db209d987e53b276, type: 3}
     loop: 0

@@ -34,6 +34,7 @@ public class TitlescreenController : MonoBehaviour
         currentMenuPage = menuStates[(int)MenuState.TITLE];
         audioSlider.value = PlayerPrefs.GetFloat("AudioVolume", 0.5f) * 10f;
         highScoreText.text = "High Score: " + PlayerPrefs.GetInt("Highscore");
+        GameManager.Instance.AudioManager.Play("TitleMusic", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
     }
 
     /// <summary>
@@ -41,6 +42,7 @@ public class TitlescreenController : MonoBehaviour
     /// </summary>
     public void PlayGame(string levelScene)
     {
+        GameManager.Instance.AudioManager.Stop("TitleMusic");
         SceneManager.LoadScene(levelScene);
     }
 
@@ -72,6 +74,7 @@ public class TitlescreenController : MonoBehaviour
     public void AdjustVolume(float newVolume)
     {
         PlayerPrefs.SetFloat("AudioVolume", newVolume * 0.1f);
+        GameManager.Instance.AudioManager.ChangeVolume("TitleMusic", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
     }
 
     public void ClickSoundUI()
