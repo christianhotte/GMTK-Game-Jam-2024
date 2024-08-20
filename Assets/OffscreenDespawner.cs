@@ -27,7 +27,7 @@ public class OffscreenDespawner : MonoBehaviour
         {
             tickTimer = tickRate;
             //Check Offscreen
-            if (GameManager.Instance.IsOnScreen(transform.position) == false)
+            if (GameManager.Instance.IsOnScreen(transform) == false)
             {
                 isOnscreen = false;
             }
