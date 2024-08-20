@@ -56,6 +56,9 @@ public class PrisonController : MonoBehaviour
         isShaking = true;
         currentShakeTime = 0f;
 
+        //PlaySound
+        GameManager.Instance.AudioManager.PlayOneShot("Click", PlayerPrefs.GetFloat("AudioVolume", 0.5f), 0.7f, 1.3f);
+
         if (currentHealth <= 0)
         {
             currentHealth = 0;
@@ -67,6 +70,9 @@ public class PrisonController : MonoBehaviour
                 newShip.transform.eulerAngles = Vector2.Angle(Vector2.up, PlayerController.main.transform.position - transform.position) * Vector3.forward;
                 PlayerController.main.ships.Add(newShip);
             }
+
+            GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode3", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+            GameManager.Instance.AudioManager.PlayOneShot("BoidGet", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
 
             gameObject.SetActive(false);
         }

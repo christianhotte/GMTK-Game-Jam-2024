@@ -90,8 +90,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
+  - name: AsteroidHit
+    clip: {fileID: 8300000, guid: 5b9b6562d0573d04a970806c4dbafe2e, type: 3}
+    loop: 0
   - name: AsteroidExplode
-    clip: {fileID: 8300000, guid: bd707a9142da9204a912a77944add0b1, type: 3}
+    clip: {fileID: 8300000, guid: 5c6129068033b7445a9b32e6960bbebe, type: 3}
+    loop: 0
+  - name: AsteroidExplode2
+    clip: {fileID: 8300000, guid: d7fc06baea5ac0e4fa461460a43fc217, type: 3}
+    loop: 0
+  - name: AsteroidExplode3
+    clip: {fileID: 8300000, guid: c9b6a4c74b651a542a91fd91814eb905, type: 3}
     loop: 0
   - name: DebugSound
     clip: {fileID: 8300000, guid: f91ebd6c23e2cd444bb9942dbec8cba8, type: 3}
@@ -99,3 +108,15 @@ MonoBehaviour:
   - name: GameMusic
     clip: {fileID: 8300000, guid: fe5dbc040cbcf5d4ab655d167617346d, type: 3}
     loop: 1
+  - name: Shoot
+    clip: {fileID: 8300000, guid: 16772ec7808c3074db209d987e53b276, type: 3}
+    loop: 0
+  - name: BoidGet
+    clip: {fileID: 8300000, guid: 6bf9a2e4914f2e74288dd6f8e74c7bbc, type: 3}
+    loop: 0
+  - name: BoidDeath
+    clip: {fileID: 8300000, guid: 805bd692edfcadc4d9c9cd0d66d363eb, type: 3}
+    loop: 0
+  - name: Click
+    clip: {fileID: 8300000, guid: 2747acd0a62a68b438fd19abe7ca46ad, type: 3}
+    loop: 0

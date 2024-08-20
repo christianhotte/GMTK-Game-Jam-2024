@@ -283,9 +283,16 @@ public class AsteroidManager : MonoBehaviour
         return Random.Range(PlayerController.main.boidSettings.asteroidSizeRange.x, PlayerController.main.boidSettings.asteroidSizeRange.y);
     }
 
-    public void DestroyAsteroid(Asteroid currentAsteroid)
+    public void DestroyAsteroid(Asteroid currentAsteroid, float size)
     {
-        GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode", 0.5f);
+        int random = Random.Range(0, 3);
+
+        float pitchFactor = 5f / size;
+        Mathf.Clamp(pitchFactor, 0.1f, 2.9f);
+
+        if (random == 0) GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode", PlayerPrefs.GetFloat("AudioVolume", 0.5f), (pitchFactor - 0.3f), (pitchFactor + 0.3f));
+        else if (random == 1) GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode2", PlayerPrefs.GetFloat("AudioVolume", 0.5f), (pitchFactor - 0.3f), (pitchFactor + 0.3f));
+        else GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode3", PlayerPrefs.GetFloat("AudioVolume", 0.5f), (pitchFactor - 0.3f), (pitchFactor + 0.3f));
         currentAsteroid.gameObject.SetActive(false);
     }
 }

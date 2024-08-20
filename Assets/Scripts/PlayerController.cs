@@ -267,6 +267,9 @@ public class PlayerController : MonoBehaviour
         //Fire projectile:
         ProjectileController newProj = Instantiate(projectilePrefab).GetComponent<ProjectileController>();
         newProj.Fire(barrel, barrel == transform ? velocity : ships[lastFireShip - 1].velocity);
+
+        //PlaySound
+        GameManager.Instance.AudioManager.Play("Shoot", PlayerPrefs.GetFloat("AudioVolume", 0.5f), 0.9f, 1.1f);
     }
     public void UpdateBoidSettings()
     {

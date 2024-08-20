@@ -155,13 +155,16 @@ public class Asteroid : MonoBehaviour
             
 
             ScoreManager.Instance.AddToScore(Mathf.RoundToInt((size * 10.0f) / 10.0f) * 10);
-            AsteroidManager.main?.DestroyAsteroid(this);
+            AsteroidManager.main?.DestroyAsteroid(this, size);
 
         }
 
         currentFlickerTime = flickerSpeed;
         currentFlickerDurationTime = 0f;
         isFlickering = true;
+
+        //PlaySound
+        GameManager.Instance.AudioManager.PlayOneShot("AsteroidHit", PlayerPrefs.GetFloat("AudioVolume", 0.5f), 0.7f, 1.3f);
     }
 
     public bool debugDamage = false;
