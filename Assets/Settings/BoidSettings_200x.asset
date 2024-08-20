@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 946bb818b76946943baff4d378167394, type: 3}
   m_Name: BoidSettings_200x
   m_EditorClassIdentifier: 
-  boidNumber: 50
+  boidNumber: 200
   maxBoidSpeed: 10
   maxBoidForce: 0.37
   boidRotRate: 5
@@ -22,12 +22,12 @@ MonoBehaviour:
   boidSepForce: 1.88
   boidCohForce: 0.4
   boidAlignForce: 0
-  boidLeaderFollowForce: 20
-  boidLeaderVelocityInheritance: 0.569
-  boidLeaderSepRadii: {x: 7.72, y: 12.22}
+  boidLeaderFollowForce: 200
+  boidLeaderVelocityInheritance: 0.709
+  boidLeaderSepRadii: {x: 15.02, y: 18}
   leaderAlignBlend: 0.804
-  camSize: 17.1
-  fireRate: 100
-  asteroidSizeRange: {x: 6.72, y: 50}
-  asteroidSpawnDistance: 35.9
-  asteroidSpawnRate: 3
+  camSize: 33.5
+  fireRate: 150
+  asteroidSizeRange: {x: 10, y: 85}
+  asteroidSpawnDistance: 67.2
+  asteroidSpawnRate: 2.8
