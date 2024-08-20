@@ -60,9 +60,9 @@ public class PlayerController : MonoBehaviour
             case "Mouse": OnMouse(ctx); break;
             case "Thrust": OnThrust(ctx); break;
             case "Shoot": OnShoot(ctx); break;
-            case "DebugSpawn": OnDebugSpawn(ctx); break;
+            //case "DebugSpawn": OnDebugSpawn(ctx); break;
             //case "DebugDeSpawn": OnDebugDeSpawn(ctx); break;
-            case "DebugPrisonSpawn": OnDebugPrisonSpawn(ctx); break;
+            //case "DebugPrisonSpawn": OnDebugPrisonSpawn(ctx); break;
             default: break;
         }
     }
