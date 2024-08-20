@@ -28,10 +28,10 @@ public class GameManager : MonoBehaviour
         gemChance = 100f;
     }
 
-    public bool IsOnScreen(Vector3 position)
+    public bool IsOnScreen(Transform item)
     {
-        Vector2 viewportPos = Camera.main.WorldToViewportPoint(position);
-        return (!(viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1));
+        float distFromCam = Vector2.Distance(Camera.main.transform.position, item.position);
+        return distFromCam <= PlayerController.main.boidSettings.asteroidSpawnDistance + item.transform.localScale.x / 2;
     }
 
     public bool CheckGem()

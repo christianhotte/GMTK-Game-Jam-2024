@@ -93,6 +93,7 @@ public class AsteroidManager : MonoBehaviour
             float asteroidSize = CalculateAsteroidSize();
             spawnPosition = CreateSpawnPoint(asteroidSize);
 
+            print(asteroidPool.Count);
             if (asteroidPool.Count >= maxPoolSize)
             {
                 Asteroid moveAsteroid = FindLongestUnseenAsteroid();

@@ -130,7 +130,7 @@ public class Asteroid : MonoBehaviour
     private void Update()
     {
 
-        bool onScreen = GameManager.Instance.IsOnScreen(transform.position);
+        bool onScreen = GameManager.Instance.IsOnScreen(transform);
         if (onScreen && !prevOnScreen) OnOnscreen();
         prevOnScreen = onScreen;
 
