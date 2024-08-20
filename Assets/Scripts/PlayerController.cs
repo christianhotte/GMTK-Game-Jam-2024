@@ -216,7 +216,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDebugSpawn(InputAction.CallbackContext ctx)
     {
-        if (ctx.started)
+        if (ctx.started && Application.isEditor)
         {
             Transform newShip = Instantiate(boidPrefab.transform);
             ships.Add(newShip.GetComponent<BoidShip>());
@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDebugDeSpawn(InputAction.CallbackContext ctx)
     {
-        if (ctx.started && ships.Count > 0)
+        if (ctx.started && ships.Count > 0 && Application.isEditor)
         {
             BoidShip shipToDestroy = ships[^1];
             ships.Remove(shipToDestroy);
