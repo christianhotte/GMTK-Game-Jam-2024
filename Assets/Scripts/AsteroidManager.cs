@@ -281,9 +281,12 @@ public class AsteroidManager : MonoBehaviour
 
         for (int i = 0; i < Mathf.Clamp(PlayerController.main.ships.Count, 0, maxAmountOfCops); i++)
         {
+            /*
             float angle = (360f / PlayerController.main.ships.Count) * i;
-            Vector2 smallpos = Quaternion.AngleAxis(20f, Vector3.forward) * Vector2.right*0.1f;
+            Vector2 smallpos = Quaternion.AngleAxis(20f, Vector3.forward) * Vector2.right*3.0f;
             smallpos += position;
+            */
+            Vector2 smallpos = position + UnityEngine.Random.insideUnitCircle * 2.0f;
 
             CopBoid cb = null;
             for (int j = 0; j < copBoidPool.Count; j++)
