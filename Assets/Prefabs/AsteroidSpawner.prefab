@@ -48,7 +48,7 @@ MonoBehaviour:
   prisonPrefab: {fileID: 7572452742451508560, guid: 0956308f3bbccd14b9720ab92af265e9, type: 3}
   planetPrefab: {fileID: 9187907896298145554, guid: 0c513c687669cc44bb175b944feaf550, type: 3}
   gemPrefab: {fileID: 5991099105758395093, guid: 37fcdd907021d4f4dab87184a3fbabdd, type: 3}
-  asteroidContainer: {fileID: 0}
+  objectContainer: {fileID: 0}
   maxPoolSize: 500
   thresholdToSpawn: 0
   spawnDistance: 12
