@@ -85,6 +85,8 @@ public class MenuController : MonoBehaviour
     public void Retry()
     {
         Time.timeScale = 1f;
+        GameManager.Instance.isGameActive = true;
+        GameManager.Instance.isPaused = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

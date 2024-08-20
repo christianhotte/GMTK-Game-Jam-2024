@@ -154,7 +154,7 @@ public class AsteroidManager : MonoBehaviour
         Vector2 baseDirection = player.velocity.normalized;
         float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
         Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle).normalized;
-        return (Vector2)Camera.main.transform.position + (rotatedDirection * (PlayerController.main.boidSettings.asteroidSpawnDistance + (asteroidSize / 2)));
+        return (Vector2)GameManager.Instance.mainCamera.transform.position + (rotatedDirection * (PlayerController.main.boidSettings.asteroidSpawnDistance + (asteroidSize / 2)));
     }
 
     private bool IsPositionOccupied(Vector2 spawnPosition, float collisionRadius)

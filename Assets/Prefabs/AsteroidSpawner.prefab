@@ -58,7 +58,7 @@ MonoBehaviour:
   sizeIncrement: 15
   prisonPercentage: 0.05
   planetThreshold: 50
-  planetPercentage: 0.15
+  planetPercentage: 0.005
   BASE_SPEED: 30
   SPEED_FACTOR: 5
   HEALTH_FACTOR: 30

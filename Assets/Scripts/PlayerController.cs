@@ -60,9 +60,9 @@ public class PlayerController : MonoBehaviour
             case "Mouse": OnMouse(ctx); break;
             case "Thrust": OnThrust(ctx); break;
             case "Shoot": OnShoot(ctx); break;
-            case "DebugSpawn": OnDebugSpawn(ctx); break;
-            case "DebugDeSpawn": OnDebugDeSpawn(ctx); break;
-            case "DebugPrisonSpawn": OnDebugPrisonSpawn(ctx); break;
+            //case "DebugSpawn": OnDebugSpawn(ctx); break;
+            //case "DebugDeSpawn": OnDebugDeSpawn(ctx); break;
+            //case "DebugPrisonSpawn": OnDebugPrisonSpawn(ctx); break;
             default: break;
         }
     }
@@ -86,10 +86,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Move cam target:
-        camTarget.transform.position = Vector2.Lerp(transform.position, Camera.main.ScreenToWorldPoint(mousePosition), cameraDistBlend);
+        camTarget.transform.position = Vector2.Lerp(transform.position, GameManager.Instance.mainCamera.ScreenToWorldPoint(mousePosition), cameraDistBlend);
 
         //Rotate player:
-        float targetRot = Vector3.SignedAngle(Vector3.up, (Vector2)Camera.main.ScreenToWorldPoint(mousePosition) - (Vector2)transform.position, Vector3.forward);
+        float targetRot = Vector3.SignedAngle(Vector3.up, (Vector2)GameManager.Instance.mainCamera.ScreenToWorldPoint(mousePosition) - (Vector2)transform.position, Vector3.forward);
         float newRot = Mathf.LerpAngle(transform.eulerAngles.z, targetRot, rotationRate * Time.deltaTime);
         transform.eulerAngles = Vector3.forward * newRot;
 
@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
             boid.velocity -= Time.deltaTime * boidSettings.boidDragCoefficient * boid.velocity; //Apply drag
             boid.transform.position = boid.transform.position + ((Vector3)boid.velocity * Time.deltaTime);
 
-            float boidTargetRot = Vector3.SignedAngle(Vector3.up, (Vector2)Camera.main.ScreenToWorldPoint(mousePosition) - (Vector2)boid.transform.position, Vector3.forward);
+            float boidTargetRot = Vector3.SignedAngle(Vector3.up, (Vector2)GameManager.Instance.mainCamera.ScreenToWorldPoint(mousePosition) - (Vector2)boid.transform.position, Vector3.forward);
             boidTargetRot = Mathf.LerpAngle(boid.transform.eulerAngles.z, boidTargetRot, boidSettings.boidRotRate * Time.deltaTime);
             boid.transform.eulerAngles = Vector3.forward * boidTargetRot;
         }
@@ -197,16 +197,25 @@ public class PlayerController : MonoBehaviour
     //INPUT METHODS:
     private void OnMouse(InputAction.CallbackContext ctx)
     {
+        if (!GameManager.Instance.isGameActive || GameManager.Instance.isPaused)
+            return;
+
         Vector2 mouseValue = ctx.ReadValue<Vector2>();
         mousePosition = mouseValue;
     }
     private void OnThrust(InputAction.CallbackContext ctx)
     {
+        if (!GameManager.Instance.isGameActive || GameManager.Instance.isPaused)
+            return;
+
         if (ctx.performed) thrusting = true;
         if (ctx.canceled) thrusting = false;
     }
     private void OnShoot(InputAction.CallbackContext ctx)
     {
+        if (!GameManager.Instance.isGameActive || GameManager.Instance.isPaused)
+            return;
+
         if (ctx.performed)
         {
             firing = true;
@@ -222,6 +231,7 @@ public class PlayerController : MonoBehaviour
             ships.Add(newShip.GetComponent<BoidShip>());
             newShip.position = transform.position;
             UpdateBoidSettings();
+            ScoreManager.Instance.AdjustShipNumber(ships.Count);
         }
     }
     private void OnDebugDeSpawn(InputAction.CallbackContext ctx)
@@ -231,6 +241,7 @@ public class PlayerController : MonoBehaviour
             BoidShip shipToDestroy = ships[^1];
             ships.Remove(shipToDestroy);
             Destroy(shipToDestroy.gameObject);
+            ScoreManager.Instance.AdjustShipNumber(ships.Count);
         }
         
     }

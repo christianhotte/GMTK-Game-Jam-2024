@@ -27,6 +27,7 @@ public class Asteroid : MonoBehaviour
     private Rigidbody2D rb2D;
     private Vector2 velocity;
 
+    internal Vector2 pullVelocity;
     internal float timeSinceLastSeen = -1;
     private float currentHealth;
     private bool isFlickering;
@@ -34,7 +35,6 @@ public class Asteroid : MonoBehaviour
     private float currentFlickerDurationTime;
 
     private bool prevOnScreen = false;
-    private AsteroidManager asteroidManager;
 
     private void Awake()
     {
@@ -117,41 +117,7 @@ public class Asteroid : MonoBehaviour
                 }
             }
 
-            //Spawn particle
-            var particle = Instantiate(explosionParticle, transform.position, Quaternion.identity);
-            ParticleSystem _particle = particle.GetComponent<ParticleSystem>();
-
-            var main = _particle.main;
-
-            //StartLifeTime
-            float minSize = 0.1f * size;
-            Mathf.Clamp(minSize, 0f, 1.5f);
-            float maxSize = 0.3f * size;
-            Mathf.Clamp(maxSize, 0f, 3.5f);
-            main.startLifetime = new ParticleSystem.MinMaxCurve((minSize), (maxSize));
-
-            //StartSpeed
-            var sSpeed = main.startSpeed;
-            sSpeed.constantMin = (2 * size);
-            sSpeed.constantMax = (5 * size);
-
-            //Burst Size
-            int var = Mathf.RoundToInt(5 * size);
-            Mathf.Clamp(var, short.MinValue, short.MaxValue);
-            short min;
-            min = (short)var;
-
-            int _var = Mathf.RoundToInt(15 * size);
-            Mathf.Clamp(_var, short.MinValue, short.MaxValue);
-            short max;
-            max = (short)_var;
-
-            ParticleSystem.Burst _burst = new ParticleSystem.Burst(0, min, max, 1, 0);
-            _particle.emission.SetBurst(0, _burst);
-
-            //Shape
-            var shape = _particle.shape;
-            shape.radius = (0.14f * size);
+            SpawnParticleExplosion();
             
 
             ScoreManager.Instance.AddToScore(Mathf.RoundToInt((size * 10.0f) / 10.0f) * 10);
@@ -165,6 +131,45 @@ public class Asteroid : MonoBehaviour
 
         //PlaySound
         GameManager.Instance.AudioManager.PlayOneShot("AsteroidHit", PlayerPrefs.GetFloat("AudioVolume", 0.5f), 0.7f, 1.3f);
+    }
+
+    public void SpawnParticleExplosion()
+    {
+        //Spawn particle
+        var particle = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+        ParticleSystem _particle = particle.GetComponent<ParticleSystem>();
+
+        var main = _particle.main;
+
+        //StartLifeTime
+        float minSize = 0.1f * size;
+        Mathf.Clamp(minSize, 0f, 1.5f);
+        float maxSize = 0.3f * size;
+        Mathf.Clamp(maxSize, 0f, 3.5f);
+        main.startLifetime = new ParticleSystem.MinMaxCurve((minSize), (maxSize));
+
+        //StartSpeed
+        var sSpeed = main.startSpeed;
+        sSpeed.constantMin = (2 * size);
+        sSpeed.constantMax = (5 * size);
+
+        //Burst Size
+        int var = Mathf.RoundToInt(5 * size);
+        Mathf.Clamp(var, short.MinValue, short.MaxValue);
+        short min;
+        min = (short)var;
+
+        int _var = Mathf.RoundToInt(15 * size);
+        Mathf.Clamp(_var, short.MinValue, short.MaxValue);
+        short max;
+        max = (short)_var;
+
+        ParticleSystem.Burst _burst = new ParticleSystem.Burst(0, min, max, 1, 0);
+        _particle.emission.SetBurst(0, _burst);
+
+        //Shape
+        var shape = _particle.shape;
+        shape.radius = (0.14f * size);
     }
 
     public bool debugDamage = false;
@@ -188,6 +193,8 @@ public class Asteroid : MonoBehaviour
         }
 
         if (timeSinceLastSeen != -1) timeSinceLastSeen += Time.deltaTime;
+
+        transform.position = transform.position + ((Vector3)pullVelocity * Time.deltaTime);
     }
 
     private void FixedUpdate()

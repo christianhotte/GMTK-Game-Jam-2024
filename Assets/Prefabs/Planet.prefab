@@ -133,7 +133,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravitationalRadius: 15
-  gravitationalForce: 0.5
+  gravitationalForce: 0.1
+  planetGrowthValue: 0.01
 --- !u!58 &7498031177203844386
 CircleCollider2D:
   m_ObjectHideFlags: 0

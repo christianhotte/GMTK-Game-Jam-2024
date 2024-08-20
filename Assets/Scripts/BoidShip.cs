@@ -35,6 +35,12 @@ public class BoidShip : MonoBehaviour
         {
             BlowUp();
         }
+
+        else if (active && collision.collider.gameObject.TryGetComponent<PlanetController>(out PlanetController planet))
+        {
+            BlowUp();
+        }
+
         else if (active && collision.collider.gameObject.TryGetComponent<CopBoidLeader>(out CopBoidLeader cbl))
         {
             BlowUp();

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
     internal bool isGameActive;
 
     internal float gemChance;
+    internal Camera mainCamera;
 
     private void Awake()
     {
@@ -28,9 +30,24 @@ public class GameManager : MonoBehaviour
         gemChance = 100f;
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        mainCamera = Camera.main;
+    }
+
     public bool IsOnScreen(Transform item)
     {
-        float distFromCam = Vector2.Distance(Camera.main.transform.position, item.position);
+        float distFromCam = Vector2.Distance(mainCamera.transform.position, item.position);
         return distFromCam <= PlayerController.main.boidSettings.asteroidSpawnDistance + item.transform.localScale.x / 2;
     }
 
