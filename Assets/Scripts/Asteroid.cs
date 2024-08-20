@@ -20,6 +20,7 @@ public class Asteroid : MonoBehaviour
     [SerializeField, Tooltip("The sprite renderer used for the flash animation.")] private SpriteRenderer flashSpriteRenderer;
     [SerializeField, Tooltip("All possible sprites for the asteroids.")] private Sprite[] asteroidSprites;
     [SerializeField, Tooltip("All possible sprites for the asteroid overlays.")] private Sprite[] asteroidSpriteOverlays;
+    [SerializeField, Tooltip("The Explosion Sprite particle for this object")] private GameObject explosionParticle;
     [SerializeField, Tooltip("The speed at which asteroids flicker.")] private float flickerSpeed;
     [SerializeField, Tooltip("The duration at which asteroids flicker.")] private float flickerDuration;
 
@@ -115,6 +116,43 @@ public class Asteroid : MonoBehaviour
                     AsteroidManager.main?.SpawnGem(transform.position);
                 }
             }
+
+            //Spawn particle
+            var particle = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+            ParticleSystem _particle = particle.GetComponent<ParticleSystem>();
+
+            var main = _particle.main;
+
+            //StartLifeTime
+            float minSize = 0.1f * size;
+            Mathf.Clamp(minSize, 0f, 1.5f);
+            float maxSize = 0.3f * size;
+            Mathf.Clamp(maxSize, 0f, 3.5f);
+            main.startLifetime = new ParticleSystem.MinMaxCurve((minSize), (maxSize));
+
+            //StartSpeed
+            var sSpeed = main.startSpeed;
+            sSpeed.constantMin = (2 * size);
+            sSpeed.constantMax = (5 * size);
+
+            //Burst Size
+            int var = Mathf.RoundToInt(5 * size);
+            Mathf.Clamp(var, short.MinValue, short.MaxValue);
+            short min;
+            min = (short)var;
+
+            int _var = Mathf.RoundToInt(15 * size);
+            Mathf.Clamp(_var, short.MinValue, short.MaxValue);
+            short max;
+            max = (short)_var;
+
+            ParticleSystem.Burst _burst = new ParticleSystem.Burst(0, min, max, 1, 0);
+            _particle.emission.SetBurst(0, _burst);
+
+            //Shape
+            var shape = _particle.shape;
+            shape.radius = (0.14f * size);
+            
 
             ScoreManager.Instance.AddToScore(Mathf.RoundToInt((size * 10.0f) / 10.0f) * 10);
             AsteroidManager.main?.DestroyAsteroid(this);
