@@ -3049,7 +3049,7 @@ GameObject:
   - component: {fileID: 1996345821}
   - component: {fileID: 1996345820}
   m_Layer: 5
-  m_Name: Background (1)
+  m_Name: StarBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
