@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class AsteroidManager : MonoBehaviour
     [SerializeField, Tooltip("The Prison prefab.")] private PrisonController prisonPrefab;
     [SerializeField, Tooltip("The Prison prefab.")] private PlanetController planetPrefab;
     [SerializeField, Tooltip("The Prison prefab.")] private GemController gemPrefab;
+    [SerializeField, Tooltip("The Cop Boid Leader prefab.")] private CopBoidLeader copLeaderPrefab;
+    [SerializeField, Tooltip("The Cop Boid prefab.")] private CopBoid copPrefab;
     [SerializeField, Tooltip("The object container.")] private Transform objectContainer;
     [SerializeField, Tooltip("The maximum pool size for the asteroid.")] private int maxPoolSize;
     [SerializeField, Tooltip("The amount of distance to move to trigger an asteroid spawning.")] private float thresholdToSpawn;
@@ -20,6 +23,7 @@ public class AsteroidManager : MonoBehaviour
     [SerializeField, Tooltip("The percent chance that a prison will spawn instead of an asteroid.")] private float prisonPercentage = 0.15f;
     [SerializeField, Tooltip("The amount of ships needed before planets begin to spawn.")] private int planetThreshold = 50;
     [SerializeField, Tooltip("The percent chance that a planet will spawn instead of an asteroid.")] private float planetPercentage = 0.15f;
+    [SerializeField, Tooltip("The percent chance that a cop swarm will spawn instead of an asteroid.")] private float copLeaderPercentage = 0.08f;
 
     public float BASE_SPEED = 10f;
     public float SPEED_FACTOR = 5f;
@@ -33,6 +37,8 @@ public class AsteroidManager : MonoBehaviour
     private List<PrisonController> prisonPool = new List<PrisonController>();
     private List<PlanetController> planetPool = new List<PlanetController>();
     private List<GemController> gemPool = new List<GemController>();
+    private List<CopBoidLeader> copBoidLeaderPool = new List<CopBoidLeader>();
+
     private Camera mainCamera;
 
     private Vector2 lastPosition;
@@ -100,8 +106,16 @@ public class AsteroidManager : MonoBehaviour
                 return;
             }
 
+            //Spawn cops
+            else if (UnityEngine.Random.Range(0.0f, 1.0f) < copLeaderPercentage)
+            {
+                Vector2 spawnPosition = CreateSpawnPoint(10.0f);
+                SpawnCopBoidLeader(spawnPosition);
+                return;
+            }
+
             //Spawn a prison
-            if (Random.Range(0.0f, 1.0f) < prisonPercentage)
+            else if(UnityEngine.Random.Range(0.0f, 1.0f) < prisonPercentage)
             {
                 Debug.Log("Spawning A Prison...");
                 spawnPosition = CreateSpawnPoint(prisonPrefab.GetComponent<BoxCollider2D>().size.x);
@@ -130,6 +144,7 @@ public class AsteroidManager : MonoBehaviour
                             SpawnAsteroid(spawnPosition, asteroidSize);
                         }*/
 
+
             currentAmountMoved = 0;
         }
     }
@@ -152,7 +167,7 @@ public class AsteroidManager : MonoBehaviour
     private Vector2 GenerateSpawnPosition(float asteroidSize)
     {
         Vector2 baseDirection = player.velocity.normalized;
-        float randomAngle = Random.Range(-maxAngleDeviation, maxAngleDeviation);
+        float randomAngle = UnityEngine.Random.Range(-maxAngleDeviation, maxAngleDeviation);
         Vector2 rotatedDirection = RotatePositionByAngle(baseDirection, randomAngle).normalized;
         return (Vector2)GameManager.Instance.mainCamera.transform.position + (rotatedDirection * (PlayerController.main.boidSettings.asteroidSpawnDistance + (asteroidSize / 2)));
     }
@@ -238,6 +253,23 @@ public class AsteroidManager : MonoBehaviour
         return newPrison;
     }
 
+    public CopBoidLeader SpawnCopBoidLeader(Vector2 position)
+    {
+        if (CopBoidLeader.instance != null) return null;
+        CopBoidLeader temp = Instantiate(copLeaderPrefab, position, Quaternion.identity, asteroidContainer);
+        for (int i = 0; i < PlayerController.main.ships.Count; i++)
+        {
+            float angle = (360f / PlayerController.main.ships.Count) * i;
+            Vector2 smallpos = Quaternion.AngleAxis(20f, Vector3.forward) * Vector2.right*0.1f;
+            smallpos += position;
+            CopBoid cb = Instantiate(copPrefab, smallpos, Quaternion.identity, asteroidContainer);
+            cb.leader = temp;
+            cb.Init();
+        }
+        copBoidLeaderPool.Add(temp);
+        return temp;
+    }
+
     public Asteroid SpawnAsteroid(Vector2 position, float size, bool isChild = false)
     {
         Asteroid newAsteroid = null;
@@ -280,7 +312,7 @@ public class AsteroidManager : MonoBehaviour
     private float CalculateAsteroidSize()
     {
         //Uses a logarithmic function to increase the size of the asteroids and have it taper off as they get much larger
-        return Random.Range(PlayerController.main.boidSettings.asteroidSizeRange.x, PlayerController.main.boidSettings.asteroidSizeRange.y);
+        return UnityEngine.Random.Range(PlayerController.main.boidSettings.asteroidSizeRange.x, PlayerController.main.boidSettings.asteroidSizeRange.y);
     }
 
     public void DestroyAsteroid(Asteroid currentAsteroid, float size)

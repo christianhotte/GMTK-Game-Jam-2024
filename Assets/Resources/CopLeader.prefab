@@ -57,7 +57,7 @@ MonoBehaviour:
   acceleration: 0.5
   flickerSpeed: 0
   flickerDuration: 0
-  flashSpriteRenderer: {fileID: 0}
+  flashSpriteRenderer: {fileID: 5229403831285410257}
   boidSettings: {fileID: 11400000, guid: fdda4dbbe9411d941b9045440b07b37b, type: 2}
 --- !u!58 &4567106206222553291
 CircleCollider2D:
@@ -193,6 +193,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed642a5bded726245941813d44bff4e5, type: 3}
+--- !u!212 &5229403831285410257 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5508142992377201482, guid: ed642a5bded726245941813d44bff4e5, type: 3}
+  m_PrefabInstance: {fileID: 351924868765592219}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6126811214908185271 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5900990511553802284, guid: ed642a5bded726245941813d44bff4e5, type: 3}
