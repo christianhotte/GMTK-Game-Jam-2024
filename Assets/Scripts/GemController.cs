@@ -7,6 +7,7 @@ public class GemController : MonoBehaviour
 {
     //Components
     public Rigidbody2D rb;
+    public GameObject explosionParticle;
 
     //Settings:
     [SerializeField, Tooltip("")] private float magnetRadius = 1;
@@ -29,6 +30,9 @@ public class GemController : MonoBehaviour
 
         //PlaySound
         GameManager.Instance.AudioManager.PlayOneShot("BoidGet", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+
+        //Particle
+        Instantiate(explosionParticle, transform.position, Quaternion.identity);
 
         gameObject.SetActive(false);
     }

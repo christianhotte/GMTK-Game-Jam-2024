@@ -4900,6 +4900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 6390804948958212431}
+  explosionParticle: {fileID: 5929310126774046851, guid: ccc25a6b7966bac4e9baab3e9d277d6f, type: 3}
   magnetRadius: 20
   magnetStrength: 4
 --- !u!61 &3462770781278961991
