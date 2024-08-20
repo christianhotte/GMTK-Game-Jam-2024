@@ -59,7 +59,9 @@ public class BoidShip : MonoBehaviour
             {
                 var tempPart = Instantiate(explosionParticles[i], transform.position, explosionParticles[i].transform.rotation);
             }
-
+            //Sound Fx
+            float pitchScale = 1f;
+            GameManager.Instance.AudioManager.PlayOneShot("BoidDeath", PlayerPrefs.GetFloat("AudioVolume", 0.5f), (pitchScale - 0.2f), (pitchScale + 0.2f));
             PlayerController.main.ships.Remove(this);
             ScoreManager.Instance.AdjustShipNumber(PlayerController.main.ships.Count);
             Destroy(gameObject);

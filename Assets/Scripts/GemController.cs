@@ -27,6 +27,9 @@ public class GemController : MonoBehaviour
         boidShip.active = true;
         PlayerController.main.ships.Add(boidShip);
 
+        //PlaySound
+        GameManager.Instance.AudioManager.PlayOneShot("BoidGet", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+
         gameObject.SetActive(false);
     }
     private void Update()

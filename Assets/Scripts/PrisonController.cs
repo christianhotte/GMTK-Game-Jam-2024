@@ -56,6 +56,9 @@ public class PrisonController : MonoBehaviour
         isShaking = true;
         currentShakeTime = 0f;
 
+        //PlaySound
+        GameManager.Instance.AudioManager.PlayOneShot("Click", PlayerPrefs.GetFloat("AudioVolume", 0.5f), 0.7f, 1.3f);
+
         if (currentHealth <= 0)
         {
             currentHealth = 0;
@@ -70,6 +73,8 @@ public class PrisonController : MonoBehaviour
 
             ScoreManager.Instance.AddToScore(numberOfShips);
             ScoreManager.Instance.AdjustShipNumber(PlayerController.main.ships.Count);
+            GameManager.Instance.AudioManager.PlayOneShot("AsteroidExplode3", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
+            GameManager.Instance.AudioManager.PlayOneShot("BoidGet", PlayerPrefs.GetFloat("AudioVolume", 0.5f));
             gameObject.SetActive(false);
         }
     }
