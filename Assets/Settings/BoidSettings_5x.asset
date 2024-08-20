@@ -28,6 +28,6 @@ MonoBehaviour:
   leaderAlignBlend: 0.804
   camSize: 8
   fireRate: 6
-  asteroidSizeRange: {x: 3, y: 13}
-  asteroidSpawnDistance: 24.4
-  asteroidSpawnRate: 3
+  asteroidSizeRange: {x: 3, y: 10}
+  asteroidSpawnDistance: 16.4
+  asteroidSpawnRate: 2.6

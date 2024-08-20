@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 946bb818b76946943baff4d378167394, type: 3}
-  m_Name: BoidSettings_0x
+  m_Name: BoidSettings_30x
   m_EditorClassIdentifier: 
-  boidNumber: 0
+  boidNumber: 10
   maxBoidSpeed: 10
   maxBoidForce: 0.37
   boidRotRate: 5
   boidDragCoefficient: 0.3
   boidNeighborRadius: 2
-  boidSeparationRadius: 1.37
-  boidSepForce: 0.35
-  boidCohForce: 0.35
+  boidSeparationRadius: 1.42
+  boidSepForce: 0.3
+  boidCohForce: 0.1
   boidAlignForce: 0
   boidLeaderFollowForce: 10
-  boidLeaderVelocityInheritance: 0.75
-  boidLeaderSepRadii: {x: 0.38, y: 1.53}
+  boidLeaderVelocityInheritance: 0.67
+  boidLeaderSepRadii: {x: 2.52, y: 5.47}
   leaderAlignBlend: 0.804
-  camSize: 5
-  fireRate: 3
-  asteroidSizeRange: {x: 3, y: 8}
-  asteroidSpawnDistance: 11.5
-  asteroidSpawnRate: 3
+  camSize: 14
+  fireRate: 10
+  asteroidSizeRange: {x: 6, y: 25}
+  asteroidSpawnDistance: 28.9
+  asteroidSpawnRate: 2.6

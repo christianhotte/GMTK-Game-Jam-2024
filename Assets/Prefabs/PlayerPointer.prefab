@@ -55,7 +55,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6fcc9212786cfd34d8af9d00589c0e91, type: 2}
   - {fileID: 11400000, guid: f036987a47979724bb12e4dd08e43ea0, type: 2}
   - {fileID: 11400000, guid: fdda4dbbe9411d941b9045440b07b37b, type: 2}
+  - {fileID: 11400000, guid: 6b747a5fcd4e35e449acc89ba916f40f, type: 2}
   - {fileID: 11400000, guid: 77408b65c861aaf478ecb71fee8829d9, type: 2}
+  - {fileID: 11400000, guid: 1ea2299c9af4dff439bd06f078aea4e5, type: 2}
   camTarget: {fileID: 0}
   thrustPower: 10
   dragCoefficient: 0.6
@@ -141,6 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d57fa176b33d824b8cbc51df95aef69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionParticles: []
   collisionDamage: 0
   maxAsteroidEatSize: 1
   spawnForce: 1
