@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public enum MenuState { TITLE, SETTINGS };
 
@@ -22,11 +24,16 @@ public class TitlescreenController : MonoBehaviour
 {
     [SerializeField, Tooltip("The states of the menu")] private MenuPage[] menuStates;
 
+    [SerializeField, Tooltip("The text for the current high score.")] private TextMeshProUGUI highScoreText;
+    [SerializeField] private Slider audioSlider;
+
     private MenuPage currentMenuPage;
 
     private void Start()
     {
         currentMenuPage = menuStates[(int)MenuState.TITLE];
+        audioSlider.value = PlayerPrefs.GetFloat("AudioVolume", 0.5f) * 10f;
+        highScoreText.text = "High Score: " + PlayerPrefs.GetInt("Highscore");
     }
 
     /// <summary>
@@ -60,6 +67,11 @@ public class TitlescreenController : MonoBehaviour
                 currentMenuPage.menuCanvasGroup.alpha = 1;
                 break;
         }
+    }
+
+    public void AdjustVolume(float newVolume)
+    {
+        PlayerPrefs.SetFloat("AudioVolume", newVolume * 0.1f);
     }
 
     /// <summary>

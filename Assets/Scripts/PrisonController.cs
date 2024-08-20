@@ -68,6 +68,8 @@ public class PrisonController : MonoBehaviour
                 PlayerController.main.ships.Add(newShip);
             }
 
+            ScoreManager.Instance.AddToScore(numberOfShips);
+            ScoreManager.Instance.AdjustShipNumber(PlayerController.main.ships.Count);
             gameObject.SetActive(false);
         }
     }

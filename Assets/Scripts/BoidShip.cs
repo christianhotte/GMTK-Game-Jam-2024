@@ -29,6 +29,7 @@ public class BoidShip : MonoBehaviour
             newShip.GetComponent<BoidShip>().velocity = velocity + (-velocity.normalized * spawnForce);
             PlayerController.main.UpdateBoidSettings();
             gem.DestroyGem();
+            ScoreManager.Instance.AdjustShipNumber(PlayerController.main.ships.Count);
         }
         else if (active && collision.collider.gameObject.TryGetComponent<CopBoid>(out CopBoid cb))
         {
@@ -46,7 +47,6 @@ public class BoidShip : MonoBehaviour
                 BlowUp();
             }
         }
-        
     }
 
     public void BlowUp()
@@ -61,6 +61,7 @@ public class BoidShip : MonoBehaviour
             }
 
             PlayerController.main.ships.Remove(this);
+            ScoreManager.Instance.AdjustShipNumber(PlayerController.main.ships.Count);
             Destroy(gameObject);
         }
     }

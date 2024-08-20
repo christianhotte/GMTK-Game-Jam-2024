@@ -7,12 +7,13 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
     [SerializeField, Tooltip("The text to show the score on.")] private TextMeshProUGUI scoreText;
+    [SerializeField, Tooltip("The current amount of ships.")] private TextMeshProUGUI shipsText;
     [SerializeField, Tooltip("The minimum duration for the score change.")] private float minScoreAnimationDuration = 0.5f;
     [SerializeField, Tooltip("The maximum duration for the score change.")] private float maxScoreAnimationDuration = 2f;
     [SerializeField, Tooltip("The score animation range (the larger the number, the bigger the amount has to be in order to reach the max score duration).")] private float scoreAnimationDurationChange = 100f;
     [SerializeField, Tooltip("The shake intensity for the score text when updated.")] private float shakeDisplayIntensity;
     [SerializeField, Tooltip("The shake frequency for the score text when updated.")] private float shakeDisplayFrequency;
-    
+
     private float currentScore;
     private float displayedScore;
     private float transitionStartTime;
@@ -28,6 +29,7 @@ public class ScoreManager : MonoBehaviour
         currentScore = 0;
         displayedScore = 0;
         scoreText.text = ScoreToString();
+        AdjustShipNumber(0);
     }
 
     public void AddToScore(int points)
@@ -35,6 +37,11 @@ public class ScoreManager : MonoBehaviour
         currentScore += points;
         scoreText.text = ScoreToString();
         transitionStartTime = Time.time;
+    }
+
+    public void AdjustShipNumber(int shipsNumber)
+    {
+        shipsText.text = "Ships: " + (shipsNumber + 1).ToString();
     }
 
     private void Update()
@@ -59,8 +66,6 @@ public class ScoreManager : MonoBehaviour
             {
                 displayedScore = currentScore;
             }
-
-            Shakeable.ShakeTransform(scoreText.rectTransform, shakeDisplayIntensity, shakeDisplayFrequency);
         }
         else if (!scoreUpdated)
         {
@@ -72,4 +77,5 @@ public class ScoreManager : MonoBehaviour
 
     private float CalculateTransitionDuration() => Mathf.Lerp(minScoreAnimationDuration, maxScoreAnimationDuration, Mathf.Abs(currentScore - displayedScore) / scoreAnimationDurationChange);
     public string ScoreToString() => displayedScore.ToString("n0");
+    public float GetScore() => currentScore;
 }

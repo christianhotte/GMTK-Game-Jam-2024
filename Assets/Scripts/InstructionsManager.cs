@@ -15,6 +15,7 @@ public class InstructionsManager : MonoBehaviour
     [SerializeField, Tooltip("The text instructions in order.")] private Instruction[] textInstructions;
     [SerializeField, Tooltip("The text object to write to.")] private TextMeshProUGUI instructionText;
     [SerializeField, Tooltip("Text flash speed.")] private float flashSpeed;
+    [SerializeField, Tooltip("If true, the instructions flash on screen.")] private bool flashText;
 
     private bool instructionsComplete = false;
     private float currentTimer;
@@ -50,7 +51,8 @@ public class InstructionsManager : MonoBehaviour
                 currentTimer = 0;
             }
 
-            FlashText();
+            if(flashText)
+                FlashText();
         }
     }
 

@@ -2,12 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class MenuController : MonoBehaviour
 {
     private PlayerControls playerControls;
     [SerializeField, Tooltip("The GameObject for the pause menu.")] private GameObject pauseMenu;
     [SerializeField, Tooltip("The GameObject for the game over menu.")] private GameObject gameOverMenu;
+    [SerializeField, Tooltip("The game score text after a game over.")] private TextMeshProUGUI gameOverScoreText;
+    [SerializeField, Tooltip("The high score text canvas group.")] private CanvasGroup highScoreCanvasGroup;
+    [SerializeField, Tooltip("The flicker screen speed.")] private float flickerSpeed = 0.5f;
+
+    private bool flickerHighScore = false;
+    private float currentFlickerTimer;
 
     private void Awake()
     {
@@ -17,6 +24,7 @@ public class MenuController : MonoBehaviour
         gameOverMenu.SetActive(false);
         GameManager.Instance.isGameActive = true;
         GameManager.Instance.AudioManager.Play("GameMusic", 0.3f);
+        highScoreCanvasGroup.alpha = 0f;
     }
 
     private void OnEnable()
@@ -61,6 +69,15 @@ public class MenuController : MonoBehaviour
     public void DisplayGameOver()
     {
         GameManager.Instance?.AudioManager.StopAllSounds();
+        gameOverScoreText.text = "Score: " + ScoreManager.Instance.GetScore().ToString("n0");
+
+        if(ScoreManager.Instance.GetScore() > PlayerPrefs.GetInt("Highscore"))
+        {
+            PlayerPrefs.SetInt("Highscore", Mathf.RoundToInt(ScoreManager.Instance.GetScore()));
+            highScoreCanvasGroup.alpha = 1f;
+            flickerHighScore = true;
+        }
+
         Time.timeScale = 0f;
         gameOverMenu.SetActive(true);
     }
@@ -77,5 +94,19 @@ public class MenuController : MonoBehaviour
         Time.timeScale = 1f;
         GameManager.Instance?.AudioManager.StopAllSounds();
         SceneManager.LoadScene(0);
+    }
+
+    private void Update()
+    {
+        if (flickerHighScore)
+        {
+            currentFlickerTimer += Time.unscaledDeltaTime;
+
+            if(currentFlickerTimer >= flickerSpeed)
+            {
+                highScoreCanvasGroup.alpha = highScoreCanvasGroup.alpha == 1 ? 0 : 1;
+                currentFlickerTimer = 0;
+            }
+        }
     }
 }
